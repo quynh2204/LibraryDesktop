@@ -31,5 +31,10 @@ namespace LibraryDesktop.View
         {
 
         }
+
+        private void books_btn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

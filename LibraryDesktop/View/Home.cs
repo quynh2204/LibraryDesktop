@@ -13,10 +13,12 @@ namespace LibraryDesktop.View
 {
     public partial class Home : UserControl
     {
-        public Home()
+        private readonly IServiceProvider _serviceProvider;
+
+        public Home(IServiceProvider serviceProvider)
         {
-            InitializeComponent();
             _serviceProvider = serviceProvider;
+            InitializeComponent();
         }
         // Trong Home.cs (UserControl)
         public void ShowBookList()

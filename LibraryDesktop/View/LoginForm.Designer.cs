@@ -72,7 +72,7 @@ namespace LibraryDesktop.View
             mainPanel.Location = new Point(30, 40);
             mainPanel.Name = "mainPanel";
             mainPanel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            mainPanel.Size = new Size(340, 400);
+            mainPanel.Size = new Size(340, 428);
             mainPanel.TabIndex = 0;
             // 
             // btnRegister
@@ -88,7 +88,7 @@ namespace LibraryDesktop.View
             btnRegister.FillColor = Color.White;
             btnRegister.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnRegister.ForeColor = Color.FromArgb(94, 148, 255);
-            btnRegister.Location = new Point(180, 260);
+            btnRegister.Location = new Point(180, 332);
             btnRegister.Name = "btnRegister";
             btnRegister.ShadowDecoration.CustomizableEdges = customizableEdges2;
             btnRegister.Size = new Size(110, 40);
@@ -106,7 +106,7 @@ namespace LibraryDesktop.View
             btnLogin.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(50, 260);
+            btnLogin.Location = new Point(50, 332);
             btnLogin.Name = "btnLogin";
             btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnLogin.Size = new Size(110, 40);
@@ -127,7 +127,7 @@ namespace LibraryDesktop.View
             txtPassword.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             txtPassword.Font = new Font("Segoe UI", 9F);
             txtPassword.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtPassword.Location = new Point(50, 195);
+            txtPassword.Location = new Point(50, 247);
             txtPassword.Margin = new Padding(3, 4, 3, 4);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '●';
@@ -142,7 +142,7 @@ namespace LibraryDesktop.View
             lblPassword.BackColor = Color.Transparent;
             lblPassword.Font = new Font("Segoe UI", 10F);
             lblPassword.ForeColor = Color.FromArgb(125, 137, 149);
-            lblPassword.Location = new Point(50, 170);
+            lblPassword.Location = new Point(50, 215);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(78, 25);
             lblPassword.TabIndex = 3;
@@ -161,7 +161,7 @@ namespace LibraryDesktop.View
             txtUsername.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             txtUsername.Font = new Font("Segoe UI", 9F);
             txtUsername.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtUsername.Location = new Point(50, 115);
+            txtUsername.Location = new Point(50, 135);
             txtUsername.Margin = new Padding(3, 4, 3, 4);
             txtUsername.Name = "txtUsername";
             txtUsername.PlaceholderText = "Enter your username";
@@ -175,7 +175,7 @@ namespace LibraryDesktop.View
             lblUsername.BackColor = Color.Transparent;
             lblUsername.Font = new Font("Segoe UI", 10F);
             lblUsername.ForeColor = Color.FromArgb(125, 137, 149);
-            lblUsername.Location = new Point(50, 90);
+            lblUsername.Location = new Point(50, 103);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(84, 25);
             lblUsername.TabIndex = 1;
@@ -186,7 +186,7 @@ namespace LibraryDesktop.View
             lblTitle.BackColor = Color.Transparent;
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(94, 148, 255);
-            lblTitle.Location = new Point(73, 29);
+            lblTitle.Location = new Point(71, 23);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(189, 43);
             lblTitle.TabIndex = 0;

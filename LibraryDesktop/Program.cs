@@ -6,15 +6,14 @@ using LibraryDesktop.Data;
 using LibraryDesktop.Data.Services;
 using LibraryDesktop.Data.Interfaces;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace LibraryDesktop
 {
     internal static class Program
-    {
-        [STAThread]
+    {        [STAThread]
         static async Task Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
@@ -68,36 +67,24 @@ namespace LibraryDesktop
 
         static IHostBuilder CreateHostBuilder(string dbPath)
         {
-            return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
+            return Host.CreateDefaultBuilder()                .ConfigureServices((context, services) =>
                 {
-                    // Add Entity Framework and all library services with explicit database path
-                    var connectionString = $"Data Source={dbPath}";
-                    services.AddLibraryDataServices(connectionString);
-
-                    // Add forms
+                    // Add Entity Framework and all library services
+                    services.AddLibraryDataServices($"Data Source={dbPath}");                    // Add forms
                     services.AddTransient<Main>();
                     services.AddTransient<LoginForm>();
                     services.AddTransient<RegistrationForm>();
                     services.AddTransient<Exchange>();
-                      
-                    // Configure PaymentWebServer
+                    services.AddTransient<Dashboard>();
+                    services.AddTransient<MyBooks>();
+                    services.AddTransient<History>();
+                    services.AddTransient<BookDetail>();
+                      // Configure PaymentWebServer
                     services.AddSingleton<PaymentWebServer>(provider =>
                     {
                         var paymentService = provider.GetRequiredService<IPaymentService>();
                         var authenticationService = provider.GetRequiredService<IAuthenticationService>();
-                        
-                        // Look for WebRoot in several locations
-                        string[] possiblePaths = {
-                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WebRoot"),
-                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "WebRoot"),
-                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "LibraryDesktop.Data", "WebRoot")
-                        };
-                        
-                        string webRootPath = possiblePaths.FirstOrDefault(Directory.Exists) ?? 
-                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-                        
-                        Debug.WriteLine($"Using WebRoot path: {webRootPath}");
+                        var webRootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "LibraryDesktop.Data", "WebRoot");
                         return new PaymentWebServer(paymentService, webRootPath, authenticationService);
                     });
                 });

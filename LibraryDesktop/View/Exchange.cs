@@ -353,13 +353,10 @@ namespace LibraryDesktop.View
                 btnCheckPayment.Enabled = true;
                 btnCheckPayment.Text = "Check Payment";
             }
-        }
-
-        private void LnkOpenBrowser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(_currentPaymentId))
+        }        private void LnkOpenBrowser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {            if (!string.IsNullOrEmpty(_currentPaymentId))
             {
-                string url = $"http://localhost:8080/payment?token={_currentPaymentId}";
+                string url = $"http://192.168.1.4:5500/LibraryDesktop.Data/WebRoot/index.html?token={_currentPaymentId}&amount={totalTextBox?.Text}";
                 try
                 {
                     Process.Start(new ProcessStartInfo

@@ -36,8 +36,11 @@ namespace LibraryDesktop.Data.Services
             return payment;
         }        public async Task<string> GenerateQRCodeAsync(Payment payment)
         {
-            // Create payment URL for local web server
-            var paymentUrl = $"http://localhost:8080/payment?token={payment.PaymentToken}&amount={payment.Amount}";
+            // Create payment URL for Live Server with user information
+            var paymentUrl = $"{NetworkConfiguration.GetLiveServerUrl()}?token={payment.PaymentToken}&amount={payment.Amount}&userId={payment.UserId}";
+            
+            // Update payment with URL
+            payment.PaymentUrl = paymentUrl;
             
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(paymentUrl, QRCodeGenerator.ECCLevel.Q);
@@ -46,19 +49,36 @@ namespace LibraryDesktop.Data.Services
             
             var qrCodeBase64 = Convert.ToBase64String(qrCodeBytes);
             
-            // Update payment with QR code data
+            // Update payment with QR code data and URL
             payment.QrCodeData = qrCodeBase64;
             await _paymentRepository.UpdateAsync(payment);
             await _paymentRepository.SaveChangesAsync();
             
             return qrCodeBase64;
-        }
-
-        public async Task<bool> CompletePaymentAsync(string token)
+        }        public async Task<bool> CompletePaymentAsync(string token)
         {
             try
             {
+                // Get payment details first
+                var payment = await _paymentRepository.GetPaymentByTokenAsync(token);
+                if (payment == null || payment.PaymentStatus != PaymentStatus.Pending)
+                {
+                    return false;
+                }
+
+                // Complete the payment
                 await _paymentRepository.CompletePaymentAsync(token);
+
+                // Update user balance (convert amount to coins: 1000 VND = 1 coin)
+                var userSetting = await _userSettingRepository.GetByUserIdAsync(payment.UserId);
+                if (userSetting != null)
+                {
+                    var coinsToAdd = payment.Amount / 1000; // 1000 VND = 1 coin
+                    userSetting.Balance += coinsToAdd;
+                    await _userSettingRepository.UpdateAsync(userSetting);
+                    await _userSettingRepository.SaveChangesAsync();
+                }
+
                 return true;
             }
             catch

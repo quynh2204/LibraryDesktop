@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryDesktop.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,7 +88,8 @@ namespace LibraryDesktop.Data.Migrations
                     PaymentToken = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CompletedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true)
+                    Description = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    PaymentUrl = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -208,17 +209,17 @@ namespace LibraryDesktop.Data.Migrations
                 columns: new[] { "CategoryId", "CategoryName", "CreatedDate", "Description", "IsActive" },
                 values: new object[,]
                 {
-                    { 1, "Fantasy", new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4106), "Fantasy stories and novels", true },
-                    { 2, "Romance", new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4862), "Romance stories and novels", true },
-                    { 3, "Sci-Fi", new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4867), "Science fiction stories", true },
-                    { 4, "Mystery", new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4872), "Mystery and thriller stories", true },
-                    { 5, "Adventure", new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4875), "Adventure stories", true }
+                    { 1, "Fantasy", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Fantasy stories and novels", true },
+                    { 2, "Romance", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Romance stories and novels", true },
+                    { 3, "Sci-Fi", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Science fiction stories", true },
+                    { 4, "Mystery", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Mystery and thriller stories", true },
+                    { 5, "Adventure", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Adventure stories", true }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "AvatarUrl", "Email", "PasswordHash", "RegistrationDate", "Username" },
-                values: new object[] { 1, null, "demo@library.com", "demo_hash", new DateTime(2025, 5, 24, 21, 52, 5, 431, DateTimeKind.Local).AddTicks(2005), "demo_user" });
+                values: new object[] { 1, null, "demo@library.com", "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "demo" });
 
             migrationBuilder.InsertData(
                 table: "UserSettings",

@@ -2,13 +2,17 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibraryDesktop.Data.Services;
+using LibraryDesktop.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryDesktop.View
-{    public partial class LoginForm : Form
+{
+    public partial class LoginForm : Form
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IServiceProvider _serviceProvider;
+        
+        public User? AuthenticatedUser { get; private set; }
 
         public LoginForm(IAuthenticationService authenticationService, IServiceProvider serviceProvider)
         {
@@ -28,6 +32,8 @@ namespace LibraryDesktop.View
                 
                 if (user != null)
                 {
+                    AuthenticatedUser = user;
+                    
                     MessageBox.Show($"Welcome, {user.Username}!", "Login Successful", 
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     

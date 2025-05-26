@@ -18,9 +18,10 @@ namespace LibraryDesktop.Data.Services
             _paymentService = paymentService;
             _webRootPath = webRootPath;
             _authenticationService = authenticationService!;
-        }        public async Task StartAsync(int port = 5000)
+        }        public async Task StartAsync(int port = 5500)
         {
-            _server = CreateWebServer($"http://localhost:{port}/");
+            // Bind to all network interfaces so phones/devices can access
+            _server = CreateWebServer($"http://0.0.0.0:{port}/");
             await _server.RunAsync();
         }private WebServer CreateWebServer(string url)
         {
@@ -31,9 +32,26 @@ namespace LibraryDesktop.Data.Services
                 .WithAction("/payment", HttpVerbs.Get, HandlePaymentPage)
                 .WithAction("/api/payment", HttpVerbs.Get, HandlePaymentDetailsApi)
                 .WithAction("/confirm-payment", HttpVerbs.Post, HandlePaymentConfirmation)
-                .WithAction("/api/register", HttpVerbs.Post, HandleRegistration);
+                .WithAction("/api/register", HttpVerbs.Post, HandleRegistration)
+                .WithAction("/api/payment", HttpVerbs.Options, HandleCorsPreflightRequest)
+                .WithAction("/confirm-payment", HttpVerbs.Options, HandleCorsPreflightRequest);
 
             return server;
+        }
+
+        private async Task HandleCorsPreflightRequest(IHttpContext context)
+        {
+            AddCorsHeaders(context);
+            context.Response.StatusCode = 200;
+            await Task.CompletedTask;
+        }
+
+        private void AddCorsHeaders(IHttpContext context)
+        {
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            context.Response.Headers.Add("Access-Control-Max-Age", "86400");
         }
 
         private async Task HandlePaymentPage(IHttpContext context)
@@ -74,17 +92,18 @@ namespace LibraryDesktop.Data.Services
                 context.Response.StatusCode = 500;
                 var errorBytes = Encoding.UTF8.GetBytes("Payment page not found");
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
-            }        }
-
-        private async Task HandlePaymentDetailsApi(IHttpContext context)
+            }        }        private async Task HandlePaymentDetailsApi(IHttpContext context)
         {
+            AddCorsHeaders(context);
+            
             var token = context.Request.QueryString["token"];
             var amount = context.Request.QueryString["amount"];
+            var userId = context.Request.QueryString["userId"];
 
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(amount))
+            if (string.IsNullOrEmpty(token))
             {
                 context.Response.StatusCode = 400;
-                var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Missing token or amount\"}");
+                var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Missing payment token\"}");
                 context.Response.ContentType = "application/json";
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
                 return;
@@ -94,29 +113,32 @@ namespace LibraryDesktop.Data.Services
             if (payment == null)
             {
                 context.Response.StatusCode = 404;
-                var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Payment not found\"}");
+                var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Payment not found or expired\"}");
                 context.Response.ContentType = "application/json";
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
                 return;
             }
 
-            // Return payment details as JSON
+            // Return comprehensive payment details as JSON
             var paymentData = new
             {
-                amount = amount,
-                description = "Account recharge",
+                amount = payment.Amount.ToString("0.00"),
+                description = payment.Description ?? "Library Account Recharge",
                 user = $"User {payment.UserId}",
-                token = token
+                token = token,
+                status = payment.PaymentStatus.ToString(),
+                createdDate = payment.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                paymentMethod = payment.PaymentMethod.ToString()
             };
 
             var jsonResponse = JsonSerializer.Serialize(paymentData);
             var responseBytes = Encoding.UTF8.GetBytes(jsonResponse);
             context.Response.ContentType = "application/json";
             await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
-        }
-
-        private async Task HandlePaymentConfirmation(IHttpContext context)
+        }        private async Task HandlePaymentConfirmation(IHttpContext context)
         {
+            AddCorsHeaders(context);
+            
             try
             {
                 using var reader = new StreamReader(context.Request.InputStream);
@@ -126,14 +148,23 @@ namespace LibraryDesktop.Data.Services
                 if (confirmationData?.Token == null)
                 {
                     context.Response.StatusCode = 400;
-                    var errorBytes = Encoding.UTF8.GetBytes("Invalid request");
+                    var errorBytes = Encoding.UTF8.GetBytes("{\"success\":false,\"message\":\"Invalid request - missing token\"}");
+                    context.Response.ContentType = "application/json";
                     await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
                     return;
                 }
 
                 var success = await _paymentService.CompletePaymentAsync(confirmationData.Token);
-                var response = JsonSerializer.Serialize(new { success });
-                var responseBytes = Encoding.UTF8.GetBytes(response);
+                
+                var response = new
+                {
+                    success = success,
+                    message = success ? "Payment completed successfully" : "Payment confirmation failed",
+                    timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+                
+                var jsonResponse = JsonSerializer.Serialize(response);
+                var responseBytes = Encoding.UTF8.GetBytes(jsonResponse);
                 
                 context.Response.ContentType = "application/json";
                 await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
@@ -141,7 +172,14 @@ namespace LibraryDesktop.Data.Services
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
-                var errorBytes = Encoding.UTF8.GetBytes($"Error: {ex.Message}");
+                var errorResponse = new
+                {
+                    success = false,
+                    message = "Internal server error",
+                    error = ex.Message
+                };
+                var errorBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(errorResponse));
+                context.Response.ContentType = "application/json";
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
             }
         }

@@ -11,17 +11,17 @@ using System.Windows.Forms;
 namespace LibraryDesktop
 {
     internal static class Program
-    {
-        [STAThread]
+    {        [STAThread]
         static async Task Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
-            // Use a predictable location for the database file in the user's Documents folder
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var appDataPath = Path.Combine(documentsPath, "LibraryDesktop");
+            // Use LocalApplicationData for better performance and consistency with DbContext
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "LibraryDesktop");
             
             // Create directory if it doesn't exist
             if (!Directory.Exists(appDataPath))
@@ -33,7 +33,6 @@ namespace LibraryDesktop
             
             // Show the exact database path in the debug output
             Debug.WriteLine($"Database path: {dbPath}");
-            MessageBox.Show($"Using database at: {dbPath}", "Database Location", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             try
             {
@@ -41,20 +40,22 @@ namespace LibraryDesktop
                 var host = CreateHostBuilder(dbPath).Build();
                 
                 // Initialize database
-                bool dbInitialized = await InitializeDatabaseWithRetry(host.Services);
-                
-                if (!dbInitialized)
-                {
-                    MessageBox.Show("Could not initialize database. The application will now close.", 
-                        "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                
-                // Run the main form with dependency injection
+                await InitializeDatabase(host.Services, dbPath);                // Start the application with LoginForm
                 using (var scope = host.Services.CreateScope())
                 {
-                    var mainForm = scope.ServiceProvider.GetRequiredService<Main>();
-                    Application.Run(mainForm);
+                    var loginForm = scope.ServiceProvider.GetRequiredService<LoginForm>();
+                    
+                    if (loginForm.ShowDialog() == DialogResult.OK && loginForm.AuthenticatedUser != null)
+                    {
+                        // User logged in successfully, show main form
+                        var mainForm = scope.ServiceProvider.GetRequiredService<Main>();
+                        
+                        // Initialize main form with authenticated user
+                        await mainForm.InitializeWithUserAsync(loginForm.AuthenticatedUser);
+                        
+                        Application.Run(mainForm);
+                    }
+                    // If login was cancelled or failed, application exits
                 }
             }
             catch (Exception ex)
@@ -99,103 +100,32 @@ namespace LibraryDesktop
                         return new PaymentWebServer(paymentService, webRootPath, authenticationService);
                     });
                 });
-        }
-
-        private static async Task<bool> InitializeDatabaseWithRetry(IServiceProvider serviceProvider)
+        }        private static async Task InitializeDatabase(IServiceProvider serviceProvider, string dbPath)
         {
-            const int maxRetries = 3;
-            int attempt = 0;
-            bool success = false;
-
-            while (!success && attempt < maxRetries)
+            try
             {
-                attempt++;
-                try
-                {
-                    Debug.WriteLine($"Database initialization attempt {attempt}");
-                    
-                    using var scope = serviceProvider.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+                Debug.WriteLine("Initializing database...");
+                
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
 
-                    // Force the database recreation on first run to ensure a clean state
-                    if (attempt == 1)
-                    {
-                        Debug.WriteLine("Ensuring database is created...");
-                        await context.Database.EnsureCreatedAsync();
-                    }
-                    
-                    // Check database connection
-                    var canConnect = await context.Database.CanConnectAsync();
-                    Debug.WriteLine($"Can connect to database: {canConnect}");
-                    
-                    if (canConnect)
-                    {
-                        // Apply migrations
-                        Debug.WriteLine("Applying migrations...");
-                        await context.Database.MigrateAsync();
-                        
-                        // Verify database has tables
-                        try
-                        {
-                            var userCount = await context.Users.CountAsync();
-                            Debug.WriteLine($"Database contains {userCount} users");
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Error checking user count: {ex.Message}");
-                            throw; // Re-throw to trigger retry
-                        }
-                        
-                        Debug.WriteLine("Database initialization successful");
-                        success = true;
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Cannot connect to database, attempting to recreate it");
-                        
-                        // Try to ensure the database is deleted and recreated
-                        try
-                        {
-                            await context.Database.EnsureDeletedAsync();
-                            await context.Database.EnsureCreatedAsync();
-                            await context.Database.MigrateAsync();
-                            
-                            Debug.WriteLine("Database recreated successfully");
-                            success = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Error recreating database: {ex.Message}");
-                            throw; // Re-throw to trigger retry
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Database initialization error (attempt {attempt}): {ex.Message}");
-                    Debug.WriteLine(ex.StackTrace);
-                    
-                    if (ex.InnerException != null)
-                    {
-                        Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                        Debug.WriteLine(ex.InnerException.StackTrace);
-                    }
-                    
-                    if (attempt >= maxRetries)
-                    {
-                        MessageBox.Show($"Failed to initialize database after {maxRetries} attempts. Error: {ex.Message}\n\nInner exception: {ex.InnerException?.Message}", 
-                            "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return false;
-                    }
-                    else
-                    {
-                        // Wait before retrying
-                        await Task.Delay(1000 * attempt); // Increasing delay with each attempt
-                    }
-                }
+                // Ensure database exists and migrations are applied
+                await context.Database.MigrateAsync();
+                Debug.WriteLine("Database migration completed successfully");
+
+                // Verify database has tables
+                var userCount = await context.Users.CountAsync();
+                Debug.WriteLine($"Database contains {userCount} users");
+                
+                Debug.WriteLine("Database initialization completed successfully");
             }
-            
-            return success;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Database initialization error: {ex.Message}");
+                MessageBox.Show($"Database initialization failed: {ex.Message}", 
+                    "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
         }
     }
 }

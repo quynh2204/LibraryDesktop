@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryDesktop.Data.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250524145206_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250526153650_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,7 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             CategoryId = 1,
                             CategoryName = "Fantasy",
-                            CreatedDate = new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4106),
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Fantasy stories and novels",
                             IsActive = true
                         },
@@ -108,7 +108,7 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             CategoryId = 2,
                             CategoryName = "Romance",
-                            CreatedDate = new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4862),
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Romance stories and novels",
                             IsActive = true
                         },
@@ -116,7 +116,7 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             CategoryId = 3,
                             CategoryName = "Sci-Fi",
-                            CreatedDate = new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4867),
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Science fiction stories",
                             IsActive = true
                         },
@@ -124,7 +124,7 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             CategoryId = 4,
                             CategoryName = "Mystery",
-                            CreatedDate = new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4872),
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Mystery and thriller stories",
                             IsActive = true
                         },
@@ -132,7 +132,7 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             CategoryId = 5,
                             CategoryName = "Adventure",
-                            CreatedDate = new DateTime(2025, 5, 24, 21, 52, 5, 429, DateTimeKind.Local).AddTicks(4875),
+                            CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Adventure stories",
                             IsActive = true
                         });
@@ -198,6 +198,9 @@ namespace LibraryDesktop.Data.Migrations
 
                     b.Property<string>("PaymentToken")
                         .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("QrCodeData")
@@ -294,9 +297,9 @@ namespace LibraryDesktop.Data.Migrations
                         {
                             UserId = 1,
                             Email = "demo@library.com",
-                            PasswordHash = "demo_hash",
-                            RegistrationDate = new DateTime(2025, 5, 24, 21, 52, 5, 431, DateTimeKind.Local).AddTicks(2005),
-                            Username = "demo_user"
+                            PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=",
+                            RegistrationDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Username = "demo"
                         });
                 });
 

@@ -26,20 +26,27 @@ namespace LibraryDesktop.Data
         public DbSet<UserFavorite> UserFavorites { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Payment> Payments { get; set; }        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
                 // Use a more explicit default connection string with a full path if needed
                 var dbPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "LibraryDesktop", 
                     "Library.db");
                 
+                // Ensure directory exists
+                var dbDir = Path.GetDirectoryName(dbPath);
+                if (!Directory.Exists(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir!);
+                }
+                
                 Debug.WriteLine($"DbContext OnConfiguring using path: {dbPath}");
                 optionsBuilder.UseSqlite($"Data Source={dbPath}");
+                optionsBuilder.EnableSensitiveDataLogging();
+                optionsBuilder.EnableDetailedErrors();
             }
         }
 
@@ -209,11 +216,10 @@ namespace LibraryDesktop.Data
                     
                 entity.HasIndex(e => e.PaymentToken).IsUnique();
             });
-        }
-
-        private void SeedData(ModelBuilder modelBuilder)
+        }        private void SeedData(ModelBuilder modelBuilder)
         {
-            var seedDate = DateTime.Now;
+            // Use a static date to avoid migration issues
+            var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             Debug.WriteLine("Seeding initial data...");
             
             try
@@ -227,17 +233,17 @@ namespace LibraryDesktop.Data
                     new Category { CategoryId = 5, CategoryName = "Adventure", Description = "Adventure stories", CreatedDate = seedDate, IsActive = true }
                 );
 
-                // Seed Demo User
+                // Seed Demo User (password: "demo")
                 modelBuilder.Entity<User>().HasData(
                     new User 
                     { 
                         UserId = 1, 
-                        Username = "demo_user", 
+                        Username = "demo", 
                         Email = "demo@library.com", 
-                        PasswordHash = "demo_hash", // In real app, this should be properly hashed
+                        PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", // SHA256 hash of "demo" + salt
                         RegistrationDate = seedDate
                     }
-                );            
+                );
                 
                 // Seed Demo User Settings
                 modelBuilder.Entity<UserSetting>().HasData(

@@ -12,9 +12,7 @@ namespace LibraryDesktop.Data
     {
         public static IServiceCollection AddLibraryDataServices(this IServiceCollection services, string connectionString)
         {
-            Debug.WriteLine($"Adding database services with connection string: {connectionString}");
-            
-            // Add DbContext with detailed logging
+            // Add DbContext
             services.AddDbContext<LibraryDbContext>(options =>
                 options.UseSqlite(connectionString)
                       .LogTo(message => Debug.WriteLine($"EFCore: {message}"), 
@@ -24,7 +22,6 @@ namespace LibraryDesktop.Data
                       .EnableSensitiveDataLogging()                      .EnableDetailedErrors());
 
             // Add Repositories
-            Debug.WriteLine("Adding repositories...");
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
@@ -35,15 +32,42 @@ namespace LibraryDesktop.Data
             services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             // Add Services
-            Debug.WriteLine("Adding services...");
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IGitHubContentService, GitHubContentService>();
 
-            Debug.WriteLine("Library data services added successfully");
             return services;
+        }        public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+            
+            try
+            {
+                // Check if database exists and has tables
+                var canConnect = await context.Database.CanConnectAsync();
+                if (canConnect)
+                {
+                    // Only run pending migrations if database exists
+                    var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+                    if (pendingMigrations.Any())
+                    {
+                        await context.Database.MigrateAsync();
+                    }
+                }
+                else
+                {
+                    // Create database and run all migrations
+                    await context.Database.MigrateAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't crash the application
+                System.Diagnostics.Debug.WriteLine($"Database initialization warning: {ex.Message}");
+            }
         }
     }
 }

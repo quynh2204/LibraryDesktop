@@ -84,11 +84,11 @@ namespace LibraryDesktop.View
             mainPanel.Controls.Add(lblUsername);
             mainPanel.Controls.Add(lblTitle);
             mainPanel.CustomizableEdges = customizableEdges13;
-            mainPanel.Location = new Point(40, 46);
+            mainPanel.Location = new Point(40, 86);
             mainPanel.Margin = new Padding(4, 5, 4, 5);
             mainPanel.Name = "mainPanel";
             mainPanel.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            mainPanel.Size = new Size(453, 738);
+            mainPanel.Size = new Size(442, 698);
             mainPanel.TabIndex = 0;
             // 
             // btnCancel
@@ -273,7 +273,7 @@ namespace LibraryDesktop.View
             // lblTitle
             // 
             lblTitle.BackColor = Color.Transparent;
-            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.FromArgb(94, 148, 255);
             lblTitle.Location = new Point(107, 46);
             lblTitle.Margin = new Padding(4, 5, 4, 5);
@@ -294,11 +294,11 @@ namespace LibraryDesktop.View
             controlBoxClose.CustomizableEdges = customizableEdges15;
             controlBoxClose.FillColor = Color.FromArgb(94, 148, 255);
             controlBoxClose.IconColor = Color.White;
-            controlBoxClose.Location = new Point(493, 15);
+            controlBoxClose.Location = new Point(490, 1);
             controlBoxClose.Margin = new Padding(4, 5, 4, 5);
             controlBoxClose.Name = "controlBoxClose";
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            controlBoxClose.Size = new Size(53, 62);
+            controlBoxClose.Size = new Size(40, 40);
             controlBoxClose.TabIndex = 11;
             controlBoxClose.Click += controlBoxClose_Click;
             // 
@@ -311,11 +311,11 @@ namespace LibraryDesktop.View
             controlBoxMinimize.CustomizableEdges = customizableEdges17;
             controlBoxMinimize.FillColor = Color.FromArgb(94, 148, 255);
             controlBoxMinimize.IconColor = Color.White;
-            controlBoxMinimize.Location = new Point(427, 15);
+            controlBoxMinimize.Location = new Point(442, 1);
             controlBoxMinimize.Margin = new Padding(4, 5, 4, 5);
             controlBoxMinimize.Name = "controlBoxMinimize";
             controlBoxMinimize.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            controlBoxMinimize.Size = new Size(53, 62);
+            controlBoxMinimize.Size = new Size(40, 42);
             controlBoxMinimize.TabIndex = 12;
             controlBoxMinimize.Click += controlBoxMinimize_Click;
             // 

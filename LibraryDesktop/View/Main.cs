@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using LibraryDesktop.Data.Services;
 using LibraryDesktop.Models;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 namespace LibraryDesktop.View
 {
@@ -22,7 +21,14 @@ namespace LibraryDesktop.View
         private readonly IServiceProvider _serviceProvider;
         private readonly PaymentWebServer _paymentWebServer;
         private User? _currentUser;
-        private decimal _currentBalance;        public Main(IBookService bookService,
+        private decimal _currentBalance;
+          // Content panel for displaying UserControls
+        private Panel? contentPanel;
+        
+        // Current active UserControl
+        private UserControl? currentUserControl;
+
+        public Main(IBookService bookService, 
                    IAuthenticationService authenticationService,
                    IUserService userService,
                    IServiceProvider serviceProvider,
@@ -34,125 +40,241 @@ namespace LibraryDesktop.View
             _serviceProvider = serviceProvider;
             _paymentWebServer = paymentWebServer;
             InitializeComponent();
-        }        public async Task InitializeWithUserAsync(User user)
+            InitializeMainForm();
+        }
+
+        public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
+            await UpdateBalanceDisplayAsync();
             
-            // Load user balance
-            _currentBalance = await _userService.GetUserBalanceAsync(user.UserId);
+            // Load Dashboard by default after login
+            LoadDashboard();
+        }        private void InitializeMainForm()
+        {
+            // Start the payment web server in the background
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _paymentWebServer.StartAsync(NetworkConfiguration.API_SERVER_PORT);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to start payment web server: {ex.Message}", "Warning",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            });
+
+            // Initialize content panel
+            InitializeContentPanel();
             
-            // Update UI with user information
-            this.Text = $"Library Desktop - Welcome {user.Username}";
+            // Wire up navigation button events
+            InitializeNavigationEvents();
             
-            // Update account label if it exists
-            if (guna2HtmlLabel1 != null)
+            // Show login form first
+            ShowLogin();
+        }private void ShowLogin()
+        {
+            using (var loginForm = _serviceProvider.GetRequiredService<LoginForm>())
             {
-                guna2HtmlLabel1.Text = user.Username;
-            }
-              // Start payment web server
-            try
-            {
-                await _paymentWebServer.StartAsync(NetworkConfiguration.API_SERVER_PORT);
-                Debug.WriteLine("Payment web server started successfully");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to start payment web server: {ex.Message}");
+                if (loginForm.ShowDialog() == DialogResult.OK)
+                {
+                    // Login was successful, get the authenticated user
+                    // Get the current user from the authentication service
+                    _currentUser = loginForm.AuthenticatedUser;
+                    
+                    if (_currentUser != null)
+                    {
+                        _ = InitializeWithUserAsync(_currentUser);
+                    }
+                }
+                else
+                {
+                    // User cancelled login, close application
+                    this.Close();
+                }
             }
         }
 
-        public void ShowExchangeForm()
+        private void InitializeContentPanel()
         {
-            // Hide current content in flowLayoutPanel1
-            if (flowLayoutPanel1 != null)
+            // Create content panel to hold UserControls
+            contentPanel = new Panel
             {
-                flowLayoutPanel1.Visible = false;
-            }
-
-            // Create and show Exchange control
-            var exchangeControl = _serviceProvider.GetRequiredService<Exchange>();
-            exchangeControl.Dock = DockStyle.Fill;
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(241, 236, 228)
+            };
             
-            // Add to main panel (or create a content panel if needed)
-            this.Controls.Add(exchangeControl);
-            exchangeControl.BringToFront();
+            // Add content panel to main form, making sure it's positioned correctly
+            // The navigation panel (guna2Panel1) is docked to the left, so content panel should fill the rest
+            this.Controls.Add(contentPanel);
+            contentPanel.BringToFront();
         }
 
-        public void ShowHomeView()
+        private void InitializeNavigationEvents()
         {
-            // Remove any exchange controls
-            var exchangeControls = this.Controls.OfType<Exchange>().ToList();
-            foreach (var control in exchangeControls)
-            {
-                this.Controls.Remove(control);
-                control.Dispose();
-            }
+            // Wire up button click events
+            btnDashboard.Click += BtnDashboard_Click;
+            btnBooks.Click += BtnBooks_Click;
+            btnMyBooks.Click += BtnMyBooks_Click;
+            btnHistory.Click += BtnHistory_Click;
+            btnExchange.Click += BtnExchange_Click;
+            btnlogout.Click += BtnLogout_Click;
+            pictureBox1.Click += PictureBox1_Click; // Logo click - go to Dashboard
+        }
 
-            // Show the book list again
-            if (flowLayoutPanel1 != null)
+        private void LoadUserControl(UserControl userControl)
+        {
+            // Clear current content
+            contentPanel?.Controls.Clear();
+            
+            // Dispose previous user control
+            currentUserControl?.Dispose();
+            
+            // Set new user control
+            currentUserControl = userControl;
+            userControl.Dock = DockStyle.Fill;
+            
+            // Add to content panel
+            contentPanel?.Controls.Add(userControl);
+        }
+
+        private void LoadDashboard()
+        {
+            var dashboard = _serviceProvider.GetRequiredService<Dashboard>();
+            LoadUserControl(dashboard);
+        }        private void LoadBooks()
+        {
+            // Create a simple books display UserControl
+            var booksControl = new UserControl { Dock = DockStyle.Fill, BackColor = Color.White };
+            var label = new Label 
+            { 
+                Text = "Books View - Coming Soon", 
+                Dock = DockStyle.Fill, 
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 16)
+            };
+            booksControl.Controls.Add(label);
+            LoadUserControl(booksControl);
+        }
+
+        private void LoadMyBooks()
+        {
+            var myBooks = _serviceProvider.GetRequiredService<MyBooks>();
+            LoadUserControl(myBooks);
+        }
+
+        private void LoadHistory()
+        {
+            var history = _serviceProvider.GetRequiredService<History>();
+            LoadUserControl(history);
+        }
+
+        private void LoadExchange()
+        {
+            var exchange = _serviceProvider.GetRequiredService<Exchange>();
+            LoadUserControl(exchange);
+        }
+
+        // Navigation button event handlers
+        private void BtnDashboard_Click(object? sender, EventArgs e)
+        {
+            LoadDashboard();
+        }
+
+        private void BtnBooks_Click(object? sender, EventArgs e)
+        {
+            LoadBooks();
+        }
+
+        private void BtnMyBooks_Click(object? sender, EventArgs e)
+        {
+            LoadMyBooks();
+        }
+
+        private void BtnHistory_Click(object? sender, EventArgs e)
+        {
+            LoadHistory();
+        }
+
+        private void BtnExchange_Click(object? sender, EventArgs e)
+        {
+            LoadExchange();
+        }
+
+        private void BtnLogout_Click(object? sender, EventArgs e)
+        {
+            // Confirm logout
+            var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                
+            if (result == DialogResult.Yes)
             {
-                flowLayoutPanel1.Visible = true;
-                flowLayoutPanel1.BringToFront();
+                // Clear current user
+                _currentUser = null;
+                
+                // Clear content panel
+                contentPanel?.Controls.Clear();
+                currentUserControl?.Dispose();
+                currentUserControl = null;
+                
+                // Show login form again
+                ShowLogin();
             }
         }
 
-        protected override async void OnFormClosing(FormClosingEventArgs e)
+        private void PictureBox1_Click(object? sender, EventArgs e)
         {
-            // Stop payment web server when form closes
-            try
+            // Logo click - go to Dashboard
+            LoadDashboard();
+        }        private async Task UpdateBalanceDisplayAsync()
+        {
+            if (_currentUser != null)
             {
-                await _paymentWebServer.StopAsync();
-                Debug.WriteLine("Payment web server stopped");
+                _currentBalance = await _userService.GetUserBalanceAsync(_currentUser.UserId);
+                this.Text = $"Library Desktop - Welcome {_currentUser.Username} (Balance: ${_currentBalance:F2})";
             }
-            catch (Exception ex)
+        }
+
+        private async void ShowRechargeForm()
+        {
+            using (var exchange = _serviceProvider.GetRequiredService<Exchange>())
             {
-                Debug.WriteLine($"Error stopping payment web server: {ex.Message}");
+                if (exchange.ShowDialog() == DialogResult.OK)
+                {
+                    // Recharge was successful, update user balance display
+                    MessageBox.Show("Account recharged successfully!", "Success", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    // Refresh user balance from database
+                    await UpdateBalanceDisplayAsync();
+                }
             }
-            
-            base.OnFormClosing(e);
+        }
+
+        // Legacy event handlers (keeping for compatibility with designer)
+        private void guna2PictureBox1_Click(object sender, EventArgs e)
+        {
+            // Redirect to new logo click handler
+            PictureBox1_Click(sender, e);
+        }
+
+        private void book1_Load(object sender, EventArgs e)
+        {
+            // Legacy method - no longer used
         }
 
         private void guna2HtmlLabel2_Click(object sender, EventArgs e)
         {
-            // Show user account information or exchange
-            ShowExchangeForm();
+            // Show recharge form when this label is clicked
+            ShowRechargeForm();
         }
 
-        private void guna2PictureBox1_Click(object sender, EventArgs e)
+        private void books_btn_Click(object sender, EventArgs e)
         {
-            // Handle search functionality
-            ShowHomeView();
-        }
-
-        // Add navigation event handlers for tile buttons
-        private void guna2GradientTileButton1_Click(object sender, EventArgs e)
-        {
-            // Books - show home view
-            ShowHomeView();
-        }
-
-        private void guna2GradientTileButton2_Click(object sender, EventArgs e)
-        {
-            // Returned Books functionality
-            ShowHomeView();
-        }
-
-        private void guna2GradientTileButton3_Click(object sender, EventArgs e)
-        {
-            // Borrowing functionality  
-            ShowHomeView();
-        }
-
-        private void guna2GradientTileButton4_Click(object sender, EventArgs e)
-        {
-            // Fine Ticket / Exchange functionality
-            ShowExchangeForm();
-        }
-
-        private void btn_vaid_Click(object sender, EventArgs e)
-        {
-            // Account / Exchange functionality
-            ShowExchangeForm();
+            // Redirect to new books click handler
+            BtnBooks_Click(sender, e);
         }
     }
 }

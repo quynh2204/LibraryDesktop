@@ -56,7 +56,8 @@ namespace LibraryDesktop.View
                 btnLogin.Enabled = true;
                 btnLogin.Text = "Login";
             }
-        }        private void btnRegister_Click(object sender, EventArgs e)
+        }        
+        private void btnRegister_Click(object sender, EventArgs e)
         {
             using (var registrationForm = _serviceProvider.GetRequiredService<RegistrationForm>())
             {
@@ -65,6 +66,7 @@ namespace LibraryDesktop.View
                     MessageBox.Show("Registration successful! You can now login with your new account.", "Success", 
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
             }
         }
     }

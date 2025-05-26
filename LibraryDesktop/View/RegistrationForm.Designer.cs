@@ -3,7 +3,8 @@ using Guna.UI2.WinForms;
 namespace LibraryDesktop.View
 {
     partial class RegistrationForm
-    {        private System.ComponentModel.IContainer components = null;
+    {
+        private System.ComponentModel.IContainer components = null;
         private Guna2TextBox txtUsername;
         private Guna2TextBox txtEmail;
         private Guna2TextBox txtPassword;
@@ -14,7 +15,7 @@ namespace LibraryDesktop.View
         private Guna2HtmlLabel lblEmail;
         private Guna2HtmlLabel lblPassword;
         private Guna2HtmlLabel lblConfirmPassword;
-        private Guna2HtmlLabel lblTitle;        private Guna2Panel mainPanel;
+        private Guna2HtmlLabel lblTitle; private Guna2Panel mainPanel;
         private Guna2ShadowForm shadowForm;
         private Guna2ControlBox controlBoxClose;
         private Guna2ControlBox controlBoxMinimize;
@@ -293,11 +294,11 @@ namespace LibraryDesktop.View
             controlBoxClose.CustomizableEdges = customizableEdges15;
             controlBoxClose.FillColor = Color.FromArgb(94, 148, 255);
             controlBoxClose.IconColor = Color.White;
-            controlBoxClose.Location = new Point(484, -2);
+            controlBoxClose.Location = new Point(493, 15);
             controlBoxClose.Margin = new Padding(4, 5, 4, 5);
             controlBoxClose.Name = "controlBoxClose";
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            controlBoxClose.Size = new Size(49, 38);
+            controlBoxClose.Size = new Size(53, 62);
             controlBoxClose.TabIndex = 11;
             controlBoxClose.Click += controlBoxClose_Click;
             // 
@@ -310,11 +311,11 @@ namespace LibraryDesktop.View
             controlBoxMinimize.CustomizableEdges = customizableEdges17;
             controlBoxMinimize.FillColor = Color.FromArgb(94, 148, 255);
             controlBoxMinimize.IconColor = Color.White;
-            controlBoxMinimize.Location = new Point(427, -2);
+            controlBoxMinimize.Location = new Point(427, 15);
             controlBoxMinimize.Margin = new Padding(4, 5, 4, 5);
             controlBoxMinimize.Name = "controlBoxMinimize";
             controlBoxMinimize.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            controlBoxMinimize.Size = new Size(49, 38);
+            controlBoxMinimize.Size = new Size(53, 62);
             controlBoxMinimize.TabIndex = 12;
             controlBoxMinimize.Click += controlBoxMinimize_Click;
             // 

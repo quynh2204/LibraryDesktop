@@ -154,8 +154,8 @@
   <data name="icons8-book-80" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resourses\icons8-book-80.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-book-50 (4)1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resourses\icons8-book-50 (4).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-moleskine-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resourses\icons8-moleskine-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons8-money-481" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resourses\icons8-money-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -178,16 +178,19 @@
   <data name="icons8-book-64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resourses\icons8-book-64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons8-coin-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resourses\icons8-coin-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icons8-book-50 (4)" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resourses\icons8-book-50 (4).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-moleskine-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resourses\icons8-moleskine-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-book-50 (4)1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resourses\icons8-book-50 (4).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons8-money-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resourses\icons8-money-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-coin-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resourses\icons8-coin-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-books-501" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resourses\icons8-books-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

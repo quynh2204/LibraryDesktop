@@ -16,13 +16,16 @@ namespace LibraryDesktop.View
 {
     public partial class Main : Form
     {
+        private Home _homeControl;
+
         private readonly IBookService _bookService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IUserService _userService;
         private readonly IServiceProvider _serviceProvider;
         private readonly PaymentWebServer _paymentWebServer;
         private User? _currentUser;
-        private decimal _currentBalance;        public Main(IBookService bookService,
+        private decimal _currentBalance;        
+        public Main(IBookService bookService,
                    IAuthenticationService authenticationService,
                    IUserService userService,
                    IServiceProvider serviceProvider,
@@ -31,25 +34,28 @@ namespace LibraryDesktop.View
             _bookService = bookService;
             _authenticationService = authenticationService;
             _userService = userService;
-            _serviceProvider = serviceProvider;
+ 
             _paymentWebServer = paymentWebServer;
             InitializeComponent();
-        }        public async Task InitializeWithUserAsync(User user)
+            _homeControl = _serviceProvider.GetRequiredService<Home>();
+            _homeControl.Dock = DockStyle.Fill;
+            this.Controls.Add(_homeControl);
+            _homeControl.BringToFront(); // Hiển thị Home ngay khi mở form
+
+        }
+        public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
-            
+
             // Load user balance
             _currentBalance = await _userService.GetUserBalanceAsync(user.UserId);
-            
-            // Update UI with user information
+
+            // Update UI
             this.Text = $"Library Desktop - Welcome {user.Username}";
-            
-            // Update account label if it exists
-            if (guna2HtmlLabel1 != null)
-            {
-                guna2HtmlLabel1.Text = user.Username;
-            }
-            
+
+            // Cập nhật username trong Home
+            _homeControl.UpdateUsername(user.Username);
+
             // Start payment web server
             try
             {
@@ -62,26 +68,10 @@ namespace LibraryDesktop.View
             }
         }
 
-        public void ShowExchangeForm()
-        {
-            // Hide current content in flowLayoutPanel1
-            if (flowLayoutPanel1 != null)
-            {
-                flowLayoutPanel1.Visible = false;
-            }
-
-            // Create and show Exchange control
-            var exchangeControl = _serviceProvider.GetRequiredService<Exchange>();
-            exchangeControl.Dock = DockStyle.Fill;
-            
-            // Add to main panel (or create a content panel if needed)
-            this.Controls.Add(exchangeControl);
-            exchangeControl.BringToFront();
-        }
 
         public void ShowHomeView()
         {
-            // Remove any exchange controls
+            // Xóa các control khác như Exchange (nếu có)
             var exchangeControls = this.Controls.OfType<Exchange>().ToList();
             foreach (var control in exchangeControls)
             {
@@ -89,13 +79,10 @@ namespace LibraryDesktop.View
                 control.Dispose();
             }
 
-            // Show the book list again
-            if (flowLayoutPanel1 != null)
-            {
-                flowLayoutPanel1.Visible = true;
-                flowLayoutPanel1.BringToFront();
-            }
+            _homeControl.BringToFront();
+            _homeControl.ShowBookList();
         }
+
 
         protected override async void OnFormClosing(FormClosingEventArgs e)
         {
@@ -113,11 +100,6 @@ namespace LibraryDesktop.View
             base.OnFormClosing(e);
         }
 
-        private void guna2HtmlLabel2_Click(object sender, EventArgs e)
-        {
-            // Show user account information or exchange
-            ShowExchangeForm();
-        }
 
         private void guna2PictureBox1_Click(object sender, EventArgs e)
         {

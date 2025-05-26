@@ -108,11 +108,11 @@
             // 
             total_lb.BackColor = Color.Transparent;
             total_lb.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            total_lb.Location = new Point(546, 548);
+            total_lb.Location = new Point(575, 548);
             total_lb.Name = "total_lb";
-            total_lb.Size = new Size(112, 33);
+            total_lb.Size = new Size(64, 33);
             total_lb.TabIndex = 1;
-            total_lb.Text = "Tổng tiền: ";
+            total_lb.Text = "Total: ";
             // 
             // coinPanel10
             // 

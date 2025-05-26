@@ -49,11 +49,10 @@ namespace LibraryDesktop.View
             {
                 guna2HtmlLabel1.Text = user.Username;
             }
-            
-            // Start payment web server
+              // Start payment web server
             try
             {
-                await _paymentWebServer.StartAsync();
+                await _paymentWebServer.StartAsync(NetworkConfiguration.API_SERVER_PORT);
                 Debug.WriteLine("Payment web server started successfully");
             }
             catch (Exception ex)

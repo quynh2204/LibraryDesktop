@@ -21,11 +21,7 @@ namespace LibraryDesktop.Data
                              LogLevel.Warning,
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.LocalTime | 
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.SingleLine)
-                      .EnableSensitiveDataLogging()
-                      .EnableDetailedErrors());
-
-            // Add Unit of Work
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+                      .EnableSensitiveDataLogging()                      .EnableDetailedErrors());
 
             // Add Repositories
             Debug.WriteLine("Adding repositories...");
@@ -48,91 +44,6 @@ namespace LibraryDesktop.Data
 
             Debug.WriteLine("Library data services added successfully");
             return services;
-        }
-
-        public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
-        {
-            Debug.WriteLine("Initializing database...");
-            using var scope = serviceProvider.CreateScope();
-            
-            try
-            {
-                var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
-                
-                // Verify the database file exists or can be created
-                var connectionString = context.Database.GetConnectionString() ?? "";
-                Debug.WriteLine($"Connection string: {connectionString}");
-                
-                var match = System.Text.RegularExpressions.Regex.Match(connectionString, @"Data Source=([^;]+)");
-                if (match.Success)
-                {
-                    var dbPath = match.Groups[1].Value;
-                    Debug.WriteLine($"Database file path: {dbPath}");
-                    
-                    var dbDirectory = Path.GetDirectoryName(dbPath);
-                    if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory))
-                    {
-                        Debug.WriteLine($"Creating database directory: {dbDirectory}");
-                        Directory.CreateDirectory(dbDirectory);
-                    }
-                }
-                
-                // Check database connection
-                Debug.WriteLine("Checking database connection...");
-                var canConnect = await context.Database.CanConnectAsync();
-                Debug.WriteLine($"Can connect to database: {canConnect}");
-                
-                if (canConnect)
-                {
-                    // Run pending migrations if any
-                    var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-                    var migrationsList = string.Join(", ", pendingMigrations);
-                    Debug.WriteLine($"Pending migrations: {(string.IsNullOrEmpty(migrationsList) ? "None" : migrationsList)}");
-                    
-                    if (pendingMigrations.Any())
-                    {
-                        Debug.WriteLine("Applying pending migrations...");
-                        await context.Database.MigrateAsync();
-                    }
-                    
-                    // Verify database contents
-                    try
-                    {
-                        var userCount = await context.Users.CountAsync();
-                        var bookCount = await context.Books.CountAsync();
-                        Debug.WriteLine($"Database contains {userCount} users and {bookCount} books");
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error verifying database content: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Creating new database...");
-                    
-                    // Ensure the database is created and migrations are applied
-                    await context.Database.EnsureDeletedAsync();
-                    await context.Database.EnsureCreatedAsync();
-                    await context.Database.MigrateAsync();
-                    
-                    Debug.WriteLine("Database created successfully");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Database initialization error: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-                
-                if (ex.InnerException != null)
-                {
-                    Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                    Debug.WriteLine(ex.InnerException.StackTrace);
-                }
-                
-                // Re-throw as we want to know about initialization failures
-                throw new Exception($"Database initialization failed: {ex.Message}", ex);
-            }
         }
     }
 }

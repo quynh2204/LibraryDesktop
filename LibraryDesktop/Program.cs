@@ -11,7 +11,8 @@ using System.Windows.Forms;
 namespace LibraryDesktop
 {
     internal static class Program
-    {        [STAThread]
+    {
+        [STAThread]
         static async Task Main()
         {
             Application.EnableVisualStyles();

@@ -6,14 +6,13 @@ using System.Linq;
 namespace LibraryDesktop.Data.Services
 {
     public static class NetworkConfiguration
-    {
-        // Configuration for Live Server hosting
+    {        // Configuration for Live Server hosting
         public const string LIVE_SERVER_HOST = "192.168.1.4";
         public const int LIVE_SERVER_PORT = 5500;
         public const string LIVE_SERVER_PATH = "LibraryDesktop.Data/WebRoot/index.html";
           // Configuration for LibraryDesktop API server
         public const string API_SERVER_HOST = "192.168.1.4"; // Changed from localhost to allow network access
-        public const int API_SERVER_PORT = 5500;
+        public const int API_SERVER_PORT = 5000;
         
         /// <summary>
         /// Gets the complete Live Server URL for payment confirmation pages

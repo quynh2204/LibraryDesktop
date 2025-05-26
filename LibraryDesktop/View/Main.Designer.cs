@@ -51,8 +51,9 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            btnBooks = new Guna.UI2.WinForms.Guna2GradientTileButton();
+            btnHome = new Guna.UI2.WinForms.Guna2GradientTileButton();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            label1 = new Label();
             btnlogout = new Guna.UI2.WinForms.Guna2Button();
             btnDashboard = new Guna.UI2.WinForms.Guna2GradientTileButton();
             pictureBox1 = new PictureBox();
@@ -65,32 +66,31 @@
             guna2ControlBox3 = new Guna.UI2.WinForms.Guna2ControlBox();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
-            label1 = new Label();
             guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
-            // btnBooks
+            // btnHome
             // 
-            btnBooks.CustomizableEdges = customizableEdges1;
-            btnBooks.DisabledState.BorderColor = Color.DarkGray;
-            btnBooks.DisabledState.CustomBorderColor = Color.DarkGray;
-            btnBooks.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            btnBooks.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
-            btnBooks.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btnBooks.FillColor = Color.Transparent;
-            btnBooks.FillColor2 = Color.Transparent;
-            btnBooks.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnBooks.ForeColor = Color.White;
-            btnBooks.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-            btnBooks.Image = Properties.Resources.icons8_books_501;
-            btnBooks.ImageSize = new Size(32, 32);
-            btnBooks.Location = new Point(22, 241);
-            btnBooks.Name = "btnBooks";
-            btnBooks.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnBooks.Size = new Size(104, 70);
-            btnBooks.TabIndex = 0;
-            btnBooks.Text = "Books";
+            btnHome.CustomizableEdges = customizableEdges1;
+            btnHome.DisabledState.BorderColor = Color.DarkGray;
+            btnHome.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnHome.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnHome.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
+            btnHome.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnHome.FillColor = Color.Transparent;
+            btnHome.FillColor2 = Color.Transparent;
+            btnHome.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnHome.ForeColor = Color.White;
+            btnHome.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+            btnHome.Image = Properties.Resources.icons8_books_501;
+            btnHome.ImageSize = new Size(32, 32);
+            btnHome.Location = new Point(22, 274);
+            btnHome.Name = "btnHome";
+            btnHome.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnHome.Size = new Size(104, 70);
+            btnHome.TabIndex = 0;
+            btnHome.Text = "Home";
             // 
             // guna2Panel1
             // 
@@ -102,7 +102,7 @@
             guna2Panel1.Controls.Add(btnExchange);
             guna2Panel1.Controls.Add(btnHistory);
             guna2Panel1.Controls.Add(btnMyBooks);
-            guna2Panel1.Controls.Add(btnBooks);
+            guna2Panel1.Controls.Add(btnHome);
             guna2Panel1.CustomizableEdges = customizableEdges13;
             guna2Panel1.Dock = DockStyle.Left;
             guna2Panel1.Location = new Point(0, 0);
@@ -110,6 +110,15 @@
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges14;
             guna2Panel1.Size = new Size(148, 827);
             guna2Panel1.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(36, 119);
+            label1.Name = "label1";
+            label1.Size = new Size(74, 20);
+            label1.TabIndex = 6;
+            label1.Text = "LoveBook";
             // 
             // btnlogout
             // 
@@ -144,12 +153,13 @@
             btnDashboard.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
             btnDashboard.Image = Properties.Resources.icons8_moleskine_482;
             btnDashboard.ImageSize = new Size(32, 32);
-            btnDashboard.Location = new Point(22, 609);
+            btnDashboard.Location = new Point(22, 186);
             btnDashboard.Name = "btnDashboard";
             btnDashboard.ShadowDecoration.CustomizableEdges = customizableEdges6;
             btnDashboard.Size = new Size(104, 70);
             btnDashboard.TabIndex = 4;
             btnDashboard.Text = "Dashboard";
+            btnDashboard.Click += btnDashboard_Click;
             // 
             // pictureBox1
             // 
@@ -176,7 +186,7 @@
             btnExchange.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
             btnExchange.Image = Properties.Resources.icons8_book_50__2_;
             btnExchange.ImageSize = new Size(32, 32);
-            btnExchange.Location = new Point(22, 517);
+            btnExchange.Location = new Point(22, 538);
             btnExchange.Name = "btnExchange";
             btnExchange.ShadowDecoration.CustomizableEdges = customizableEdges8;
             btnExchange.Size = new Size(104, 70);
@@ -198,7 +208,7 @@
             btnHistory.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
             btnHistory.Image = Properties.Resources.icons8_book_50__1_;
             btnHistory.ImageSize = new Size(32, 32);
-            btnHistory.Location = new Point(22, 333);
+            btnHistory.Location = new Point(22, 362);
             btnHistory.Name = "btnHistory";
             btnHistory.ShadowDecoration.CustomizableEdges = customizableEdges10;
             btnHistory.Size = new Size(104, 70);
@@ -220,7 +230,7 @@
             btnMyBooks.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
             btnMyBooks.Image = Properties.Resources.icons8_love_book_50;
             btnMyBooks.ImageSize = new Size(32, 32);
-            btnMyBooks.Location = new Point(22, 425);
+            btnMyBooks.Location = new Point(22, 450);
             btnMyBooks.Name = "btnMyBooks";
             btnMyBooks.ShadowDecoration.CustomizableEdges = customizableEdges12;
             btnMyBooks.Size = new Size(104, 70);
@@ -287,15 +297,6 @@
             guna2CustomGradientPanel1.Size = new Size(1317, 102);
             guna2CustomGradientPanel1.TabIndex = 5;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(36, 119);
-            label1.Name = "label1";
-            label1.Size = new Size(74, 20);
-            label1.TabIndex = 6;
-            label1.Text = "LoveBook";
-            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -318,7 +319,7 @@
 
         #endregion
 
-        private Guna.UI2.WinForms.Guna2GradientTileButton btnBooks;
+        private Guna.UI2.WinForms.Guna2GradientTileButton btnHome;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2GradientTileButton btnExchange;
         private Guna.UI2.WinForms.Guna2GradientTileButton btnHistory;

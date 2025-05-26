@@ -16,11 +16,20 @@ namespace LibraryDesktop.View
         public Home()
         {
             InitializeComponent();
-            _serviceProvider = serviceProvider;
+            //_serviceProvider = serviceProvider;
         }
         // Trong Home.cs (UserControl)
         public void ShowBookList()
         {
+            if (flowLayoutPanel1 != null)
+            {
+                flowLayoutPanel1.Visible = true;
+                flowLayoutPanel1.BringToFront();
+            }
+        }
+        public void ShowHomeView()
+        {
+            // Hiển thị Home view
             if (flowLayoutPanel1 != null)
             {
                 flowLayoutPanel1.Visible = true;
@@ -44,17 +53,22 @@ namespace LibraryDesktop.View
             }
 
             // Create and show Exchange control
-            var exchangeControl = _serviceProvider.GetRequiredService<Exchange>();
-            exchangeControl.Dock = DockStyle.Fill;
+            //var exchangeControl = _serviceProvider.GetRequiredService<Exchange>();
+            //exchangeControl.Dock = DockStyle.Fill;
 
-            // Add to main panel (or create a content panel if needed)
-            this.Controls.Add(exchangeControl);
-            exchangeControl.BringToFront();
+            //// Add to main panel (or create a content panel if needed)
+            //this.Controls.Add(exchangeControl);
+            //exchangeControl.BringToFront();
         }
         private void guna2HtmlLabel2_Click(object sender, EventArgs e)
         {
             // Show user account information or exchange
             ShowExchangeForm();
+        }
+        private void guna2PictureBox1_Click(object sender, EventArgs e)
+        {
+            // Handle search functionality
+            ShowHomeView();
         }
     }
 }

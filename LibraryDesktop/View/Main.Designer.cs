@@ -67,6 +67,7 @@
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
             home1 = new Home();
+            dashboard1 = new Dashboard();
             guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -292,19 +293,28 @@
             guna2CustomGradientPanel1.FillColor2 = Color.FromArgb(243, 236, 227);
             guna2CustomGradientPanel1.FillColor3 = Color.FromArgb(209, 194, 180);
             guna2CustomGradientPanel1.FillColor4 = Color.FromArgb(209, 194, 180);
-            guna2CustomGradientPanel1.Location = new Point(147, 0);
+            guna2CustomGradientPanel1.Location = new Point(148, 0);
             guna2CustomGradientPanel1.Name = "guna2CustomGradientPanel1";
             guna2CustomGradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            guna2CustomGradientPanel1.Size = new Size(1221, 102);
+            guna2CustomGradientPanel1.Size = new Size(1220, 102);
             guna2CustomGradientPanel1.TabIndex = 5;
             // 
             // home1
             // 
             home1.Location = new Point(148, 108);
             home1.Name = "home1";
-            home1.Size = new Size(1220, 720);
+            home1.Size = new Size(1220, 746);
             home1.TabIndex = 6;
             home1.Load += home1_Load;
+            // 
+            // dashboard1
+            // 
+            dashboard1.ImeMode = ImeMode.NoControl;
+            dashboard1.Location = new Point(148, 99);
+            dashboard1.Margin = new Padding(4, 5, 4, 5);
+            dashboard1.Name = "dashboard1";
+            dashboard1.Size = new Size(1220, 755);
+            dashboard1.TabIndex = 0;
             // 
             // Main
             // 
@@ -312,6 +322,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(241, 236, 228);
             ClientSize = new Size(1368, 854);
+            Controls.Add(dashboard1);
             Controls.Add(home1);
             Controls.Add(guna2ControlBox3);
             Controls.Add(guna2ControlBox2);
@@ -345,5 +356,6 @@ private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;
         private Label label1;
         private Home home1;
+        private Dashboard dashboard1;
     }
 }

@@ -130,6 +130,11 @@ namespace LibraryDesktop.View
             ShowHomeView();
         }
 
+        private void home1_Load(object sender, EventArgs e)
+        {
+
+        }
+
         //private void guna2GradientTileButton4_Click(object sender, EventArgs e)
         //{
         //    // Fine Ticket / Exchange functionality

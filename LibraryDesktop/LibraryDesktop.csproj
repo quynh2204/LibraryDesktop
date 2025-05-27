@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
     <PackageReference Include="SQLitePCLRaw.core" Version="2.1.11" />
     <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.11" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
   </ItemGroup>
 
   <ItemGroup>

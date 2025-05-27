@@ -199,7 +199,19 @@ namespace LibraryDesktop.Data.Services
 
                 using var reader = new StreamReader(context.Request.InputStream);
                 var body = await reader.ReadToEndAsync();
-                var registrationData = JsonSerializer.Deserialize<RegistrationData>(body);
+
+                if (string.IsNullOrWhiteSpace(body))
+                {
+                    context.Response.StatusCode = 400;
+                    var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Empty request body\"}");
+                    context.Response.ContentType = "application/json";
+                    await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
+                    return;
+                }
+
+                var registrationData = JsonSerializer.Deserialize<RegistrationData>(
+                    body,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (registrationData?.Username == null || registrationData.Email == null || registrationData.Password == null)
                 {
@@ -210,8 +222,11 @@ namespace LibraryDesktop.Data.Services
                     return;
                 }
 
-                var user = await _authenticationService.RegisterAsync(registrationData.Username, registrationData.Email, registrationData.Password);
-                
+                var user = await _authenticationService.RegisterAsync(
+                    registrationData.Username,
+                    registrationData.Email,
+                    registrationData.Password);
+
                 if (user != null)
                 {
                     var response = JsonSerializer.Serialize(new { success = true, message = "Registration successful", userId = user.UserId });
@@ -236,6 +251,7 @@ namespace LibraryDesktop.Data.Services
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
             }
         }
+
 
         public async Task StopAsync()
         {

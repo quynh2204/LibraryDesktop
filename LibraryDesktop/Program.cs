@@ -10,7 +10,8 @@ using System.Diagnostics;
 namespace LibraryDesktop
 {
     internal static class Program
-    {        [STAThread]
+    {
+        [STAThread]
         static async Task Main()
         {
 
@@ -22,15 +23,15 @@ namespace LibraryDesktop
             var appDataPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "LibraryDesktop");
-            
+
             // Create directory if it doesn't exist
             if (!Directory.Exists(appDataPath))
             {
                 Directory.CreateDirectory(appDataPath);
             }
-            
+
             var dbPath = Path.Combine(appDataPath, "Library.db");
-            
+
             // Show the exact database path in the debug output
             Debug.WriteLine($"Database path: {dbPath}");
 
@@ -38,21 +39,21 @@ namespace LibraryDesktop
             {
                 // Configure services
                 var host = CreateHostBuilder(dbPath).Build();
-                
+
                 // Initialize database
                 await InitializeDatabase(host.Services, dbPath);                // Start the application with LoginForm
                 using (var scope = host.Services.CreateScope())
                 {
                     var loginForm = scope.ServiceProvider.GetRequiredService<LoginForm>();
-                    
+
                     if (loginForm.ShowDialog() == DialogResult.OK && loginForm.AuthenticatedUser != null)
                     {
                         // User logged in successfully, show main form
                         var mainForm = scope.ServiceProvider.GetRequiredService<Main>();
-                        
+
                         // Initialize main form with authenticated user
                         await mainForm.InitializeWithUserAsync(loginForm.AuthenticatedUser);
-                        
+
                         Application.Run(mainForm);
                     }
                     // If login was cancelled or failed, application exits
@@ -60,40 +61,41 @@ namespace LibraryDesktop
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fatal error: {ex.Message}\n\n{ex.StackTrace}", 
+                MessageBox.Show($"Fatal error: {ex.Message}\n\n{ex.StackTrace}",
                     "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         static IHostBuilder CreateHostBuilder(string dbPath)
         {
-            return Host.CreateDefaultBuilder()                .ConfigureServices((context, services) =>
+            return Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
+            {
+                // Add Entity Framework and all library services
+                services.AddLibraryDataServices($"Data Source={dbPath}");                    // Add forms
+                services.AddTransient<Main>();
+                services.AddTransient<LoginForm>();
+                services.AddTransient<RegistrationForm>();
+                services.AddTransient<Exchange>();
+                services.AddTransient<Dashboard>();
+                services.AddTransient<MyBooks>();
+                services.AddTransient<History>();
+                services.AddTransient<BookDetail>();
+                // Configure PaymentWebServer
+                services.AddSingleton<PaymentWebServer>(provider =>
                 {
-                    // Add Entity Framework and all library services
-                    services.AddLibraryDataServices($"Data Source={dbPath}");                    // Add forms
-                    services.AddTransient<Main>();
-                    services.AddTransient<LoginForm>();
-                    services.AddTransient<RegistrationForm>();
-                    services.AddTransient<Exchange>();
-                    services.AddTransient<Dashboard>();
-                    services.AddTransient<MyBooks>();
-                    services.AddTransient<History>();
-                    services.AddTransient<BookDetail>();
-                      // Configure PaymentWebServer
-                    services.AddSingleton<PaymentWebServer>(provider =>
-                    {
-                        var paymentService = provider.GetRequiredService<IPaymentService>();
-                        var authenticationService = provider.GetRequiredService<IAuthenticationService>();
-                        var webRootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "LibraryDesktop.Data", "WebRoot");
-                        return new PaymentWebServer(paymentService, webRootPath, authenticationService);
-                    });
+                    var paymentService = provider.GetRequiredService<IPaymentService>();
+                    var authenticationService = provider.GetRequiredService<IAuthenticationService>();
+                    var webRootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "LibraryDesktop.Data", "WebRoot");
+                    return new PaymentWebServer(paymentService, webRootPath, authenticationService);
                 });
-        }        private static async Task InitializeDatabase(IServiceProvider serviceProvider, string dbPath)
+            });
+        }
+        private static async Task InitializeDatabase(IServiceProvider serviceProvider, string dbPath)
         {
             try
             {
                 Debug.WriteLine("Initializing database...");
-                
+
                 using var scope = serviceProvider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
 
@@ -104,13 +106,13 @@ namespace LibraryDesktop
                 // Verify database has tables
                 var userCount = await context.Users.CountAsync();
                 Debug.WriteLine($"Database contains {userCount} users");
-                
+
                 Debug.WriteLine("Database initialization completed successfully");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Database initialization error: {ex.Message}");
-                MessageBox.Show($"Database initialization failed: {ex.Message}", 
+                MessageBox.Show($"Database initialization failed: {ex.Message}",
                     "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw;
             }

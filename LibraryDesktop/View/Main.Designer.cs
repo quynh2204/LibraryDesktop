@@ -66,6 +66,7 @@
             guna2ControlBox3 = new Guna.UI2.WinForms.Guna2ControlBox();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            home1 = new Home();
             guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -108,7 +109,7 @@
             guna2Panel1.Location = new Point(0, 0);
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            guna2Panel1.Size = new Size(148, 827);
+            guna2Panel1.Size = new Size(148, 854);
             guna2Panel1.TabIndex = 1;
             // 
             // label1
@@ -250,7 +251,7 @@
             guna2ControlBox1.CustomizableEdges = customizableEdges19;
             guna2ControlBox1.FillColor = Color.White;
             guna2ControlBox1.IconColor = Color.FromArgb(139, 152, 166);
-            guna2ControlBox1.Location = new Point(1276, 0);
+            guna2ControlBox1.Location = new Point(1327, 0);
             guna2ControlBox1.Name = "guna2ControlBox1";
             guna2ControlBox1.ShadowDecoration.CustomizableEdges = customizableEdges20;
             guna2ControlBox1.Size = new Size(41, 36);
@@ -264,7 +265,7 @@
             guna2ControlBox2.FillColor = Color.White;
             guna2ControlBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             guna2ControlBox2.IconColor = Color.FromArgb(139, 152, 166);
-            guna2ControlBox2.Location = new Point(1229, 0);
+            guna2ControlBox2.Location = new Point(1280, 0);
             guna2ControlBox2.Name = "guna2ControlBox2";
             guna2ControlBox2.ShadowDecoration.CustomizableEdges = customizableEdges18;
             guna2ControlBox2.Size = new Size(41, 36);
@@ -277,7 +278,7 @@
             guna2ControlBox3.CustomizableEdges = customizableEdges15;
             guna2ControlBox3.FillColor = Color.White;
             guna2ControlBox3.IconColor = Color.FromArgb(139, 152, 166);
-            guna2ControlBox3.Location = new Point(1182, 0);
+            guna2ControlBox3.Location = new Point(1233, 0);
             guna2ControlBox3.Name = "guna2ControlBox3";
             guna2ControlBox3.ShadowDecoration.CustomizableEdges = customizableEdges16;
             guna2ControlBox3.Size = new Size(41, 36);
@@ -291,18 +292,27 @@
             guna2CustomGradientPanel1.FillColor2 = Color.FromArgb(243, 236, 227);
             guna2CustomGradientPanel1.FillColor3 = Color.FromArgb(209, 194, 180);
             guna2CustomGradientPanel1.FillColor4 = Color.FromArgb(209, 194, 180);
-            guna2CustomGradientPanel1.Location = new Point(0, 0);
+            guna2CustomGradientPanel1.Location = new Point(147, 0);
             guna2CustomGradientPanel1.Name = "guna2CustomGradientPanel1";
             guna2CustomGradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            guna2CustomGradientPanel1.Size = new Size(1317, 102);
+            guna2CustomGradientPanel1.Size = new Size(1221, 102);
             guna2CustomGradientPanel1.TabIndex = 5;
+            // 
+            // home1
+            // 
+            home1.Location = new Point(148, 108);
+            home1.Name = "home1";
+            home1.Size = new Size(1220, 720);
+            home1.TabIndex = 6;
+            home1.Load += home1_Load;
             // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(241, 236, 228);
-            ClientSize = new Size(1317, 827);
+            ClientSize = new Size(1368, 854);
+            Controls.Add(home1);
             Controls.Add(guna2ControlBox3);
             Controls.Add(guna2ControlBox2);
             Controls.Add(guna2ControlBox1);
@@ -334,5 +344,6 @@ private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Guna.UI2.WinForms.Guna2Button btnlogout;
         private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;
         private Label label1;
+        private Home home1;
     }
 }

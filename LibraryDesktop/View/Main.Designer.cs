@@ -68,6 +68,7 @@
             guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
             home1 = new Home();
             dashboard1 = new Dashboard();
+            
             guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -316,12 +317,20 @@
             dashboard1.Size = new Size(1220, 755);
             dashboard1.TabIndex = 0;
             // 
+            // exchange1
+            // 
+            exchange1.Location = new Point(148, 99);
+            exchange1.Name = "exchange1";
+            exchange1.Size = new Size(1220, 755);
+            exchange1.TabIndex = 0;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(241, 236, 228);
             ClientSize = new Size(1368, 854);
+            Controls.Add(exchange1);
             Controls.Add(dashboard1);
             Controls.Add(home1);
             Controls.Add(guna2ControlBox3);
@@ -357,5 +366,6 @@ private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Label label1;
         private Home home1;
         private Dashboard dashboard1;
+        private Exchange exchange1;
     }
 }

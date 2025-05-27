@@ -22,12 +22,14 @@ namespace LibraryDesktop.View
         private readonly IAuthenticationService _authenticationService;
         private readonly IUserService _userService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPaymentService _paymentService;
         private readonly PaymentWebServer _paymentWebServer;
         private User? _currentUser;
         private decimal _currentBalance;
         public Main(IBookService bookService,
                    IAuthenticationService authenticationService,
                    IUserService userService,
+                   IPaymentService paymentService,
                    IServiceProvider serviceProvider,
                    PaymentWebServer paymentWebServer)
         {
@@ -37,6 +39,12 @@ namespace LibraryDesktop.View
 
             _paymentWebServer = paymentWebServer;
             InitializeComponent();
+
+            _paymentService = paymentService;
+
+            // Pass the paymentService to the Exchange instance
+            exchange1 = new Exchange(_paymentService);
+
             _homeControl = _serviceProvider.GetRequiredService<Home>();
             _homeControl.Dock = DockStyle.Fill;
             this.Controls.Add(_homeControl);

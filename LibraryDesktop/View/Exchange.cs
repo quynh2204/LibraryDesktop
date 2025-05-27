@@ -10,263 +10,333 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
+using Timer = System.Windows.Forms.Timer;
 
 namespace LibraryDesktop.View
 {
     public partial class Exchange : UserControl
     {
+        #region Private Fields
         private readonly IPaymentService _paymentService;
         private string? _currentPaymentId;
         private string? _paymentUrl;
         private decimal _totalAmount = 0;
-        private Dictionary<Panel, decimal> _coinPanelValues = new Dictionary<Panel, decimal>();
-        private Dictionary<Panel, bool> _coinPanelSelected = new Dictionary<Panel, bool>();
 
-        // UI Controls - Add these to your designer or create them programmatically
-        private TextBox totalTextBox;
+        // Dictionary to store coin panel values - sử dụng Guna2Panel
+        private readonly Dictionary<Guna.UI2.WinForms.Guna2Panel, decimal> _coinPanelValues =
+            new Dictionary<Guna.UI2.WinForms.Guna2Panel, decimal>();
+
+        // Track how many times each panel has been clicked
+        private readonly Dictionary<Guna.UI2.WinForms.Guna2Panel, int> _coinPanelClickCount =
+            new Dictionary<Guna.UI2.WinForms.Guna2Panel, int>();
+
+        // UI Controls for payment display
         private PictureBox picQRCode;
-        private Label lblInstructions;
-        private Button btnCheckPayment;
-        private LinkLabel lnkOpenBrowser;
-        private Label lblExchangeRate;
 
-        public Exchange()
+        private LinkLabel lnkOpenBrowser;
+        #endregion
+
+        #region Constructor
+        public Exchange(IPaymentService paymentService) : base()
         {
+            _paymentService = paymentService;
             InitializeComponent();
             InitializeCoinPanels();
             SetupExchangeUI();
         }
+        #endregion
 
-        public Exchange(IPaymentService paymentService) : this()
-        {
-            _paymentService = paymentService;
-        }
-
+        #region Initialization Methods
         private void InitializeCoinPanels()
         {
-            // Initialize coin panel values (assuming these panels exist in your designer)
-            _coinPanelValues[coinPanel10] = 10000m;   // 10k VND
-            _coinPanelValues[coinPanel20] = 20000m;   // 20k VND
-            _coinPanelValues[coinPanel50] = 50000m;   // 50k VND
-            _coinPanelValues[coinPanel100] = 100000m; // 100k VND
-            _coinPanelValues[coinPanel200] = 200000m; // 200k VND
-            _coinPanelValues[coinPanel500] = 500000m; // 500k VND
-
-            // Initialize selection state
-            foreach (var panel in _coinPanelValues.Keys)
+            try
             {
-                _coinPanelSelected[panel] = false;
-                SetupCoinPanelStyle(panel, false);
+                // Initialize coin panel values với các Guna2Panel từ Designer
+                _coinPanelValues[coinPanel10] = 10000m;   // 10k VND
+                _coinPanelValues[coinPanel20] = 20000m;   // 20k VND
+                _coinPanelValues[coinPanel50] = 50000m;   // 50k VND
+                _coinPanelValues[coinPanel100] = 100000m; // 100k VND
+                _coinPanelValues[coinPanel200] = 200000m; // 200k VND
+                _coinPanelValues[coinPanel500] = 500000m; // 500k VND
+
+                // Initialize click count và setup events
+                foreach (var kvp in _coinPanelValues)
+                {
+                    var panel = kvp.Key;
+                    _coinPanelClickCount[panel] = 0;
+                    SetupCoinPanelStyle(panel);
+
+                    // Add click event handler - Guna2Panel có thể nhận click events
+                    panel.Click += (sender, e) => AddCoinValue((Guna.UI2.WinForms.Guna2Panel)sender);
+
+                    // Make panels look clickable
+                    panel.Cursor = Cursors.Hand;
+
+                    // Add hover effects for better UX
+                    panel.MouseEnter += Panel_MouseEnter;
+                    panel.MouseLeave += Panel_MouseLeave;
+                }
+
+                // Initialize total display
+                UpdateTotalDisplay();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing coin panels: {ex.Message}", "Initialization Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void SetupExchangeUI()
         {
-            // If these controls don't exist in designer, create them programmatically
-            if (totalTextBox == null)
+            try
             {
-                totalTextBox = new TextBox
-                {
-                    Location = new Point(20, 300),
-                    Size = new Size(200, 30),
-                    Font = new Font("Arial", 12, FontStyle.Bold),
-                    ReadOnly = true,
-                    BackColor = Color.LightYellow,
-                    Text = "0 VND",
-                    TextAlign = HorizontalAlignment.Center
-                };
-                this.Controls.Add(totalTextBox);
-            }
+                // Create additional UI controls for payment process
+                CreatePaymentControls();
 
-            if (lblExchangeRate == null)
+                // Set initial state
+                UpdateTotalDisplay();
+            }
+            catch (Exception ex)
             {
-                lblExchangeRate = new Label
-                {
-                    Text = "Exchange Rate: 1,000 VND = 1 coin",
-                    Location = new Point(20, 20),
-                    Size = new Size(300, 25),
-                    Font = new Font("Arial", 9, FontStyle.Bold),
-                    ForeColor = Color.Blue
-                };
-                this.Controls.Add(lblExchangeRate);
+                MessageBox.Show($"Error setting up UI: {ex.Message}", "UI Setup Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
 
-            if (lblInstructions == null)
-            {
-                lblInstructions = new Label
-                {
-                    Text = "Click coin panels to select amounts for exchange. You can select multiple panels.",
-                    Location = new Point(20, 50),
-                    Size = new Size(500, 40),
-                    Font = new Font("Arial", 9)
-                };
-                this.Controls.Add(lblInstructions);
-            }
-
+        private void CreatePaymentControls()
+        {
+            // Create QR Code display
             if (picQRCode == null)
             {
                 picQRCode = new PictureBox
                 {
-                    Location = new Point(400, 300),
-                    Size = new Size(150, 150),
+                    Size = new Size(200, 200),
+                    Location = new Point(451, 475),
+                    SizeMode = PictureBoxSizeMode.StretchImage,
                     BorderStyle = BorderStyle.FixedSingle,
-                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Visible = false,
                     BackColor = Color.White
                 };
                 this.Controls.Add(picQRCode);
             }
 
-            if (btnCheckPayment == null)
-            {
-                btnCheckPayment = new Button
-                {
-                    Text = "Check Payment",
-                    Location = new Point(400, 460),
-                    Size = new Size(150, 30),
-                    BackColor = Color.Blue,
-                    ForeColor = Color.White,
-                    Enabled = false
-                };
-                btnCheckPayment.Click += BtnCheckPayment_Click;
-                this.Controls.Add(btnCheckPayment);
-            }
-
+            // Create browser link
             if (lnkOpenBrowser == null)
             {
                 lnkOpenBrowser = new LinkLabel
                 {
-                    Text = "Open payment page",
-                    Location = new Point(400, 500),
-                    Size = new Size(150, 20),
-                    Visible = false
+                    Text = "Mở trang thanh toán",
+                    Location = new Point(434, 674),
+                    Size = new Size(165, 20),
+                    Visible = false,
+                    Font = new Font("Segoe UI", 9F)
                 };
                 lnkOpenBrowser.LinkClicked += LnkOpenBrowser_LinkClicked;
                 this.Controls.Add(lnkOpenBrowser);
             }
 
-            // Setup topup_btn if it exists
-            if (topup_btn != null)
-            {
-                topup_btn.Text = "Exchange";
-                topup_btn.BackColor = Color.Gray;
-                topup_btn.ForeColor = Color.White;
-                topup_btn.Enabled = false;
-            }
+  
+        }
+        #endregion
 
-            CalculateTotal();
+        #region UI Event Handlers
+        private void Panel_MouseEnter(object sender, EventArgs e)
+        {
+            var panel = sender as Guna.UI2.WinForms.Guna2Panel;
+            if (panel != null && panel.Enabled)
+            {
+                // Slight color change on hover
+                panel.FillColor = Color.FromArgb(240, 248, 255); // AliceBlue
+            }
         }
 
-        private void SetupCoinPanelStyle(Panel panel, bool isSelected)
+        private void Panel_MouseLeave(object sender, EventArgs e)
         {
-            if (isSelected)
+            var panel = sender as Guna.UI2.WinForms.Guna2Panel;
+            if (panel != null && panel.Enabled)
             {
-                panel.BackColor = Color.LightGreen;
-                panel.BorderStyle = BorderStyle.Fixed3D;
+                panel.FillColor = Color.White; // Back to white
+            }
+        }
 
-                // Add selection indicator if not exists
-                var indicator = panel.Controls.OfType<Label>().FirstOrDefault(l => l.Name == "SelectionIndicator");
-                if (indicator == null)
+        private void SetupCoinPanelStyle(Guna.UI2.WinForms.Guna2Panel panel)
+        {
+            // Set default Guna2Panel style
+            panel.FillColor = Color.White;
+            panel.BorderColor = Color.FromArgb(255, 224, 192);
+            panel.BorderThickness = 10;
+            panel.BorderRadius = 35;
+        }
+        #endregion
+
+        #region Core Functionality
+        private void AddCoinValue(Guna.UI2.WinForms.Guna2Panel panel)
+        {
+            try
+            {
+                if (_coinPanelValues.ContainsKey(panel) && panel.Enabled)
                 {
-                    indicator = new Label
+                    // Add the panel's value to the total
+                    decimal addedValue = _coinPanelValues[panel];
+                    _totalAmount += addedValue;
+
+                    // Increment click count
+                    _coinPanelClickCount[panel]++;
+
+                    // Update displays
+                    UpdateTotalDisplay();
+                    UpdatePanelClickIndicator(panel);
+
+                    // Show visual feedback
+                    ShowClickFeedback(panel, addedValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding coin value: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdatePanelClickIndicator(Guna.UI2.WinForms.Guna2Panel panel)
+        {
+            try
+            {
+                // Remove existing click count label
+                var existingLabel = panel.Controls.OfType<Label>()
+                    .FirstOrDefault(l => l.Name == "ClickCountLabel");
+
+                if (existingLabel != null)
+                    panel.Controls.Remove(existingLabel);
+
+                // Add new click count label if clicked
+                if (_coinPanelClickCount[panel] > 0)
+                {
+                    var clickLabel = new Label
                     {
-                        Name = "SelectionIndicator",
-                        Text = "✓",
-                        Font = new Font("Arial", 16, FontStyle.Bold),
-                        ForeColor = Color.Green,
-                        BackColor = Color.Transparent,
-                        Location = new Point(5, 5),
-                        Size = new Size(20, 20)
+                        Name = "ClickCountLabel",
+                        Text = $"x{_coinPanelClickCount[panel]}",
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                        ForeColor = Color.White,
+                        BackColor = Color.Red,
+                        Location = new Point(panel.Width - 40, 5),
+                        Size = new Size(35, 25),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        BorderStyle = BorderStyle.FixedSingle
                     };
-                    panel.Controls.Add(indicator);
+                    panel.Controls.Add(clickLabel);
+                    clickLabel.BringToFront();
                 }
-                indicator.Visible = true;
             }
-            else
+            catch (Exception ex)
             {
-                panel.BackColor = SystemColors.Control;
-                panel.BorderStyle = BorderStyle.FixedSingle;
-
-                // Hide selection indicator
-                var indicator = panel.Controls.OfType<Label>().FirstOrDefault(l => l.Name == "SelectionIndicator");
-                if (indicator != null)
-                {
-                    indicator.Visible = false;
-                }
+                // Log error but don't show message to user for UI updates
+                System.Diagnostics.Debug.WriteLine($"Error updating panel indicator: {ex.Message}");
             }
         }
 
-        private void ToggleCoinPanel(Panel panel)
+        private void ShowClickFeedback(Guna.UI2.WinForms.Guna2Panel panel, decimal addedValue)
         {
-            if (_coinPanelValues.ContainsKey(panel))
+            try
             {
-                _coinPanelSelected[panel] = !_coinPanelSelected[panel];
-                SetupCoinPanelStyle(panel, _coinPanelSelected[panel]);
-                CalculateTotal();
+                // Brief color change to show the click was registered
+                var originalColor = panel.FillColor;
+                panel.FillColor = Color.LightGreen;
+
+
+                var timer = new Timer { Interval = 800 };
+                timer.Tick += (s, e) =>
+                {
+                    panel.FillColor = originalColor;
+                    timer.Stop();
+                    timer.Dispose();
+                };
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error showing click feedback: {ex.Message}");
             }
         }
 
-        private void CalculateTotal()
+        private void UpdateTotalDisplay()
         {
-            _totalAmount = _coinPanelSelected
-                .Where(kvp => kvp.Value)
-                .Sum(kvp => _coinPanelValues[kvp.Key]);
-
-            if (totalTextBox != null)
+            try
             {
-                if (_totalAmount > 0)
+                if (total_txt != null)
                 {
-                    decimal coinEquivalent = _totalAmount / 1000;
-                    totalTextBox.Text = $"{_totalAmount:N0} VND ({coinEquivalent:N0} coins)";
-
-                    if (topup_btn != null)
+                    total_txt.Text = $"{_totalAmount:N0} VND";
+                }
+                // Update button state
+                if (topup_btn != null)
+                {
+                    if (_totalAmount > 0)
                     {
                         topup_btn.Enabled = true;
-                        topup_btn.BackColor = Color.Orange;
-                        topup_btn.Text = "Exchange";
+                        topup_btn.FillColor = Color.FromArgb(202, 95, 101);
                     }
-                }
-                else
-                {
-                    totalTextBox.Text = "0 VND";
-
-                    if (topup_btn != null)
+                    else
                     {
                         topup_btn.Enabled = false;
-                        topup_btn.BackColor = Color.Gray;
-                        topup_btn.Text = "Select Coins";
+                        topup_btn.FillColor = Color.Gray;
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating total display: {ex.Message}");
+            }
         }
 
+        private void ClearTotal()
+        {
+            try
+            {
+                _totalAmount = 0;
+
+                foreach (var panel in _coinPanelValues.Keys)
+                {
+                    _coinPanelClickCount[panel] = 0;
+                    UpdatePanelClickIndicator(panel);
+                    panel.FillColor = Color.White;
+                }
+
+                UpdateTotalDisplay();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error clearing total: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            ClearTotal();
+            ResetForm();
+        }
+        #endregion
+
+        #region Payment Processing
         private async void topup_btn_Click(object sender, EventArgs e)
         {
             try
             {
-                if (_totalAmount <= 0)
-                {
-                    MessageBox.Show("Please select at least one coin panel.", "No Amount Selected",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
 
                 if (_paymentService == null)
                 {
-                    MessageBox.Show("Payment service not available.", "Service Error",
+                    MessageBox.Show("Dịch vụ thanh toán không khả dụng.", "Lỗi dịch vụ",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // Disable button and show processing
                 topup_btn.Enabled = false;
-                topup_btn.Text = "Processing...";
-
-                // Create payment description
-                var selectedPanels = _coinPanelSelected.Where(kvp => kvp.Value).Select(kvp => kvp.Key);
-                var selectedAmounts = selectedPanels.Select(panel => _coinPanelValues[panel]);
-                string description = $"Coin Exchange: {string.Join(" + ", selectedAmounts.Select(a => $"{a:N0}"))} VND";
 
                 // Create payment in database
-                var payment = await _paymentService.CreatePaymentAsync(1, _totalAmount, description);
+                var payment = await _paymentService.CreatePaymentAsync(1, _totalAmount);
 
                 // Generate QR code for payment
                 var qrCodeBase64 = await _paymentService.GenerateQRCodeAsync(payment);
@@ -277,14 +347,14 @@ namespace LibraryDesktop.View
                 var qrCodeBytes = Convert.FromBase64String(qrCodeBase64);
                 using (var ms = new MemoryStream(qrCodeBytes))
                 {
+                    if (picQRCode.Image != null)
+                        picQRCode.Image.Dispose();
                     picQRCode.Image = Image.FromStream(ms);
                 }
 
-                if (lblInstructions != null)
-                {
-                    lblInstructions.Text = "Scan this QR code or click the link below to complete your coin exchange.";
-                }
-
+                // Update UI for payment mode
+                picQRCode.Visible = true;
+               
                 btnCheckPayment.Enabled = true;
                 lnkOpenBrowser.Visible = true;
 
@@ -296,15 +366,14 @@ namespace LibraryDesktop.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error processing exchange: {ex.Message}", "Error",
+                MessageBox.Show($"Lỗi xử lý đổi tiền: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-                if (topup_btn != null)
+                if (topup_btn != null && _totalAmount > 0)
                 {
-                    topup_btn.Enabled = _totalAmount > 0;
-                    topup_btn.Text = "Exchange";
+                    topup_btn.Enabled = true;
                 }
             }
         }
@@ -315,48 +384,48 @@ namespace LibraryDesktop.View
             {
                 if (string.IsNullOrEmpty(_currentPaymentId))
                 {
-                    MessageBox.Show("No payment in progress.", "Error",
+                    MessageBox.Show("Không có giao dịch nào đang xử lý.", "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 btnCheckPayment.Enabled = false;
-                btnCheckPayment.Text = "Checking...";
 
                 var payment = await _paymentService.GetPaymentByTokenAsync(_currentPaymentId);
 
                 if (payment?.PaymentStatus == LibraryDesktop.Models.PaymentStatus.Completed)
                 {
-                    var selectedCount = _coinPanelSelected.Count(kvp => kvp.Value);
                     decimal totalCoins = _totalAmount / 1000;
 
-                    string successMsg = $"Exchange successful!\n{totalCoins:N0} coins have been added to your account.\n\nTransaction completed: {_totalAmount:N0} VND";
+                    string successMsg = $"Đổi tiền thành công!\n{totalCoins:N0} xu đã được thêm vào tài khoản.\n\nGiao dịch hoàn tất: {_totalAmount:N0} VND";
 
-                    MessageBox.Show(successMsg, "Exchange Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(successMsg, "Đổi tiền hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     // Reset form after successful exchange
                     ResetForm();
                 }
                 else
                 {
-                    MessageBox.Show("Payment is still pending. Please complete the payment and try again.",
-                        "Payment Pending", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Thanh toán vẫn đang chờ xử lý. Vui lòng hoàn tất thanh toán và thử lại.",
+                        "Thanh toán chờ xử lý", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error checking payment: {ex.Message}", "Error",
+                MessageBox.Show($"Lỗi kiểm tra thanh toán: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 btnCheckPayment.Enabled = true;
-                btnCheckPayment.Text = "Check Payment";
             }
-        }        private void LnkOpenBrowser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {            if (!string.IsNullOrEmpty(_currentPaymentId))
+        }
+
+        private void LnkOpenBrowser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_currentPaymentId))
             {
-                string url = $"http://192.168.1.4:5500/LibraryDesktop.Data/WebRoot/index.html?token={_currentPaymentId}&amount={totalTextBox?.Text}";
+                string url = $"http://192.168.1.4:5500/LibraryDesktop.Data/WebRoot/index.html?token={_currentPaymentId}&amount={_totalAmount}";
                 try
                 {
                     Process.Start(new ProcessStartInfo
@@ -367,7 +436,7 @@ namespace LibraryDesktop.View
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error opening browser: {ex.Message}", "Error",
+                    MessageBox.Show($"Lỗi mở trình duyệt: {ex.Message}", "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -375,73 +444,65 @@ namespace LibraryDesktop.View
 
         private void ResetForm()
         {
-            foreach (var panel in _coinPanelValues.Keys)
+            try
             {
-                _coinPanelSelected[panel] = false;
-                SetupCoinPanelStyle(panel, false);
-                panel.Enabled = true;
+                foreach (var panel in _coinPanelValues.Keys)
+                {
+                    _coinPanelClickCount[panel] = 0;
+                    UpdatePanelClickIndicator(panel);
+                    panel.Enabled = true;
+                    panel.FillColor = Color.White;
+                }
+
+                _totalAmount = 0;
+                _currentPaymentId = null;
+                _paymentUrl = null;
+
+                UpdateTotalDisplay();
+
+                if (picQRCode != null)
+                {
+                    picQRCode.Image?.Dispose();
+                    picQRCode.Image = null;
+                    picQRCode.Visible = false;
+                }
+                if (btnCheckPayment != null) btnCheckPayment.Enabled = false;
+                if (lnkOpenBrowser != null) lnkOpenBrowser.Visible = false;
             }
-
-            _totalAmount = 0;
-            _currentPaymentId = null;
-            _paymentUrl = null;
-
-            if (totalTextBox != null) totalTextBox.Text = "0 VND";
-            if (picQRCode != null) picQRCode.Image = null;
-            if (btnCheckPayment != null) btnCheckPayment.Enabled = false;
-            if (lnkOpenBrowser != null) lnkOpenBrowser.Visible = false;
-            if (lblInstructions != null)
+            catch (Exception ex)
             {
-                lblInstructions.Text = "Click coin panels to select amounts for exchange. You can select multiple panels.";
+                MessageBox.Show($"Lỗi reset form: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            CalculateTotal();
         }
+        #endregion
 
+        #region Designer Event Handlers (Compatibility)
         private void Exchange_Load(object sender, EventArgs e)
         {
-            // Initialize the exchange panel
-            if (coinPanel10 != null)
+            try
             {
-                coinPanel10.Visible = true;
-                coinPanel10.BringToFront();
+                // Initialize the exchange panel
+                if (coinPanel10 != null)
+                {
+                    coinPanel10.Visible = true;
+                    coinPanel10.BringToFront();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi load form: {ex.Message}", "Lỗi tải",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Coin panel click events
-        private void coinPanel10_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel10);
-        }
-
-        private void coinPanel20_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel20);
-        }
-
-        private void coinPanel50_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel50);
-        }
-
-        private void coinPanel100_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel100);
-        }
-
-        private void coinPanel200_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel200);
-        }
-
-        private void coinPanel500_Click(object sender, EventArgs e)
-        {
-            ToggleCoinPanel(coinPanel500);
-        }
-
-        internal DialogResult ShowDialog()
-        {
-            throw new NotImplementedException();
-        }
+        // Keep these for Designer compatibility
+        private void coinPanel10_Click(object sender, EventArgs e) => AddCoinValue(coinPanel10);
+        private void coinPanel20_Click(object sender, EventArgs e) => AddCoinValue(coinPanel20);
+        private void coinPanel50_Click(object sender, EventArgs e) => AddCoinValue(coinPanel50);
+        private void coinPanel100_Click(object sender, EventArgs e) => AddCoinValue(coinPanel100);
+        private void coinPanel200_Click(object sender, EventArgs e) => AddCoinValue(coinPanel200);
+        private void coinPanel500_Click(object sender, EventArgs e) => AddCoinValue(coinPanel500);
+        #endregion
     }
 }

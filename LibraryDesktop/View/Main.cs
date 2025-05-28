@@ -26,6 +26,7 @@ namespace LibraryDesktop.View
         private readonly PaymentWebServer _paymentWebServer;
         private User? _currentUser;
         private decimal _currentBalance;
+
         public Main(IBookService bookService,
                    IAuthenticationService authenticationService,
                    IUserService userService,
@@ -36,21 +37,52 @@ namespace LibraryDesktop.View
             _bookService = bookService;
             _authenticationService = authenticationService;
             _userService = userService;
-
+            _serviceProvider = serviceProvider;
             _paymentWebServer = paymentWebServer;
-            InitializeComponent();
-
             _paymentService = paymentService;
+
+            InitializeComponent();
 
             // Pass the paymentService to the Exchange instance
             exchange1 = new Exchange(_paymentService);
 
             _homeControl = _serviceProvider.GetRequiredService<Home>();
             _homeControl.Dock = DockStyle.Fill;
+
+            // Subscribe to book selection events from Home control
+            _homeControl.BookSelected += OnBookSelected;
+
             this.Controls.Add(_homeControl);
             _homeControl.BringToFront(); // Hiển thị Home ngay khi mở form
-
         }
+
+        // Event handler for when a book is selected from Home control
+        private void OnBookSelected(object sender, BookSelectedEventArgs e)
+        {
+            OpenBookDetail(e.BookId);
+        }
+
+        // Method to open BookDetail form
+        public void OpenBookDetail(int bookId)
+        {
+            try
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var bookDetailForm = scope.ServiceProvider.GetRequiredService<BookDetail>();
+                    // Pass the bookId and current user to the form
+                    bookDetailForm.SetBookId(bookId, _currentUser);
+                    bookDetailForm.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở chi tiết sách: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine($"Error opening BookDetail: {ex}");
+            }
+        }
+
         public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
@@ -79,7 +111,6 @@ namespace LibraryDesktop.View
             }
         }
 
-
         public void ShowHomeView()
         {
             // Xóa các control khác như Exchange (nếu có)
@@ -93,7 +124,6 @@ namespace LibraryDesktop.View
             _homeControl.BringToFront();
             _homeControl.ShowBookList();
         }
-
 
         protected override async void OnFormClosing(FormClosingEventArgs e)
         {
@@ -111,9 +141,6 @@ namespace LibraryDesktop.View
             base.OnFormClosing(e);
         }
 
-
-
-
         // Add navigation event handlers for tile buttons
         private void btnHome_Click(object sender, EventArgs e)
         {
@@ -123,13 +150,13 @@ namespace LibraryDesktop.View
 
         private void btnExchange_Click(object sender, EventArgs e)
         {
-            // Returned Books functionality
+            // Exchange functionality
             ShowHomeView();
         }
 
         private void btnHistory_Click(object sender, EventArgs e)
         {
-            // Borrowing functionality  
+            // History functionality  
             ShowHomeView();
         }
 
@@ -143,6 +170,10 @@ namespace LibraryDesktop.View
 
         }
 
+        // Property to get current user for child forms
+        public User? CurrentUser => _currentUser;
+        public decimal CurrentBalance => _currentBalance;
+
         //private void guna2GradientTileButton4_Click(object sender, EventArgs e)
         //{
         //    // Fine Ticket / Exchange functionality
@@ -154,5 +185,15 @@ namespace LibraryDesktop.View
         //    // Account / Exchange functionality
         //    ShowExchangeForm();
         //}
+    }
+
+    // Event args for book selection
+    public class BookSelectedEventArgs : EventArgs
+    {
+        public int BookId { get; set; }
+        public BookSelectedEventArgs(int bookId)
+        {
+            BookId = bookId;
+        }
     }
 }

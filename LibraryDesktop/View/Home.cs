@@ -14,7 +14,21 @@ namespace LibraryDesktop.View
     public partial class Home : UserControl
     {
         private readonly IServiceProvider _serviceProvider;
+        public event EventHandler<BookSelectedEventArgs>? BookSelected;
 
+        // Method được gọi khi user click vào một book
+        private void OnBookClicked(int bookId)
+        {
+            BookSelected?.Invoke(this, new BookSelectedEventArgs(bookId));
+        }
+
+        // Hoặc nếu bạn muốn mở BookDetail trực tiếp từ Home
+        private void OpenBookDetail(int bookId)
+        {
+            // Tìm Main form parent
+            var mainForm = this.FindForm() as Main;
+            mainForm?.OpenBookDetail(bookId);
+        }
         public Home()
         {
             

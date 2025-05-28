@@ -25,10 +25,8 @@ namespace LibraryDesktop.Models
         
         [Required]
         public int UserId { get; set; }
-        
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Amount { get; set; }
+          [Required]
+        public int Amount { get; set; }
         
         [Required]
         public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.QRCode;
@@ -41,7 +39,7 @@ namespace LibraryDesktop.Models
         /// <summary>
         /// Unique token for QR code verification
         /// </summary>
-        [MaxLength(100)]
+        [MaxLength(20)]
         public string? PaymentToken { get; set; }
         
         public DateTime CreatedDate { get; set; } = DateTime.Now;

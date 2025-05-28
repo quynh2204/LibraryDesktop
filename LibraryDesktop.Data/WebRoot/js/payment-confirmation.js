@@ -1,19 +1,41 @@
 // Payment confirmation JavaScript module
-class PaymentConfirmation {
-    constructor() {
+class PaymentConfirmation {    constructor() {
         this.paymentToken = null;
         this.paymentAmount = null;
         this.userId = null;
-        this.apiBaseUrl = 'http://192.168.1.4:5500'; // LibraryDesktop API server (matches NetworkConfiguration.GetApiServerUrl())
+        // Use current hostname/IP instead of hardcoded IP for API server
+        // Handle cases where hostname might be empty (file:// protocol)
+        const hostname = window.location.hostname || 'localhost';
+        this.apiBaseUrl = `http://${hostname}:5000`; // LibraryDesktop API server
+        console.log('API Base URL:', this.apiBaseUrl);
         this.init();
     }
-
     init() {
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        this.paymentToken = urlParams.get('token');
-        this.paymentAmount = urlParams.get('amount');
-        this.userId = urlParams.get('userId');
+        
+        // Check for embedded data parameter first
+        const dataParam = urlParams.get('data');
+        if (dataParam) {
+            try {
+                // Decode embedded payment data
+                const paymentDataJson = atob(dataParam);
+                const paymentData = JSON.parse(paymentDataJson);
+                
+                this.paymentToken = paymentData.token;
+                this.paymentAmount = paymentData.amount;
+                this.userId = paymentData.userId;
+            } catch (error) {
+                console.error('Failed to decode payment data:', error);
+                this.showError('Invalid payment link');
+                return;
+            }
+        } else {
+            // Fallback to individual parameters
+            this.paymentToken = urlParams.get('token');
+            this.paymentAmount = urlParams.get('amount');
+            this.userId = urlParams.get('userId');
+        }
 
         // Initialize event listeners
         this.bindEvents();
@@ -54,7 +76,20 @@ class PaymentConfirmation {
         try {
             this.showLoading('Loading payment details...');
 
-            const response = await fetch(`${this.apiBaseUrl}/api/payment?token=${this.paymentToken}&amount=${this.paymentAmount}`);
+            // Check if have embedded data
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
+            
+            let apiUrl;
+            if (dataParam) {
+                // Use embedded data parameter
+                apiUrl = `${this.apiBaseUrl}/api/payment?data=${dataParam}`;
+            } else {
+                // Fallback to token parameter
+                apiUrl = `${this.apiBaseUrl}/api/payment?token=${this.paymentToken}`;
+            }
+
+            const response = await fetch(apiUrl);
             
             if (!response.ok) {
                 throw new Error('Payment not found or expired');
@@ -70,48 +105,68 @@ class PaymentConfirmation {
             this.hideLoading();
             this.showError('Failed to load payment details: ' + error.message);
         }
-    }
-
-    updatePaymentDisplay(payment) {
+    }updatePaymentDisplay(payment) {
         const amountEl = document.getElementById('amount');
         const descriptionEl = document.getElementById('description');
         const userInfoEl = document.getElementById('user-info');
 
         if (amountEl) {
-            amountEl.textContent = `$${payment.amount}`;
+            amountEl.textContent = `${payment.amount} VND`;
         }
         
         if (descriptionEl) {
-            descriptionEl.textContent = payment.description || 'Account recharge';
+            // Calculate coins (1000 VND = 1 coin)
+            const coins = Math.floor(payment.amount / 1000);
+            const enhancedDescription = payment.description || 'Account recharge';
+            descriptionEl.textContent = `${enhancedDescription} (+${coins} coins)`;
         }
         
         if (userInfoEl) {
             userInfoEl.textContent = `User: ${payment.user || 'Unknown'}`;
         }
-    }
-
-    async confirmPayment() {
+    }async confirmPayment() {
         const confirmBtn = document.getElementById('confirm-btn');
         const cancelBtn = document.getElementById('cancel-btn');
 
         try {
             // Disable buttons and show loading
             this.setButtonsEnabled(false);
-            this.showLoading('Processing payment...');            const response = await fetch(`${this.apiBaseUrl}/confirm-payment`, {
+            this.showLoading('Processing payment...');
+
+            // Check if have embedded data
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
+            
+            let requestBody;
+            if (dataParam) {
+                // Use embedded payment data
+                try {
+                    const paymentDataJson = atob(dataParam);
+                    const paymentData = JSON.parse(paymentDataJson);
+                    requestBody = JSON.stringify({ paymentData: paymentData });
+                } catch (error) {
+                    throw new Error('Invalid payment data');
+                }
+            } else {
+                // Fallback to token-based confirmation
+                requestBody = JSON.stringify({
+                    token: this.paymentToken,
+                    userId: this.userId
+                });
+            }
+
+            const response = await fetch(`${this.apiBaseUrl}/confirm-payment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    token: this.paymentToken,
-                    userId: this.userId
-                })
+                body: requestBody
             });
 
-            const result = await response.json();
-
-            if (result.success) {
-                this.showSuccess('Payment completed successfully!');
+            const result = await response.json();            if (result.success) {
+                // Calculate coins for success message
+                const coins = Math.floor(this.paymentAmount / 1000);
+                this.showSuccess(`Payment completed successfully! +${coins} coins added to your account`);
                 
                 // Auto-close after 3 seconds
                 setTimeout(() => {
@@ -148,28 +203,63 @@ class PaymentConfirmation {
         setTimeout(() => {
             window.location.href = 'about:blank';
         }, 100);
-    }
-
-    startStatusPolling() {
+    }    startStatusPolling() {
+        // Add polling timeout to prevent infinite loops
+        let pollCount = 0;
+        const maxPolls = 60; // Maximum 5 minutes of polling (60 * 5 seconds)
+        
         // Poll payment status every 5 seconds
         this.statusInterval = setInterval(async () => {
-            if (!this.paymentToken) {
+            pollCount++;
+            
+            // Stop polling after max attempts or if token is cleared
+            if (!this.paymentToken || pollCount >= maxPolls) {
                 clearInterval(this.statusInterval);
+                if (pollCount >= maxPolls) {
+                    console.log('Payment status polling timeout reached');
+                    this.showError('Payment confirmation timeout. Please check your payment status manually.');
+                }
                 return;
-            }            try {
-                const response = await fetch(`${this.apiBaseUrl}/api/payment?token=${this.paymentToken}`);
+            }
+
+            try {
+                // Check if have embedded data
+                const urlParams = new URLSearchParams(window.location.search);
+                const dataParam = urlParams.get('data');
+                
+                let apiUrl;
+                if (dataParam) {
+                    // Use embedded data parameter
+                    apiUrl = `${this.apiBaseUrl}/api/payment?data=${dataParam}`;
+                } else {
+                    // Fallback to token parameter
+                    apiUrl = `${this.apiBaseUrl}/api/payment?token=${this.paymentToken}`;
+                }
+
+                const response = await fetch(apiUrl);
                 if (response.ok) {
                     const payment = await response.json();
-                    if (payment.status === 'Completed') {
+                    console.log(`Payment status check ${pollCount}/${maxPolls}: ${payment.status}`);
+                      if (payment.status === 'Completed') {
                         clearInterval(this.statusInterval);
-                        this.showSuccess('Payment completed successfully!');
+                        // Calculate coins for success message
+                        const coins = Math.floor(this.paymentAmount / 1000);
+                        this.showSuccess(`Payment completed successfully! +${coins} coins added to your account`);
                         this.paymentToken = null;
                         setTimeout(() => this.closeWindow(), 2000);
                     }
+                } else {
+                    console.log(`Payment status check failed: ${response.status}`);
                 }
             } catch (error) {
-                // Silently fail - don't disturb user experience
-                console.log('Status poll failed:', error);
+                // Log errors but continue polling for a few more attempts
+                console.log(`Status poll failed (attempt ${pollCount}/${maxPolls}):`, error);
+                
+                // If we've had too many consecutive errors, stop polling
+                if (pollCount > 10 && error.message.includes('fetch')) {
+                    clearInterval(this.statusInterval);
+                    this.showError('Unable to connect to payment server. Please check your connection.');
+                }
             }
         }, 5000);
     }
@@ -257,7 +347,14 @@ function loadPaymentDetails() {
 
 function showSuccess() {
     if (window.paymentConfirmation) {
-        window.paymentConfirmation.showSuccess('Payment completed successfully!');
+        // Calculate coins if have payment amount
+        const amount = window.paymentConfirmation.paymentAmount;
+        if (amount) {
+            const coins = Math.floor(amount / 1000);
+            window.paymentConfirmation.showSuccess(`Payment completed successfully! +${coins} coins added to your account`);
+        } else {
+            window.paymentConfirmation.showSuccess('Payment completed successfully!');
+        }
     }
 }
 

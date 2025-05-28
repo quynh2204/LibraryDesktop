@@ -1,4 +1,5 @@
 ﻿using LibraryDesktop.Data.Services;
+using LibraryDesktop.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,45 +13,46 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace LibraryDesktop.View
-{
-    public partial class Exchange : UserControl
+{    public partial class Exchange : UserControl
     {
-        private readonly IPaymentService _paymentService;
-        private string? _currentPaymentId;
-        private string? _paymentUrl;
-        private decimal _totalAmount = 0;
-        private Dictionary<Panel, decimal> _coinPanelValues = new Dictionary<Panel, decimal>();
+        private readonly IPaymentService? _paymentService;
+        private readonly User? _currentUser;
+        private int _totalAmount = 0;
+        private Dictionary<Panel, int> _coinPanelValues = new Dictionary<Panel, int>();
         private Dictionary<Panel, bool> _coinPanelSelected = new Dictionary<Panel, bool>();
 
-        // UI Controls - Add these to your designer or create them programmatically
-        private TextBox totalTextBox;
-        private PictureBox picQRCode;
-        private Label lblInstructions;
-        private Button btnCheckPayment;
-        private LinkLabel lnkOpenBrowser;
-        private Label lblExchangeRate;
+        // UI Controls - Only keep essential controls for popup-based approach
+        private TextBox? totalTextBox;
+        private Label? lblInstructions;
+        private Label? lblExchangeRate;
 
         public Exchange()
         {
             InitializeComponent();
             InitializeCoinPanels();
             SetupExchangeUI();
-        }
-
-        public Exchange(IPaymentService paymentService) : this()
+        }        public Exchange(IPaymentService paymentService) : this()
         {
             _paymentService = paymentService;
-        }
-
-        private void InitializeCoinPanels()
+        }        public Exchange(IPaymentService paymentService, User currentUser) : this()
         {
-            // Initialize coin panel values (assuming these panels exist in your designer)
-            _coinPanelValues[coinPanel10] = 10000m;   // 10k VND
-            _coinPanelValues[coinPanel20] = 20000m;   // 20k VND
-            _coinPanelValues[coinPanel50] = 50000m;   // 50k VND
-            _coinPanelValues[coinPanel100] = 100000m; // 100k VND
-            _coinPanelValues[coinPanel200] = 200000m; // 200k VND
-            _coinPanelValues[coinPanel500] = 500000m; // 500k VND
+            _paymentService = paymentService;
+            _currentUser = currentUser;
+            
+            // Subscribe to payment completion events
+            if (_paymentService != null)
+            {
+                _paymentService.PaymentCompleted += OnPaymentCompleted;
+            }
+        }private void InitializeCoinPanels()
+        {
+            // Initialize coin panel values
+            _coinPanelValues[coinPanel10] = 10000;   // 10k VND
+            _coinPanelValues[coinPanel20] = 20000;   // 20k VND
+            _coinPanelValues[coinPanel50] = 50000;   // 50k VND
+            _coinPanelValues[coinPanel100] = 100000; // 100k VND
+            _coinPanelValues[coinPanel200] = 200000; // 200k VND
+            _coinPanelValues[coinPanel500] = 500000; // 500k VND
 
             // Initialize selection state
             foreach (var panel in _coinPanelValues.Keys)
@@ -58,9 +60,7 @@ namespace LibraryDesktop.View
                 _coinPanelSelected[panel] = false;
                 SetupCoinPanelStyle(panel, false);
             }
-        }
-
-        private void SetupExchangeUI()
+        }        private void SetupExchangeUI()
         {
             // If these controls don't exist in designer, create them programmatically
             if (totalTextBox == null)
@@ -102,48 +102,6 @@ namespace LibraryDesktop.View
                 };
                 this.Controls.Add(lblInstructions);
             }
-
-            if (picQRCode == null)
-            {
-                picQRCode = new PictureBox
-                {
-                    Location = new Point(400, 300),
-                    Size = new Size(150, 150),
-                    BorderStyle = BorderStyle.FixedSingle,
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    BackColor = Color.White
-                };
-                this.Controls.Add(picQRCode);
-            }
-
-            if (btnCheckPayment == null)
-            {
-                btnCheckPayment = new Button
-                {
-                    Text = "Check Payment",
-                    Location = new Point(400, 460),
-                    Size = new Size(150, 30),
-                    BackColor = Color.Blue,
-                    ForeColor = Color.White,
-                    Enabled = false
-                };
-                btnCheckPayment.Click += BtnCheckPayment_Click;
-                this.Controls.Add(btnCheckPayment);
-            }
-
-            if (lnkOpenBrowser == null)
-            {
-                lnkOpenBrowser = new LinkLabel
-                {
-                    Text = "Open payment page",
-                    Location = new Point(400, 500),
-                    Size = new Size(150, 20),
-                    Visible = false
-                };
-                lnkOpenBrowser.LinkClicked += LnkOpenBrowser_LinkClicked;
-                this.Controls.Add(lnkOpenBrowser);
-            }
-
             // Setup topup_btn if it exists
             if (topup_btn != null)
             {
@@ -237,9 +195,7 @@ namespace LibraryDesktop.View
                     }
                 }
             }
-        }
-
-        private async void topup_btn_Click(object sender, EventArgs e)
+        }        private void topup_btn_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -257,41 +213,41 @@ namespace LibraryDesktop.View
                     return;
                 }
 
-                topup_btn.Enabled = false;
-                topup_btn.Text = "Processing...";
+                if (_currentUser == null)
+                {
+                    MessageBox.Show("User not available.", "User Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 // Create payment description
                 var selectedPanels = _coinPanelSelected.Where(kvp => kvp.Value).Select(kvp => kvp.Key);
                 var selectedAmounts = selectedPanels.Select(panel => _coinPanelValues[panel]);
                 string description = $"Coin Exchange: {string.Join(" + ", selectedAmounts.Select(a => $"{a:N0}"))} VND";
 
-                // Create payment in database
-                var payment = await _paymentService.CreatePaymentAsync(1, _totalAmount, description);
+                // Generate temporary payment token for QR code
+                string tempPaymentToken = Guid.NewGuid().ToString();
 
-                // Generate QR code for payment
-                var qrCodeBase64 = await _paymentService.GenerateQRCodeAsync(payment);
-                _currentPaymentId = payment.PaymentToken;
-                _paymentUrl = payment.PaymentUrl;
-
-                // Convert base64 to image and display
-                var qrCodeBytes = Convert.FromBase64String(qrCodeBase64);
-                using (var ms = new MemoryStream(qrCodeBytes))
+                // Show QRCodePopup instead of inline display
+                using (var qrPopup = new QRCodePopup(_paymentService, tempPaymentToken, _totalAmount, description, _currentUser.UserId))
                 {
-                    picQRCode.Image = Image.FromStream(ms);
-                }
-
-                if (lblInstructions != null)
-                {
-                    lblInstructions.Text = "Scan this QR code or click the link below to complete your coin exchange.";
-                }
-
-                btnCheckPayment.Enabled = true;
-                lnkOpenBrowser.Visible = true;
-
-                // Disable coin panel selection during payment
-                foreach (var panel in _coinPanelValues.Keys)
-                {
-                    panel.Enabled = false;
+                    // Show popup as dialog
+                    var result = qrPopup.ShowDialog();
+                    
+                    // Check if payment was completed
+                    if (qrPopup.PaymentCompleted)
+                    {
+                        // Payment was successful - reset form
+                        ResetForm();
+                        MessageBox.Show("Exchange completed successfully!", "Success", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        // User cancelled the payment
+                        MessageBox.Show("Payment cancelled.", "Cancelled", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)
@@ -299,80 +255,8 @@ namespace LibraryDesktop.View
                 MessageBox.Show($"Error processing exchange: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            finally
-            {
-                if (topup_btn != null)
-                {
-                    topup_btn.Enabled = _totalAmount > 0;
-                    topup_btn.Text = "Exchange";
-                }
-            }
         }
-
-        private async void BtnCheckPayment_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(_currentPaymentId))
-                {
-                    MessageBox.Show("No payment in progress.", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                btnCheckPayment.Enabled = false;
-                btnCheckPayment.Text = "Checking...";
-
-                var payment = await _paymentService.GetPaymentByTokenAsync(_currentPaymentId);
-
-                if (payment?.PaymentStatus == LibraryDesktop.Models.PaymentStatus.Completed)
-                {
-                    var selectedCount = _coinPanelSelected.Count(kvp => kvp.Value);
-                    decimal totalCoins = _totalAmount / 1000;
-
-                    string successMsg = $"Exchange successful!\n{totalCoins:N0} coins have been added to your account.\n\nTransaction completed: {_totalAmount:N0} VND";
-
-                    MessageBox.Show(successMsg, "Exchange Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Reset form after successful exchange
-                    ResetForm();
-                }
-                else
-                {
-                    MessageBox.Show("Payment is still pending. Please complete the payment and try again.",
-                        "Payment Pending", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error checking payment: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                btnCheckPayment.Enabled = true;
-                btnCheckPayment.Text = "Check Payment";
-            }
-        }        private void LnkOpenBrowser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {            if (!string.IsNullOrEmpty(_currentPaymentId))
-            {
-                string url = $"http://192.168.1.4:5500/LibraryDesktop.Data/WebRoot/index.html?token={_currentPaymentId}&amount={totalTextBox?.Text}";
-                try
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = url,
-                        UseShellExecute = true
-                    });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error opening browser: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
+        
         private void ResetForm()
         {
             foreach (var panel in _coinPanelValues.Keys)
@@ -383,13 +267,9 @@ namespace LibraryDesktop.View
             }
 
             _totalAmount = 0;
-            _currentPaymentId = null;
-            _paymentUrl = null;
 
             if (totalTextBox != null) totalTextBox.Text = "0 VND";
-            if (picQRCode != null) picQRCode.Image = null;
-            if (btnCheckPayment != null) btnCheckPayment.Enabled = false;
-            if (lnkOpenBrowser != null) lnkOpenBrowser.Visible = false;
+                        
             if (lblInstructions != null)
             {
                 lblInstructions.Text = "Click coin panels to select amounts for exchange. You can select multiple panels.";
@@ -442,6 +322,28 @@ namespace LibraryDesktop.View
         internal DialogResult ShowDialog()
         {
             throw new NotImplementedException();
+        }
+
+        private void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
+        {
+            // This method will be called when a payment is completed
+            if (this.InvokeRequired)
+            {
+                this.Invoke(() => OnPaymentCompleted(sender, e));
+                return;
+            }
+
+            // Check if this payment relates to our current exchange
+            if (_currentUser != null && e.UserId == _currentUser.UserId)
+            {
+                int totalCoins = e.Amount / 1000;
+                string successMsg = $"Exchange successful!\n{totalCoins:N0} coins have been added to your account.\n\nTransaction completed: {e.Amount:N0} VND";
+
+                MessageBox.Show(successMsg, "Exchange Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Reset form after successful exchange
+                ResetForm();
+            }
         }
     }
 }

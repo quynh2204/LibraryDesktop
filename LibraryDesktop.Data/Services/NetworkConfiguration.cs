@@ -4,14 +4,27 @@ using System.Net.NetworkInformation;
 using System.Linq;
 
 namespace LibraryDesktop.Data.Services
-{
-    public static class NetworkConfiguration
-    {        // Configuration for Live Server hosting
-        public const string LIVE_SERVER_HOST = "192.168.1.4";
-        public const int LIVE_SERVER_PORT = 5500;
-        public const string LIVE_SERVER_PATH = "LibraryDesktop.Data/WebRoot/index.html";
-          // Configuration for LibraryDesktop API server
-        public const string API_SERVER_HOST = "192.168.1.4"; // Changed from localhost to allow network access
+{    public static class NetworkConfiguration
+    {
+        // Configuration for EmbedIO server (unified server for both static files and APIs)
+        private static string? _liveServerHost;        public static string LIVE_SERVER_HOST 
+        { 
+            get 
+            {
+                if (string.IsNullOrEmpty(_liveServerHost))
+                {
+                    _liveServerHost = DetectLocalIpAddress() ?? "localhost";
+                    Console.WriteLine($"🌐 LIVE_SERVER_HOST initialized: {_liveServerHost}");
+                }
+                return _liveServerHost;
+            } 
+            set => _liveServerHost = value;
+        }
+        
+        public const int LIVE_SERVER_PORT = 5000; // EmbedIO server port
+        public const string LIVE_SERVER_PATH = "payment"; // EmbedIO payment endpoint
+          // Configuration for LibraryDesktop API server (same as EmbedIO server)
+        public static string API_SERVER_HOST => LIVE_SERVER_HOST; // Use the same detected IP
         public const int API_SERVER_PORT = 5000;
         
         /// <summary>
@@ -28,20 +41,19 @@ namespace LibraryDesktop.Data.Services
         public static string GetApiServerUrl()
         {
             return $"http://{API_SERVER_HOST}:{API_SERVER_PORT}";
-        }
-        
-        /// <summary>
+        }        /// <summary>
         /// Automatically detects the local machine's IP address on the specified network
         /// </summary>
         /// <param name="networkPrefix">Network prefix to look for (e.g., "192.168.1")</param>
         /// <returns>The detected IP address or null if not found</returns>
         public static string? DetectLocalIpAddress(string networkPrefix = "192.168.1")
-        {
-            try
+        {            try
             {
                 var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
                     .Where(ni => ni.OperationalStatus == OperationalStatus.Up && 
                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback);
+
+                var allIpAddresses = new List<string>();
 
                 foreach (var networkInterface in networkInterfaces)
                 {
@@ -49,14 +61,23 @@ namespace LibraryDesktop.Data.Services
                     var ipAddresses = ipProperties.UnicastAddresses
                         .Where(ip => ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                         .Select(ip => ip.Address.ToString())
-                        .Where(ip => ip.StartsWith(networkPrefix));
+                        .Where(ip => 
+                            // Common private network ranges
+                            (ip.StartsWith("192.168.") || ip.StartsWith("10.0.") || ip.StartsWith("172.16.")) &&
+                            !ip.EndsWith(".1") && // Exclude gateway IPs
+                            !ip.EndsWith(".0")    // Exclude network IPs
+                        );
 
-                    var firstMatch = ipAddresses.FirstOrDefault();
-                    if (firstMatch != null)
-                    {
-                        return firstMatch;
-                    }
+                    allIpAddresses.AddRange(ipAddresses);
                 }
+
+                var selectedIp = allIpAddresses.FirstOrDefault();
+                Console.WriteLine($"🌐 Network Detection:");
+                Console.WriteLine($"🌐 Available IPs: {string.Join(", ", allIpAddresses)}");
+                Console.WriteLine($"🌐 Selected IP: {selectedIp ?? "None"}");
+
+                // Return the first available non-gateway IP for easy access from other devices
+                return selectedIp;
             }
             catch (Exception ex)
             {

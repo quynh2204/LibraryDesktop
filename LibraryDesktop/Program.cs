@@ -6,14 +6,20 @@ using LibraryDesktop.Data;
 using LibraryDesktop.Data.Services;
 using LibraryDesktop.Data.Interfaces;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LibraryDesktop
 {
     internal static class Program
-    {        [STAThread]
+    {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();        [STAThread]
         static async Task Main()
         {
-
+            // Allocate console for debugging output
+            AllocConsole();
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
@@ -32,9 +38,7 @@ namespace LibraryDesktop
             var dbPath = Path.Combine(appDataPath, "Library.db");
             
             // Show the exact database path in the debug output
-            Debug.WriteLine($"Database path: {dbPath}");
-
-            try
+            Debug.WriteLine($"Database path: {dbPath}");            try
             {
                 // Configure services
                 var host = CreateHostBuilder(dbPath).Build();
@@ -78,14 +82,18 @@ namespace LibraryDesktop
                     services.AddTransient<Dashboard>();
                     services.AddTransient<MyBooks>();
                     services.AddTransient<History>();
-                    services.AddTransient<BookDetail>();
-                      // Configure PaymentWebServer
+                    services.AddTransient<BookDetail>();                    // Configure PaymentWebServer - Register as Singleton but with Service Provider injection
                     services.AddSingleton<PaymentWebServer>(provider =>
                     {
-                        var paymentService = provider.GetRequiredService<IPaymentService>();
-                        var authenticationService = provider.GetRequiredService<IAuthenticationService>();
-                        var webRootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "LibraryDesktop.Data", "WebRoot");
-                        return new PaymentWebServer(paymentService, webRootPath, authenticationService);
+                        // Use more reliable path resolution for WebRoot
+                        var solutionDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent?.Parent?.FullName;
+                        var webRootPath = Path.Combine(solutionDir ?? AppDomain.CurrentDomain.BaseDirectory, "LibraryDesktop.Data", "WebRoot");
+                        
+                        Console.WriteLine($"📁 WebRoot path: {webRootPath}");
+                        Console.WriteLine($"📁 WebRoot exists: {Directory.Exists(webRootPath)}");
+                        
+                        // Pass the service provider instead of scoped services
+                        return new PaymentWebServer(provider, webRootPath);
                     });
                 });
         }        private static async Task InitializeDatabase(IServiceProvider serviceProvider, string dbPath)

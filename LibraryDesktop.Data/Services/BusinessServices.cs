@@ -71,11 +71,20 @@ namespace LibraryDesktop.Data.Services
             _userRepository = userRepository;
             _userSettingRepository = userSettingRepository;
             _userFavoriteRepository = userFavoriteRepository;
-        }
-
-        public async Task<User?> GetUserWithSettingsAsync(int userId)
+        }        public async Task<User?> GetUserWithSettingsAsync(int userId)
         {
             return await _userRepository.GetUserWithSettingsAsync(userId);
+        }
+
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            return await _userRepository.GetByIdAsync(userId);
+        }
+
+        public async Task<string?> GetUsernameByIdAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            return user?.Username;
         }
 
         public async Task<decimal> GetUserBalanceAsync(int userId)

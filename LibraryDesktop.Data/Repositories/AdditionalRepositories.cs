@@ -43,10 +43,9 @@ namespace LibraryDesktop.Data.Repositories
                 // Update user balance
                 var userSetting = await _context.UserSettings
                     .FirstOrDefaultAsync(us => us.UserId == payment.UserId);
-                
-                if (userSetting != null)
+                  if (userSetting != null)
                 {
-                    userSetting.Balance += payment.Amount;
+                    userSetting.Balance += (decimal)payment.Amount / 1000; // Convert VND to coins
                 }
 
                 await SaveChangesAsync();

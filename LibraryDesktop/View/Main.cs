@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibraryDesktop.Data.Services;
+using LibraryDesktop.Data.Interfaces;
 using LibraryDesktop.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,9 +27,7 @@ namespace LibraryDesktop.View
         private Panel? contentPanel;
         
         // Current active UserControl
-        private UserControl? currentUserControl;
-
-        public Main(IBookService bookService, 
+        private UserControl? currentUserControl;        public Main(IBookService bookService, 
                    IAuthenticationService authenticationService,
                    IUserService userService,
                    IServiceProvider serviceProvider,
@@ -39,6 +38,21 @@ namespace LibraryDesktop.View
             _userService = userService;
             _serviceProvider = serviceProvider;
             _paymentWebServer = paymentWebServer;
+            
+            // 🔥 Subscribe to payment completed events
+            var paymentService = _serviceProvider.GetRequiredService<IPaymentService>();
+            paymentService.PaymentCompleted += OnPaymentCompleted;
+            
+            // Handle form closing to unsubscribe events
+            this.FormClosed += (s, e) => 
+            {
+                try 
+                { 
+                    paymentService.PaymentCompleted -= OnPaymentCompleted; 
+                } 
+                catch { /* Ignore */ }
+            };
+            
             InitializeComponent();
             InitializeMainForm();
         }
@@ -57,10 +71,12 @@ namespace LibraryDesktop.View
             {
                 try
                 {
+                    Console.WriteLine("🔄 Attempting to start PaymentWebServer...");
                     await _paymentWebServer.StartAsync(NetworkConfiguration.API_SERVER_PORT);
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"❌ PaymentWebServer startup failed: {ex.Message}");
                     MessageBox.Show($"Failed to start payment web server: {ex.Message}", "Warning",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -68,33 +84,11 @@ namespace LibraryDesktop.View
 
             // Initialize content panel
             InitializeContentPanel();
-            
-            // Wire up navigation button events
+              // Wire up navigation button events
             InitializeNavigationEvents();
             
-            // Show login form first
-            ShowLogin();
-        }private void ShowLogin()
-        {
-            using (var loginForm = _serviceProvider.GetRequiredService<LoginForm>())
-            {
-                if (loginForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Login was successful, get the authenticated user
-                    // Get the current user from the authentication service
-                    _currentUser = loginForm.AuthenticatedUser;
-                    
-                    if (_currentUser != null)
-                    {
-                        _ = InitializeWithUserAsync(_currentUser);
-                    }
-                }
-                else
-                {
-                    // User cancelled login, close application
-                    this.Close();
-                }
-            }
+            // Don't show login form here - Program.cs already handles authentication
+            // The user will be set via InitializeWithUserAsync after successful login
         }
 
         private void InitializeContentPanel()
@@ -169,11 +163,19 @@ namespace LibraryDesktop.View
         {
             var history = _serviceProvider.GetRequiredService<History>();
             LoadUserControl(history);
-        }
-
-        private void LoadExchange()
+        }        private void LoadExchange()
         {
-            var exchange = _serviceProvider.GetRequiredService<Exchange>();
+            // Check if user is available
+            if (_currentUser == null)
+            {
+                MessageBox.Show("User session not available. Please log in again.", "Authentication Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Create Exchange with current user context
+            var paymentService = _serviceProvider.GetRequiredService<IPaymentService>();
+            var exchange = new Exchange(paymentService, _currentUser);
             LoadUserControl(exchange);
         }
 
@@ -201,9 +203,7 @@ namespace LibraryDesktop.View
         private void BtnExchange_Click(object? sender, EventArgs e)
         {
             LoadExchange();
-        }
-
-        private void BtnLogout_Click(object? sender, EventArgs e)
+        }        private void BtnLogout_Click(object? sender, EventArgs e)
         {
             // Confirm logout
             var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", 
@@ -219,8 +219,9 @@ namespace LibraryDesktop.View
                 currentUserControl?.Dispose();
                 currentUserControl = null;
                 
-                // Show login form again
-                ShowLogin();
+                // Close the main form and restart the application to show login
+                this.Hide();
+                Application.Restart();
             }
         }
 
@@ -235,22 +236,10 @@ namespace LibraryDesktop.View
                 _currentBalance = await _userService.GetUserBalanceAsync(_currentUser.UserId);
                 this.Text = $"Library Desktop - Welcome {_currentUser.Username} (Balance: ${_currentBalance:F2})";
             }
-        }
-
-        private async void ShowRechargeForm()
+        }        private void ShowRechargeForm()
         {
-            using (var exchange = _serviceProvider.GetRequiredService<Exchange>())
-            {
-                if (exchange.ShowDialog() == DialogResult.OK)
-                {
-                    // Recharge was successful, update user balance display
-                    MessageBox.Show("Account recharged successfully!", "Success", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    
-                    // Refresh user balance from database
-                    await UpdateBalanceDisplayAsync();
-                }
-            }
+            // Load the Exchange UserControl instead of trying to show it as a dialog
+            LoadExchange();
         }
 
         // Legacy event handlers (keeping for compatibility with designer)
@@ -276,5 +265,46 @@ namespace LibraryDesktop.View
             // Redirect to new books click handler
             BtnBooks_Click(sender, e);
         }
+          // 🔥 Event handler for payment completion
+        private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
+        {
+            try
+            {
+                // Chỉ cập nhật nếu payment thuộc về current user
+                if (_currentUser != null && e.UserId == _currentUser.UserId)
+                {
+                    Console.WriteLine($"💰 Payment completed for current user! Amount: {e.Amount}, Coins: {e.Amount / 1000}");
+                    
+                    // Cập nhật balance trên UI thread
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(new Action(async () => await UpdateBalanceDisplayAsync()));
+                    }
+                    else
+                    {
+                        await UpdateBalanceDisplayAsync();
+                    }
+                    
+                    // Hiển thị notification
+                    var coinsAdded = e.Amount / 1000;
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(() => 
+                        {
+                            MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour balance has been updated!", 
+                                "Payment Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        });
+                    }
+                    else
+                    {
+                        MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour balance has been updated!", 
+                            "Payment Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error handling payment completion: {ex.Message}");
+            }        }
     }
 }

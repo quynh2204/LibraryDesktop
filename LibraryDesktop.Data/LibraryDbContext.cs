@@ -180,7 +180,7 @@ namespace LibraryDesktop.Data
             {
                 entity.ToTable("Payments");
                 entity.HasKey(e => e.PaymentId);
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Amount).HasColumnType("INTEGER");
                 entity.Property(e => e.PaymentToken).HasMaxLength(100);
                 entity.Property(e => e.Description).HasMaxLength(200);
                 

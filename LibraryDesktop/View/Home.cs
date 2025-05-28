@@ -36,8 +36,7 @@ namespace LibraryDesktop.View
             {
                 guna2HtmlLabel1.Text = username;
             }
-        }
-        public void ShowExchangeForm()
+        }        public void ShowExchangeForm()
         {
             // Hide current content in flowLayoutPanel1
             if (flowLayoutPanel1 != null)

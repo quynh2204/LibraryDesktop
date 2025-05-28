@@ -128,10 +128,10 @@
             coinPanel10.ForeColor = Color.Transparent;
             coinPanel10.Location = new Point(37, 13);
             coinPanel10.Name = "coinPanel10";
-            coinPanel10.ShadowDecoration.Color = Color.Transparent;
-            coinPanel10.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            coinPanel10.ShadowDecoration.Color = Color.Transparent;            coinPanel10.ShadowDecoration.CustomizableEdges = customizableEdges4;
             coinPanel10.Size = new Size(262, 129);
             coinPanel10.TabIndex = 3;
+            coinPanel10.Click += coinPanel10_Click;
             // 
             // guna2HtmlLabel4
             // 
@@ -184,10 +184,10 @@
             coinPanel20.ForeColor = Color.FromArgb(179, 158, 195);
             coinPanel20.Location = new Point(402, 13);
             coinPanel20.Name = "coinPanel20";
-            coinPanel20.ShadowDecoration.Color = Color.Transparent;
-            coinPanel20.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            coinPanel20.ShadowDecoration.Color = Color.Transparent;            coinPanel20.ShadowDecoration.CustomizableEdges = customizableEdges8;
             coinPanel20.Size = new Size(263, 129);
             coinPanel20.TabIndex = 4;
+            coinPanel20.Click += coinPanel20_Click;
             // 
             // guna2HtmlLabel2
             // 
@@ -241,10 +241,10 @@
             coinPanel50.Location = new Point(737, 13);
             coinPanel50.Name = "coinPanel50";
             coinPanel50.ShadowDecoration.Color = Color.Transparent;
-            customizableEdges12.BottomLeft = false;
-            coinPanel50.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            customizableEdges12.BottomLeft = false;            coinPanel50.ShadowDecoration.CustomizableEdges = customizableEdges12;
             coinPanel50.Size = new Size(265, 129);
             coinPanel50.TabIndex = 4;
+            coinPanel50.Click += coinPanel50_Click;
             // 
             // guna2HtmlLabel6
             // 
@@ -322,10 +322,10 @@
             coinPanel100.ForeColor = Color.Transparent;
             coinPanel100.Location = new Point(37, 216);
             coinPanel100.Name = "coinPanel100";
-            coinPanel100.ShadowDecoration.Color = Color.Transparent;
-            coinPanel100.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            coinPanel100.ShadowDecoration.Color = Color.Transparent;            coinPanel100.ShadowDecoration.CustomizableEdges = customizableEdges18;
             coinPanel100.Size = new Size(262, 129);
             coinPanel100.TabIndex = 3;
+            coinPanel100.Click += coinPanel100_Click;
             // 
             // guna2HtmlLabel10
             // 
@@ -378,10 +378,10 @@
             coinPanel200.ForeColor = Color.FromArgb(179, 158, 195);
             coinPanel200.Location = new Point(402, 216);
             coinPanel200.Name = "coinPanel200";
-            coinPanel200.ShadowDecoration.Color = Color.Transparent;
-            coinPanel200.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            coinPanel200.ShadowDecoration.Color = Color.Transparent;            coinPanel200.ShadowDecoration.CustomizableEdges = customizableEdges22;
             coinPanel200.Size = new Size(263, 129);
             coinPanel200.TabIndex = 4;
+            coinPanel200.Click += coinPanel200_Click;
             // 
             // guna2HtmlLabel12
             // 
@@ -434,10 +434,10 @@
             coinPanel500.ForeColor = Color.Transparent;
             coinPanel500.Location = new Point(737, 216);
             coinPanel500.Name = "coinPanel500";
-            coinPanel500.ShadowDecoration.Color = Color.Transparent;
-            coinPanel500.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            coinPanel500.ShadowDecoration.Color = Color.Transparent;            coinPanel500.ShadowDecoration.CustomizableEdges = customizableEdges26;
             coinPanel500.Size = new Size(265, 129);
             coinPanel500.TabIndex = 4;
+            coinPanel500.Click += coinPanel500_Click;
             // 
             // guna2HtmlLabel14
             // 
@@ -527,9 +527,9 @@
             Controls.Add(total_txt);
             Controls.Add(topup_btn);
             Controls.Add(total_lb);
-            Controls.Add(guna2Panel4);
-            Name = "Exchange";
+            Controls.Add(guna2Panel4);            Name = "Exchange";
             Size = new Size(1247, 730);
+            Load += Exchange_Load;
             coinPanel10.ResumeLayout(false);
             coinPanel10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)guna2PictureBox2).EndInit();

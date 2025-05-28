@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -36,18 +35,18 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            book3 = new Book();
-            book1 = new Book();
-            book2 = new Book();
-            book4 = new Book();
-            book5 = new Book();
-            book6 = new Book();
-            book7 = new Book();
-            book8 = new Book();
-            book9 = new Book();
-            book10 = new Book();
-            book11 = new Book();
-            book12 = new Book();
+            book3 = new BookControl();
+            book1 = new BookControl();
+            book2 = new BookControl();
+            book4 = new BookControl();
+            book5 = new BookControl();
+            book6 = new BookControl();
+            book7 = new BookControl();
+            book8 = new BookControl();
+            book9 = new BookControl();
+            book10 = new BookControl();
+            book11 = new BookControl();
+            book12 = new BookControl();
             guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             btn_vaid = new Guna.UI2.WinForms.Guna2GradientButton();
@@ -82,7 +81,7 @@
             // 
             // book3
             // 
-            book3.BackgroundImage = (Image)resources.GetObject("book3.BackgroundImage");
+            book3.BackColor = Color.Transparent;
             book3.BackgroundImageLayout = ImageLayout.Stretch;
             book3.Location = new Point(3, 3);
             book3.Name = "book3";
@@ -91,7 +90,7 @@
             // 
             // book1
             // 
-            book1.BackgroundImage = (Image)resources.GetObject("book1.BackgroundImage");
+            book1.BackColor = Color.Transparent;
             book1.BackgroundImageLayout = ImageLayout.Stretch;
             book1.Location = new Point(190, 3);
             book1.Name = "book1";
@@ -100,7 +99,7 @@
             // 
             // book2
             // 
-            book2.BackgroundImage = (Image)resources.GetObject("book2.BackgroundImage");
+            book2.BackColor = Color.Transparent;
             book2.BackgroundImageLayout = ImageLayout.Stretch;
             book2.Location = new Point(377, 3);
             book2.Name = "book2";
@@ -109,7 +108,7 @@
             // 
             // book4
             // 
-            book4.BackgroundImage = (Image)resources.GetObject("book4.BackgroundImage");
+            book4.BackColor = Color.Transparent;
             book4.BackgroundImageLayout = ImageLayout.Stretch;
             book4.Location = new Point(564, 3);
             book4.Name = "book4";
@@ -118,7 +117,7 @@
             // 
             // book5
             // 
-            book5.BackgroundImage = (Image)resources.GetObject("book5.BackgroundImage");
+            book5.BackColor = Color.Transparent;
             book5.BackgroundImageLayout = ImageLayout.Stretch;
             book5.Location = new Point(751, 3);
             book5.Name = "book5";
@@ -127,7 +126,7 @@
             // 
             // book6
             // 
-            book6.BackgroundImage = (Image)resources.GetObject("book6.BackgroundImage");
+            book6.BackColor = Color.Transparent;
             book6.BackgroundImageLayout = ImageLayout.Stretch;
             book6.Location = new Point(938, 3);
             book6.Name = "book6";
@@ -136,7 +135,7 @@
             // 
             // book7
             // 
-            book7.BackgroundImage = (Image)resources.GetObject("book7.BackgroundImage");
+            book7.BackColor = Color.Transparent;
             book7.BackgroundImageLayout = ImageLayout.Stretch;
             book7.Location = new Point(3, 288);
             book7.Name = "book7";
@@ -145,7 +144,7 @@
             // 
             // book8
             // 
-            book8.BackgroundImage = (Image)resources.GetObject("book8.BackgroundImage");
+            book8.BackColor = Color.Transparent;
             book8.BackgroundImageLayout = ImageLayout.Stretch;
             book8.Location = new Point(190, 288);
             book8.Name = "book8";
@@ -154,7 +153,7 @@
             // 
             // book9
             // 
-            book9.BackgroundImage = (Image)resources.GetObject("book9.BackgroundImage");
+            book9.BackColor = Color.Transparent;
             book9.BackgroundImageLayout = ImageLayout.Stretch;
             book9.Location = new Point(377, 288);
             book9.Name = "book9";
@@ -163,7 +162,7 @@
             // 
             // book10
             // 
-            book10.BackgroundImage = (Image)resources.GetObject("book10.BackgroundImage");
+            book10.BackColor = Color.Transparent;
             book10.BackgroundImageLayout = ImageLayout.Stretch;
             book10.Location = new Point(564, 288);
             book10.Name = "book10";
@@ -172,7 +171,7 @@
             // 
             // book11
             // 
-            book11.BackgroundImage = (Image)resources.GetObject("book11.BackgroundImage");
+            book11.BackColor = Color.Transparent;
             book11.BackgroundImageLayout = ImageLayout.Stretch;
             book11.Location = new Point(751, 288);
             book11.Name = "book11";
@@ -181,7 +180,7 @@
             // 
             // book12
             // 
-            book12.BackgroundImage = (Image)resources.GetObject("book12.BackgroundImage");
+            book12.BackColor = Color.Transparent;
             book12.BackgroundImageLayout = ImageLayout.Stretch;
             book12.Location = new Point(938, 288);
             book12.Name = "book12";
@@ -301,18 +300,18 @@
         #endregion
 
         private FlowLayoutPanel flowLayoutPanel1;
-        private Book book3;
-        private Book book1;
-        private Book book2;
-        private Book book4;
-        private Book book5;
-        private Book book6;
-        private Book book7;
-        private Book book8;
-        private Book book9;
-        private Book book10;
-        private Book book11;
-        private Book book12;
+        private BookControl book3;
+        private BookControl book1;
+        private BookControl book2;
+        private BookControl book4;
+        private BookControl book5;
+        private BookControl book6;
+        private BookControl book7;
+        private BookControl book8;
+        private BookControl book9;
+        private BookControl book10;
+        private BookControl book11;
+        private BookControl book12;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
         private Guna.UI2.WinForms.Guna2GradientButton btn_vaid;

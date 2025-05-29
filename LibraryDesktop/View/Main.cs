@@ -30,7 +30,8 @@ namespace LibraryDesktop.View
         private Panel? contentPanel;
         
         // Current active UserControl
-        private UserControl? currentUserControl;        public Main(IBookService bookService,
+        private UserControl? currentUserControl;        
+        public Main(IBookService bookService,
                    IAuthenticationService authenticationService,
                    IUserService userService,
                    IPaymentService paymentService,
@@ -90,16 +91,18 @@ namespace LibraryDesktop.View
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.WriteLine($"Error opening BookDetail: {ex}");
             }
-        }        public async Task InitializeWithUserAsync(User user)
+        }        
+        public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
             await UpdateCoinsDisplayAsync();
-            
+            _homeControl.SetCurrentUserId(user.UserId);
             // Load Dashboard by default after login (as startup form)
             LoadDashboard();
-        }private void InitializeMainForm()
+        }
+        private void InitializeMainForm()
         {
-            // Start the payment web server in the background
+            // Start the payment web server  in the background
             _ = Task.Run(async () =>
             {
                 try
@@ -122,7 +125,8 @@ namespace LibraryDesktop.View
 
             // Don't show login form here - Program.cs already handles authentication
             // The user will be set via InitializeWithUserAsync after successful login
-        }        private async Task UpdateCoinsDisplayAsync()
+        }        
+        private async Task UpdateCoinsDisplayAsync()
         {
             if (_currentUser != null)
             {
@@ -337,16 +341,7 @@ namespace LibraryDesktop.View
         }        // Property to get current user for child forms
         public User? CurrentUser => _currentUser;
         public int CurrentCoins => _currentCoins;//private void guna2GradientTileButton4_Click(object sender, EventArgs e)
-        //{
-        //    // Fine Ticket / Exchange functionality
-        //    ShowExchangeForm();
-        //}
 
-        //private void btn_vaid_Click(object sender, EventArgs e)
-        //{
-        //    // Account / Exchange functionality
-        //    ShowExchangeForm();
-        //}
 
         // 🔥 Event handler for payment completion
         private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)

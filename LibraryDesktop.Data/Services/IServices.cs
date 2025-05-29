@@ -11,6 +11,7 @@ namespace LibraryDesktop.Data.Services
         bool VerifyPassword(string password, string hash);
     }
 
+
     public interface IBookService
     {
         Task<IEnumerable<Book>> GetBooksAsync();
@@ -39,7 +40,8 @@ namespace LibraryDesktop.Data.Services
         public int Amount { get; set; }
         public string PaymentToken { get; set; } = string.Empty;
         public DateTime CompletedAt { get; set; }
-    }    public interface IUserService
+    }    
+    public interface IUserService
     {
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<User?> GetUserByIdAsync(int userId);
@@ -50,6 +52,9 @@ namespace LibraryDesktop.Data.Services
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);
         Task<bool> IsFavoriteAsync(int userId, int bookId);
         Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(int userId);
+        Task<bool> UpdateUserAsync(User user);
+        Task<bool> UpdateAvatarUrlAsync(int userId, string avatarUrl);
+        Task<User?> GetUserByUsernameAsync(string username);
     }
 
     public interface IGitHubContentService

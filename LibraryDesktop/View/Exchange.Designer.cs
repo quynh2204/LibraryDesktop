@@ -29,40 +29,38 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges41 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges42 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges45 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges46 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges43 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges44 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges47 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges48 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges51 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges52 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges49 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges50 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges55 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges56 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges53 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges54 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges59 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges60 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges57 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges58 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges67 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges68 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges65 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges66 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges63 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges64 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges61 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges62 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             total_lb = new Guna.UI2.WinForms.Guna2HtmlLabel();
             coinPanel10 = new Guna.UI2.WinForms.Guna2Panel();
             guna2HtmlLabel4 = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -95,7 +93,6 @@
             total_txt = new Guna.UI2.WinForms.Guna2TextBox();
             btnClear = new Guna.UI2.WinForms.Guna2Button();
             lblInstructions = new Label();
-            label1 = new Label();
             coinPanel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)guna2PictureBox2).BeginInit();
             coinPanel20.SuspendLayout();
@@ -115,7 +112,7 @@
             // 
             total_lb.BackColor = Color.Transparent;
             total_lb.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            total_lb.Location = new Point(119, 475);
+            total_lb.Location = new Point(119, 553);
             total_lb.Name = "total_lb";
             total_lb.Size = new Size(64, 33);
             total_lb.TabIndex = 1;
@@ -130,13 +127,13 @@
             coinPanel10.Controls.Add(guna2HtmlLabel4);
             coinPanel10.Controls.Add(guna2PictureBox2);
             coinPanel10.Controls.Add(guna2HtmlLabel5);
-            coinPanel10.CustomizableEdges = customizableEdges37;
+            coinPanel10.CustomizableEdges = customizableEdges3;
             coinPanel10.FillColor = Color.White;
             coinPanel10.ForeColor = Color.Transparent;
-            coinPanel10.Location = new Point(37, 13);
+            coinPanel10.Location = new Point(37, 40);
             coinPanel10.Name = "coinPanel10";
             coinPanel10.ShadowDecoration.Color = Color.Transparent;
-            coinPanel10.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            coinPanel10.ShadowDecoration.CustomizableEdges = customizableEdges4;
             coinPanel10.Size = new Size(262, 129);
             coinPanel10.TabIndex = 3;
             coinPanel10.Click += coinPanel10_Click;
@@ -156,13 +153,13 @@
             // 
             guna2PictureBox2.BackColor = Color.Transparent;
             guna2PictureBox2.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox2.CustomizableEdges = customizableEdges35;
+            guna2PictureBox2.CustomizableEdges = customizableEdges1;
             guna2PictureBox2.FillColor = Color.Transparent;
             guna2PictureBox2.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox2.ImageRotate = 0F;
             guna2PictureBox2.Location = new Point(79, 24);
             guna2PictureBox2.Name = "guna2PictureBox2";
-            guna2PictureBox2.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            guna2PictureBox2.ShadowDecoration.CustomizableEdges = customizableEdges2;
             guna2PictureBox2.Size = new Size(53, 59);
             guna2PictureBox2.TabIndex = 0;
             guna2PictureBox2.TabStop = false;
@@ -187,13 +184,13 @@
             coinPanel20.Controls.Add(guna2HtmlLabel2);
             coinPanel20.Controls.Add(guna2PictureBox1);
             coinPanel20.Controls.Add(guna2HtmlLabel3);
-            coinPanel20.CustomizableEdges = customizableEdges41;
+            coinPanel20.CustomizableEdges = customizableEdges7;
             coinPanel20.FillColor = Color.White;
             coinPanel20.ForeColor = Color.Transparent;
-            coinPanel20.Location = new Point(402, 13);
+            coinPanel20.Location = new Point(402, 40);
             coinPanel20.Name = "coinPanel20";
             coinPanel20.ShadowDecoration.Color = Color.Transparent;
-            coinPanel20.ShadowDecoration.CustomizableEdges = customizableEdges42;
+            coinPanel20.ShadowDecoration.CustomizableEdges = customizableEdges8;
             coinPanel20.Size = new Size(263, 129);
             coinPanel20.TabIndex = 4;
             coinPanel20.Click += coinPanel20_Click;
@@ -213,13 +210,13 @@
             // 
             guna2PictureBox1.BackColor = Color.Transparent;
             guna2PictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox1.CustomizableEdges = customizableEdges39;
+            guna2PictureBox1.CustomizableEdges = customizableEdges5;
             guna2PictureBox1.FillColor = Color.Transparent;
             guna2PictureBox1.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox1.ImageRotate = 0F;
             guna2PictureBox1.Location = new Point(79, 24);
             guna2PictureBox1.Name = "guna2PictureBox1";
-            guna2PictureBox1.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            guna2PictureBox1.ShadowDecoration.CustomizableEdges = customizableEdges6;
             guna2PictureBox1.Size = new Size(53, 59);
             guna2PictureBox1.TabIndex = 0;
             guna2PictureBox1.TabStop = false;
@@ -244,14 +241,15 @@
             coinPanel50.Controls.Add(guna2HtmlLabel6);
             coinPanel50.Controls.Add(guna2PictureBox3);
             coinPanel50.Controls.Add(guna2HtmlLabel7);
-            coinPanel50.CustomizableEdges = customizableEdges45;
+            coinPanel50.CustomizableEdges = customizableEdges11;
             coinPanel50.FillColor = Color.White;
             coinPanel50.ForeColor = Color.Transparent;
-            coinPanel50.Location = new Point(737, 13);
+            coinPanel50.Location = new Point(737, 40);
             coinPanel50.Name = "coinPanel50";
+            coinPanel50.ShadowDecoration.BorderRadius = 15;
             coinPanel50.ShadowDecoration.Color = Color.Transparent;
-            customizableEdges46.BottomLeft = false;
-            coinPanel50.ShadowDecoration.CustomizableEdges = customizableEdges46;
+            customizableEdges12.BottomLeft = false;
+            coinPanel50.ShadowDecoration.CustomizableEdges = customizableEdges12;
             coinPanel50.Size = new Size(265, 129);
             coinPanel50.TabIndex = 4;
             coinPanel50.Click += coinPanel50_Click;
@@ -271,13 +269,13 @@
             // 
             guna2PictureBox3.BackColor = Color.Transparent;
             guna2PictureBox3.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox3.CustomizableEdges = customizableEdges43;
+            guna2PictureBox3.CustomizableEdges = customizableEdges9;
             guna2PictureBox3.FillColor = Color.Transparent;
             guna2PictureBox3.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox3.ImageRotate = 0F;
             guna2PictureBox3.Location = new Point(79, 24);
             guna2PictureBox3.Name = "guna2PictureBox3";
-            guna2PictureBox3.ShadowDecoration.CustomizableEdges = customizableEdges44;
+            guna2PictureBox3.ShadowDecoration.CustomizableEdges = customizableEdges10;
             guna2PictureBox3.Size = new Size(53, 59);
             guna2PictureBox3.TabIndex = 0;
             guna2PictureBox3.TabStop = false;
@@ -295,18 +293,21 @@
             // 
             // topup_btn
             // 
+            topup_btn.BackColor = Color.FromArgb(241, 235, 227);
+            topup_btn.BorderColor = Color.Transparent;
             topup_btn.BorderRadius = 20;
-            topup_btn.CustomizableEdges = customizableEdges47;
-            topup_btn.DisabledState.BorderColor = Color.DarkGray;
-            topup_btn.DisabledState.CustomBorderColor = Color.DarkGray;
-            topup_btn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            topup_btn.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            topup_btn.CustomizableEdges = customizableEdges13;
+            topup_btn.DisabledState.BorderColor = Color.Transparent;
+            topup_btn.DisabledState.CustomBorderColor = Color.Transparent;
+            topup_btn.DisabledState.FillColor = Color.Transparent;
+            topup_btn.DisabledState.ForeColor = Color.FromArgb(211, 195, 179);
             topup_btn.FillColor = Color.FromArgb(202, 95, 101);
             topup_btn.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             topup_btn.ForeColor = Color.White;
-            topup_btn.Location = new Point(787, 475);
+            topup_btn.Location = new Point(787, 553);
             topup_btn.Name = "topup_btn";
-            topup_btn.ShadowDecoration.CustomizableEdges = customizableEdges48;
+            topup_btn.PressedColor = Color.Transparent;
+            topup_btn.ShadowDecoration.CustomizableEdges = customizableEdges14;
             topup_btn.Size = new Size(212, 67);
             topup_btn.TabIndex = 2;
             topup_btn.Text = "Rechange Coins";
@@ -327,13 +328,13 @@
             coinPanel100.Controls.Add(guna2HtmlLabel10);
             coinPanel100.Controls.Add(guna2PictureBox5);
             coinPanel100.Controls.Add(guna2HtmlLabel11);
-            coinPanel100.CustomizableEdges = customizableEdges51;
+            coinPanel100.CustomizableEdges = customizableEdges17;
             coinPanel100.FillColor = Color.White;
             coinPanel100.ForeColor = Color.Transparent;
             coinPanel100.Location = new Point(37, 216);
             coinPanel100.Name = "coinPanel100";
             coinPanel100.ShadowDecoration.Color = Color.Transparent;
-            coinPanel100.ShadowDecoration.CustomizableEdges = customizableEdges52;
+            coinPanel100.ShadowDecoration.CustomizableEdges = customizableEdges18;
             coinPanel100.Size = new Size(262, 129);
             coinPanel100.TabIndex = 3;
             coinPanel100.Click += coinPanel100_Click;
@@ -353,13 +354,13 @@
             // 
             guna2PictureBox5.BackColor = Color.Transparent;
             guna2PictureBox5.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox5.CustomizableEdges = customizableEdges49;
+            guna2PictureBox5.CustomizableEdges = customizableEdges15;
             guna2PictureBox5.FillColor = Color.Transparent;
             guna2PictureBox5.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox5.ImageRotate = 0F;
             guna2PictureBox5.Location = new Point(79, 24);
             guna2PictureBox5.Name = "guna2PictureBox5";
-            guna2PictureBox5.ShadowDecoration.CustomizableEdges = customizableEdges50;
+            guna2PictureBox5.ShadowDecoration.CustomizableEdges = customizableEdges16;
             guna2PictureBox5.Size = new Size(53, 59);
             guna2PictureBox5.TabIndex = 0;
             guna2PictureBox5.TabStop = false;
@@ -384,13 +385,13 @@
             coinPanel200.Controls.Add(guna2HtmlLabel12);
             coinPanel200.Controls.Add(guna2PictureBox6);
             coinPanel200.Controls.Add(guna2HtmlLabel13);
-            coinPanel200.CustomizableEdges = customizableEdges55;
+            coinPanel200.CustomizableEdges = customizableEdges21;
             coinPanel200.FillColor = Color.White;
             coinPanel200.ForeColor = Color.Transparent;
             coinPanel200.Location = new Point(402, 216);
             coinPanel200.Name = "coinPanel200";
             coinPanel200.ShadowDecoration.Color = Color.Transparent;
-            coinPanel200.ShadowDecoration.CustomizableEdges = customizableEdges56;
+            coinPanel200.ShadowDecoration.CustomizableEdges = customizableEdges22;
             coinPanel200.Size = new Size(263, 129);
             coinPanel200.TabIndex = 4;
             coinPanel200.Click += coinPanel200_Click;
@@ -410,13 +411,13 @@
             // 
             guna2PictureBox6.BackColor = Color.Transparent;
             guna2PictureBox6.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox6.CustomizableEdges = customizableEdges53;
+            guna2PictureBox6.CustomizableEdges = customizableEdges19;
             guna2PictureBox6.FillColor = Color.Transparent;
             guna2PictureBox6.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox6.ImageRotate = 0F;
             guna2PictureBox6.Location = new Point(79, 24);
             guna2PictureBox6.Name = "guna2PictureBox6";
-            guna2PictureBox6.ShadowDecoration.CustomizableEdges = customizableEdges54;
+            guna2PictureBox6.ShadowDecoration.CustomizableEdges = customizableEdges20;
             guna2PictureBox6.Size = new Size(53, 59);
             guna2PictureBox6.TabIndex = 0;
             guna2PictureBox6.TabStop = false;
@@ -441,13 +442,13 @@
             coinPanel500.Controls.Add(guna2HtmlLabel14);
             coinPanel500.Controls.Add(guna2PictureBox7);
             coinPanel500.Controls.Add(guna2HtmlLabel15);
-            coinPanel500.CustomizableEdges = customizableEdges59;
+            coinPanel500.CustomizableEdges = customizableEdges25;
             coinPanel500.FillColor = Color.White;
             coinPanel500.ForeColor = Color.Transparent;
             coinPanel500.Location = new Point(737, 216);
             coinPanel500.Name = "coinPanel500";
             coinPanel500.ShadowDecoration.Color = Color.Transparent;
-            coinPanel500.ShadowDecoration.CustomizableEdges = customizableEdges60;
+            coinPanel500.ShadowDecoration.CustomizableEdges = customizableEdges26;
             coinPanel500.Size = new Size(265, 129);
             coinPanel500.TabIndex = 4;
             coinPanel500.Click += coinPanel500_Click;
@@ -467,13 +468,13 @@
             // 
             guna2PictureBox7.BackColor = Color.Transparent;
             guna2PictureBox7.BackgroundImageLayout = ImageLayout.Stretch;
-            guna2PictureBox7.CustomizableEdges = customizableEdges57;
+            guna2PictureBox7.CustomizableEdges = customizableEdges23;
             guna2PictureBox7.FillColor = Color.Transparent;
             guna2PictureBox7.Image = Properties.Resources.icons8_coin_48;
             guna2PictureBox7.ImageRotate = 0F;
             guna2PictureBox7.Location = new Point(79, 24);
             guna2PictureBox7.Name = "guna2PictureBox7";
-            guna2PictureBox7.ShadowDecoration.CustomizableEdges = customizableEdges58;
+            guna2PictureBox7.ShadowDecoration.CustomizableEdges = customizableEdges24;
             guna2PictureBox7.Size = new Size(53, 59);
             guna2PictureBox7.TabIndex = 0;
             guna2PictureBox7.TabStop = false;
@@ -498,24 +499,26 @@
             // guna2Panel4
             // 
             guna2Panel4.BackColor = Color.Transparent;
-            guna2Panel4.BorderRadius = 20;
+            guna2Panel4.BorderRadius = 50;
             guna2Panel4.Controls.Add(coinPanel10);
             guna2Panel4.Controls.Add(coinPanel500);
             guna2Panel4.Controls.Add(coinPanel50);
             guna2Panel4.Controls.Add(coinPanel200);
             guna2Panel4.Controls.Add(coinPanel100);
             guna2Panel4.Controls.Add(coinPanel20);
-            guna2Panel4.CustomizableEdges = customizableEdges67;
-            guna2Panel4.FillColor = Color.Transparent;
-            guna2Panel4.Location = new Point(100, 49);
+            guna2Panel4.CustomizableEdges = customizableEdges31;
+            guna2Panel4.FillColor = Color.FromArgb(211, 195, 179);
+            guna2Panel4.Location = new Point(104, 127);
             guna2Panel4.Name = "guna2Panel4";
-            guna2Panel4.ShadowDecoration.CustomizableEdges = customizableEdges68;
+            guna2Panel4.ShadowDecoration.BorderRadius = 20;
+            guna2Panel4.ShadowDecoration.CustomizableEdges = customizableEdges32;
             guna2Panel4.Size = new Size(1039, 390);
             guna2Panel4.TabIndex = 7;
+            guna2Panel4.Paint += guna2Panel4_Paint;
             // 
             // total_txt
             // 
-            total_txt.CustomizableEdges = customizableEdges65;
+            total_txt.CustomizableEdges = customizableEdges29;
             total_txt.DefaultText = "$\"{_totalAmount:N0} VND\"";
             total_txt.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             total_txt.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -524,20 +527,20 @@
             total_txt.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             total_txt.Font = new Font("Segoe UI", 9F);
             total_txt.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            total_txt.Location = new Point(226, 475);
+            total_txt.Location = new Point(226, 553);
             total_txt.Margin = new Padding(3, 4, 3, 4);
             total_txt.Name = "total_txt";
             total_txt.PlaceholderText = "";
             total_txt.ReadOnly = true;
             total_txt.SelectedText = "";
-            total_txt.ShadowDecoration.CustomizableEdges = customizableEdges66;
+            total_txt.ShadowDecoration.CustomizableEdges = customizableEdges30;
             total_txt.Size = new Size(203, 33);
             total_txt.TabIndex = 8;
             // 
             // btnClear
             // 
             btnClear.BorderRadius = 20;
-            btnClear.CustomizableEdges = customizableEdges63;
+            btnClear.CustomizableEdges = customizableEdges27;
             btnClear.DisabledState.BorderColor = Color.DarkGray;
             btnClear.DisabledState.CustomBorderColor = Color.DarkGray;
             btnClear.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -545,9 +548,9 @@
             btnClear.FillColor = Color.FromArgb(65, 63, 46);
             btnClear.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClear.ForeColor = Color.White;
-            btnClear.Location = new Point(1026, 475);
+            btnClear.Location = new Point(1026, 553);
             btnClear.Name = "btnClear";
-            btnClear.ShadowDecoration.CustomizableEdges = customizableEdges64;
+            btnClear.ShadowDecoration.CustomizableEdges = customizableEdges28;
             btnClear.Size = new Size(113, 67);
             btnClear.TabIndex = 9;
             btnClear.Text = "Clear";
@@ -556,30 +559,20 @@
             // lblInstructions
             // 
             lblInstructions.AutoSize = true;
-            lblInstructions.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblInstructions.ForeColor = Color.FromArgb(186, 186, 73);
-            lblInstructions.Location = new Point(100, 17);
+            lblInstructions.BackColor = Color.FromArgb(127, 115, 103);
+            lblInstructions.Font = new Font(".VnCentury SchoolbookH", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblInstructions.ForeColor = Color.FromArgb(241, 235, 227);
+            lblInstructions.Location = new Point(128, 54);
             lblInstructions.Name = "lblInstructions";
-            lblInstructions.Size = new Size(488, 23);
+            lblInstructions.Size = new Size(991, 36);
             lblInstructions.TabIndex = 10;
             lblInstructions.Text = "Click the coin panels to add up. Click repeatedly to stack more.";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(186, 186, 73);
-            label1.Location = new Point(30, 528);
-            label1.Name = "label1";
-            label1.Size = new Size(399, 23);
-            label1.TabIndex = 12;
-            label1.Text = "Quét mã QR hoặc click link để hoàn tất đổi tiền xu.";
             // 
             // Exchange
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(label1);
+            BackColor = Color.FromArgb(241, 235, 227);
             Controls.Add(lblInstructions);
             Controls.Add(btnClear);
             Controls.Add(total_txt);
@@ -645,6 +638,5 @@
         private Guna.UI2.WinForms.Guna2TextBox total_txt;
         private Label lblInstructions;
         private Guna.UI2.WinForms.Guna2Button btnClear;
-        private Label label1;
     }
 }

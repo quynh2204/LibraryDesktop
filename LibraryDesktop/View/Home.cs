@@ -12,16 +12,42 @@ using LibraryDesktop.Data.Services;
 using LibraryDesktop.Models;
 using System.Diagnostics;
 
+
 namespace LibraryDesktop.View
 {
     public partial class Home : UserControl
     {
         public event EventHandler<BookSelectedEventArgs>? BookSelected;
 
+        private readonly IUserService _userService;
+        private readonly IAuthenticationService _authService;
+        private int _currentUserId;
+        private Panel mainContainer;
+        private Account _accountControl;
+
         public Home()
         {
             InitializeComponent();
-        }        // Method to initialize with service provider and load books
+            mainContainer = new Panel
+            {
+                Dock = DockStyle.Fill
+            };
+            Controls.Add(mainContainer);
+        }
+
+        public Home(IUserService userService, IAuthenticationService authService) : this()
+        {
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        }
+
+        public void SetCurrentUserId(int userId)
+        {
+            _currentUserId = userId;
+        }
+
+
+        // Method to initialize with service provider and load books
         public async Task InitializeAsync(IServiceProvider serviceProvider)
         {
             // Check if already loaded (prevent reloading)
@@ -51,19 +77,19 @@ namespace LibraryDesktop.View
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading books: {ex.Message}");
-                
+
                 // Show error on UI thread
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(() => 
+                    this.Invoke(() =>
                     {
-                        MessageBox.Show($"Error loading books: {ex.Message}", "Error", 
+                        MessageBox.Show($"Error loading books: {ex.Message}", "Error",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     });
                 }
                 else
                 {
-                    MessageBox.Show($"Error loading books: {ex.Message}", "Error", 
+                    MessageBox.Show($"Error loading books: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -73,13 +99,13 @@ namespace LibraryDesktop.View
         {
             // Clear existing static book controls (keep the layout)
             var staticControls = flowLayoutPanel1.Controls.OfType<BookControl>().ToList();
-            
+
             // Update existing controls with real data or add new ones
             int bookIndex = 0;
             foreach (var book in books.Take(12)) // Limit to 12 books
             {
                 BookControl bookControl;
-                
+
                 if (bookIndex < staticControls.Count)
                 {
                     // Use existing control
@@ -91,7 +117,7 @@ namespace LibraryDesktop.View
                     bookControl = new BookControl();
                     flowLayoutPanel1.Controls.Add(bookControl);
                 }
-                  bookControl.SetBook(book);
+                bookControl.SetBook(book);
                 bookControl.Tag = book; // Set tag to indicate this control has data
                 bookControl.BookClicked += (sender, clickedBook) => OnBookClicked(clickedBook.BookId);
                 bookIndex++;
@@ -117,6 +143,7 @@ namespace LibraryDesktop.View
         // Trong Home.cs (UserControl)
         public void ShowBookList()
         {
+
             if (flowLayoutPanel1 != null)
             {
                 flowLayoutPanel1.Visible = true;
@@ -126,6 +153,7 @@ namespace LibraryDesktop.View
 
         public void ShowHomeView()
         {
+
             // Hiển thị Home view
             if (flowLayoutPanel1 != null)
             {
@@ -162,5 +190,36 @@ namespace LibraryDesktop.View
             // Handle search functionality
             ShowHomeView();
         }
+
+        private async void btn_vaid_Click(object sender, EventArgs e)
+        {
+            // Toggle account control
+            if (_accountControl != null && mainContainer.Controls.Contains(_accountControl))
+            {
+                // Tắt account, hiện lại home
+                mainContainer.Controls.Clear();
+                flowLayoutPanel1.Visible = true;
+            }
+            else
+            {
+                // Hiện account
+                if (_accountControl == null)
+                {
+                    _accountControl = new Account(_userService, _authService);
+                }
+
+                await _accountControl.LoadUserDataAsync(_currentUserId);
+                mainContainer.Controls.Clear();
+                mainContainer.Controls.Add(_accountControl);
+                _accountControl.Dock = DockStyle.Fill;
+                flowLayoutPanel1.Visible = false;
+            }
+        }
+
+        private void account1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
+
 }

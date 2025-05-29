@@ -25,11 +25,11 @@ namespace LibraryDesktop.View
             new Dictionary<Guna.UI2.WinForms.Guna2Panel, decimal>();        // Track how many times each panel has been clicked
         private readonly Dictionary<Guna.UI2.WinForms.Guna2Panel, int> _coinPanelClickCount =
             new Dictionary<Guna.UI2.WinForms.Guna2Panel, int>();
-        
+
         // Track which panels are selected
         private readonly Dictionary<Guna.UI2.WinForms.Guna2Panel, bool> _coinPanelSelected =
             new Dictionary<Guna.UI2.WinForms.Guna2Panel, bool>();
-              // UI Controls - Only keep essential controls for popup-based approach
+        // UI Controls - Only keep essential controls for popup-based approach
         private TextBox? totalTextBox;
         private Label? lblExchangeRate;
 
@@ -40,7 +40,8 @@ namespace LibraryDesktop.View
             InitializeComponent();
             InitializeCoinPanels();
             SetupExchangeUI();
-        }        public Exchange(IPaymentService paymentService, User currentUser) : this(paymentService)
+        }
+        public Exchange(IPaymentService paymentService, User currentUser) : this(paymentService)
         {
             _currentUser = currentUser;
 
@@ -87,7 +88,7 @@ namespace LibraryDesktop.View
                 // Initialize total display
                 UpdateTotalDisplay();
             }
-            
+
             catch (Exception ex)
             {
                 MessageBox.Show($"Error initializing coin panels: {ex.Message}", "Initialization Error",
@@ -113,7 +114,8 @@ namespace LibraryDesktop.View
                 topup_btn.BackColor = Color.Gray;
                 topup_btn.ForeColor = Color.White;
                 topup_btn.Enabled = false;
-            }        }
+            }
+        }
         #endregion
 
         #region UI Event Handlers
@@ -407,8 +409,8 @@ namespace LibraryDesktop.View
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }        // Coin panel click events - REMOVED to prevent duplication
-        // All clicks are now handled by the generic CoinPanel_Click method
-        
+                 // All clicks are now handled by the generic CoinPanel_Click method
+
         private void coinPanel10_Click(object sender, EventArgs e)
         {
             // Event handler exists for Designer compatibility but does nothing
@@ -469,7 +471,7 @@ namespace LibraryDesktop.View
                 ResetForm();
             }
         }
-        
+
         #endregion
 
         private void CoinPanel_Click(object? sender, EventArgs e)
@@ -478,6 +480,11 @@ namespace LibraryDesktop.View
             {
                 AddCoinValue(clickedPanel);
             }
+        }
+
+        private void guna2Panel4_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

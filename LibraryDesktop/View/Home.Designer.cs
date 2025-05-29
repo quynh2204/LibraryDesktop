@@ -53,6 +53,7 @@
             guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            account1 = new Account();
             flowLayoutPanel1.SuspendLayout();
             guna2ShadowPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)guna2PictureBox1).BeginInit();
@@ -282,10 +283,20 @@
             guna2HtmlLabel1.TabIndex = 7;
             guna2HtmlLabel1.Text = "Account's name";
             // 
+            // account1
+            // 
+            account1.Location = new Point(44, 116);
+            account1.Margin = new Padding(4, 5, 4, 5);
+            account1.Name = "account1";
+            account1.Size = new Size(1151, 604);
+            account1.TabIndex = 10;
+            account1.Load += account1_Load;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(account1);
             Controls.Add(flowLayoutPanel1);
             Controls.Add(guna2ShadowPanel1);
             Name = "Home";
@@ -318,5 +329,6 @@
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Account account1;
     }
 }

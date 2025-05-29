@@ -43,8 +43,8 @@ namespace LibraryDesktop.Data.Services
     {
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<User?> GetUserByIdAsync(int userId);
-        Task<string?> GetUsernameByIdAsync(int userId);
-        Task<decimal> GetUserBalanceAsync(int userId);
+        Task<string?> GetUsernameByIdAsync(int userId);        Task<int> GetUserCoinsAsync(int userId);
+        Task UpdateUserCoinsAsync(int userId, int coins);
         Task UpdateUserSettingsAsync(int userId, ThemeMode theme, int fontSize);
         Task<bool> AddToFavoritesAsync(int userId, int bookId);
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);

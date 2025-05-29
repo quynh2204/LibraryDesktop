@@ -469,6 +469,11 @@ namespace LibraryDesktop.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Coins")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -501,6 +506,7 @@ namespace LibraryDesktop.Data.Migrations
                         new
                         {
                             UserId = 1,
+                            Coins = 100,
                             Email = "demo@library.com",
                             PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=",
                             RegistrationDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -539,9 +545,6 @@ namespace LibraryDesktop.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<int>("FontSize")
                         .HasColumnType("INTEGER");
 
@@ -553,8 +556,7 @@ namespace LibraryDesktop.Data.Migrations
 
                     b.HasKey("SettingId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserSettings", (string)null);
 
@@ -562,7 +564,6 @@ namespace LibraryDesktop.Data.Migrations
                         new
                         {
                             SettingId = 1,
-                            Balance = 100.00m,
                             FontSize = 12,
                             ThemeMode = 0,
                             UserId = 1
@@ -643,8 +644,8 @@ namespace LibraryDesktop.Data.Migrations
             modelBuilder.Entity("LibraryDesktop.Models.UserSetting", b =>
                 {
                     b.HasOne("LibraryDesktop.Models.User", "User")
-                        .WithOne("UserSetting")
-                        .HasForeignKey("LibraryDesktop.Models.UserSetting", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -672,8 +673,6 @@ namespace LibraryDesktop.Data.Migrations
                     b.Navigation("Payments");
 
                     b.Navigation("Ratings");
-
-                    b.Navigation("UserSetting");
                 });
 #pragma warning restore 612, 618
         }

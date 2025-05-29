@@ -289,7 +289,7 @@
             Controls.Add(flowLayoutPanel1);
             Controls.Add(guna2ShadowPanel1);
             Name = "Home";
-            Size = new Size(1247, 730);
+            Size = new Size(1220, 720);
             flowLayoutPanel1.ResumeLayout(false);
             guna2ShadowPanel1.ResumeLayout(false);
             guna2ShadowPanel1.PerformLayout();

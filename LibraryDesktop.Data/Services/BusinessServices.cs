@@ -85,11 +85,14 @@ namespace LibraryDesktop.Data.Services
         {
             var user = await _userRepository.GetByIdAsync(userId);
             return user?.Username;
+        }        public async Task<int> GetUserCoinsAsync(int userId)
+        {
+            return await _userRepository.GetUserCoinsAsync(userId);
         }
 
-        public async Task<decimal> GetUserBalanceAsync(int userId)
+        public async Task UpdateUserCoinsAsync(int userId, int coins)
         {
-            return await _userSettingRepository.GetUserBalanceAsync(userId);
+            await _userRepository.UpdateUserCoinsAsync(userId, coins);
         }
 
         public async Task UpdateUserSettingsAsync(int userId, ThemeMode theme, int fontSize)

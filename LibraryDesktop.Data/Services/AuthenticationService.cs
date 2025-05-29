@@ -33,26 +33,22 @@ namespace LibraryDesktop.Data.Services
                 return null;
             
             if (await _userRepository.EmailExistsAsync(email))
-                return null;
-
-            var user = new User
+                return null;            var user = new User
             {
                 Username = username,
                 Email = email,
                 PasswordHash = HashPassword(password),
-                RegistrationDate = DateTime.Now
+                RegistrationDate = DateTime.Now,
+                Coins = 0
             };
 
             await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            // Create default user settings
+            await _userRepository.SaveChangesAsync();            // Create default user settings
             var userSetting = new UserSetting
             {
                 UserId = user.UserId,
                 ThemeMode = ThemeMode.Light,
-                FontSize = 12,
-                Balance = 0
+                FontSize = 12
             };
 
             await _userSettingRepository.AddAsync(userSetting);

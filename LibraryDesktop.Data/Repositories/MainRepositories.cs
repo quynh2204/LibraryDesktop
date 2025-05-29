@@ -16,12 +16,9 @@ namespace LibraryDesktop.Data.Repositories
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<User?> GetUserWithSettingsAsync(int userId)
+        }        public async Task<User?> GetUserWithSettingsAsync(int userId)
         {
             return await _dbSet
-                .Include(u => u.UserSetting)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
@@ -33,6 +30,22 @@ namespace LibraryDesktop.Data.Repositories
         public async Task<bool> EmailExistsAsync(string email)
         {
             return await _dbSet.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<int> GetUserCoinsAsync(int userId)
+        {
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+            return user?.Coins ?? 0;
+        }
+
+        public async Task UpdateUserCoinsAsync(int userId, int coins)
+        {
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user != null)
+            {
+                user.Coins += coins;
+                await SaveChangesAsync();
+            }
         }
     }
 

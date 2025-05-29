@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryDesktop.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,8 @@ namespace LibraryDesktop.Data.Migrations
                     Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     AvatarUrl = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    RegistrationDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    RegistrationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Coins = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -81,7 +82,7 @@ namespace LibraryDesktop.Data.Migrations
                     PaymentId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
                     PaymentMethod = table.Column<int>(type: "INTEGER", nullable: false),
                     PaymentStatus = table.Column<int>(type: "INTEGER", nullable: false),
                     QrCodeData = table.Column<string>(type: "TEXT", nullable: true),
@@ -110,8 +111,7 @@ namespace LibraryDesktop.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     ThemeMode = table.Column<int>(type: "INTEGER", nullable: false),
-                    FontSize = table.Column<int>(type: "INTEGER", nullable: false),
-                    Balance = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    FontSize = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -218,8 +218,8 @@ namespace LibraryDesktop.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "AvatarUrl", "Email", "PasswordHash", "RegistrationDate", "Username" },
-                values: new object[] { 1, null, "demo@library.com", "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "demo" });
+                columns: new[] { "UserId", "AvatarUrl", "Coins", "Email", "PasswordHash", "RegistrationDate", "Username" },
+                values: new object[] { 1, null, 100, "demo@library.com", "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "demo" });
 
             migrationBuilder.InsertData(
                 table: "Books",
@@ -242,8 +242,8 @@ namespace LibraryDesktop.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "UserSettings",
-                columns: new[] { "SettingId", "Balance", "FontSize", "ThemeMode", "UserId" },
-                values: new object[] { 1, 100.00m, 12, 0, 1 });
+                columns: new[] { "SettingId", "FontSize", "ThemeMode", "UserId" },
+                values: new object[] { 1, 12, 0, 1 });
 
             migrationBuilder.InsertData(
                 table: "Chapters",
@@ -321,8 +321,7 @@ namespace LibraryDesktop.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserSettings_UserId",
                 table: "UserSettings",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
         }
 
         /// <inheritdoc />

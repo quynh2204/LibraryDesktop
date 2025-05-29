@@ -56,17 +56,22 @@ namespace LibraryDesktop.View
                 btnLogin.Enabled = true;
                 btnLogin.Text = "Login";
             }
-        }        
+        }
         private void btnRegister_Click(object sender, EventArgs e)
         {
             using (var registrationForm = _serviceProvider.GetRequiredService<RegistrationForm>())
             {
-                if (registrationForm.ShowDialog() == DialogResult.OK)
-                {
-                    MessageBox.Show("Registration successful! You can now login with your new account.", "Success", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                var result = registrationForm.ShowDialog();
 
+                if (result == DialogResult.OK)
+                {
+                    MessageBox.Show("Registration successful! You can now login with your new account.", "Success",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    this.DialogResult = DialogResult.Retry;
+                    this.Close();
+                }
+  
             }
         }
     }

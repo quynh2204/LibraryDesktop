@@ -52,9 +52,7 @@ namespace LibraryDesktop.Data
 
             // Seed initial data
             SeedData(modelBuilder);
-        }
-
-        private void ConfigureUserEntity(ModelBuilder modelBuilder)
+        }        private void ConfigureUserEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity =>
             {
@@ -64,6 +62,7 @@ namespace LibraryDesktop.Data
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.AvatarUrl).HasMaxLength(255);
+                entity.Property(e => e.Coins).HasDefaultValue(0);
                 entity.HasIndex(e => e.Username).IsUnique();
                 entity.HasIndex(e => e.Email).IsUnique();
             });
@@ -157,19 +156,16 @@ namespace LibraryDesktop.Data
                     
                 entity.HasIndex(e => new { e.UserId, e.BookId }).IsUnique();
             });
-        }
-
-        private void ConfigureUserSettingEntity(ModelBuilder modelBuilder)
+        }        private void ConfigureUserSettingEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserSetting>(entity =>
             {
                 entity.ToTable("UserSettings");
                 entity.HasKey(e => e.SettingId);
-                entity.Property(e => e.Balance).HasColumnType("decimal(10,2)");
                 
                 entity.HasOne(e => e.User)
-                    .WithOne(u => u.UserSetting)
-                    .HasForeignKey<UserSetting>(e => e.UserId)
+                    .WithMany() // Remove one-to-one relationship since User no longer has UserSetting navigation
+                    .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
         }
@@ -202,9 +198,7 @@ namespace LibraryDesktop.Data
                 new Category { CategoryId = 3, CategoryName = "Sci-Fi", Description = "Science fiction stories", CreatedDate = seedDate, IsActive = true },
                 new Category { CategoryId = 4, CategoryName = "Mystery", Description = "Mystery and thriller stories", CreatedDate = seedDate, IsActive = true },
                 new Category { CategoryId = 5, CategoryName = "Adventure", Description = "Adventure stories", CreatedDate = seedDate, IsActive = true }
-            );
-
-            // Seed Demo User
+            );            // Seed Demo User
             modelBuilder.Entity<User>().HasData(
                 new User 
                 { 
@@ -212,19 +206,19 @@ namespace LibraryDesktop.Data
                     Username = "demo", 
                     Email = "demo@library.com", 
                     PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", // SHA256 hash of "demo" + salt
-                    RegistrationDate = seedDate
+                    RegistrationDate = seedDate,
+                    Coins = 100
                 }
-            );            // Seed Demo User Settings
+            );// Seed Demo User Settings
             modelBuilder.Entity<UserSetting>().HasData(
                 new UserSetting
                 {
                     SettingId = 1,
                     UserId = 1,
                     ThemeMode = ThemeMode.Light,
-                    FontSize = 12,
-                    Balance = 100.00m
+                    FontSize = 12
                 }
-            );            // Seed Books with Asset Images
+            );// Seed Books with Asset Images
             modelBuilder.Entity<Book>().HasData(
                 new Book { BookId = 1, Title = "The Enchanted Forest", Author = "Elena Moonstone", CategoryId = 1, Description = "A magical journey through an ancient forest filled with mystical creatures and forgotten secrets.", Price = 15.99m, CoverImageUrl = "Assets/0d080b47aaa3ab11160e60091f5ecbb7.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
                 new Book { BookId = 2, Title = "Love in the City", Author = "Sarah Martinez", CategoryId = 2, Description = "A heartwarming romance set in the bustling streets of New York City.", Price = 12.99m, CoverImageUrl = "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg", Status = BookStatus.Published, CreatedDate = seedDate },

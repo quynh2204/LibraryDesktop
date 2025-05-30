@@ -35,14 +35,14 @@ namespace LibraryDesktop.View
             if (_book != null)
             {
                 lblBookTitle.Text = _book.Title;
-                lblAuthor.Text = $"by {_book.Author}";
+                lblAuthor.Text = $"{_book.Author}";
                 lblChapterCount.Text = $"{_book.Chapters?.Count ?? 0} Chapters";
                 
                 // Show price panel if book has a price
                 if (_book.Price > 0)
                 {
                     panelPremium.Visible = true;
-                    lblPrice.Text = $"${_book.Price:F2}";
+                    lblPrice.Text = $"{_book.Price} Coins";
                 }
                 else
                 {

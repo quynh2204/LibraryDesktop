@@ -2,8 +2,7 @@ using LibraryDesktop.Data.Interfaces;
 using LibraryDesktop.Models;
 
 namespace LibraryDesktop.Data.Services
-{
-    public class BookService : IBookService
+{    public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
         private readonly IChapterRepository _chapterRepository;
@@ -54,6 +53,36 @@ namespace LibraryDesktop.Data.Services
         public async Task IncrementViewCountAsync(int bookId)
         {
             await _bookRepository.IncrementViewCountAsync(bookId);
+        }
+    }
+
+    public class CategoryService : ICategoryService
+    {
+        private readonly ICategoryRepository _categoryRepository;
+
+        public CategoryService(ICategoryRepository categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            return await _categoryRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetActiveCategoriesAsync()
+        {
+            return await _categoryRepository.GetActiveCategoriesAsync();
+        }
+
+        public async Task<Category?> GetCategoryByIdAsync(int categoryId)
+        {
+            return await _categoryRepository.GetByIdAsync(categoryId);
+        }
+
+        public async Task<Category?> GetCategoryWithBooksAsync(int categoryId)
+        {
+            return await _categoryRepository.GetCategoryWithBooksAsync(categoryId);
         }
     }
 
@@ -141,6 +170,84 @@ namespace LibraryDesktop.Data.Services
         public async Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(int userId)
         {
             return await _userFavoriteRepository.GetUserFavoritesAsync(userId);
+        }
+    }
+
+    public class RatingService : IRatingService
+    {
+        private readonly IRatingRepository _ratingRepository;
+
+        public RatingService(IRatingRepository ratingRepository)
+        {
+            _ratingRepository = ratingRepository;
+        }
+
+        public async Task<IEnumerable<Rating>> GetBookRatingsAsync(int bookId)
+        {
+            return await _ratingRepository.GetBookRatingsAsync(bookId);
+        }
+
+        public async Task<Rating?> GetUserRatingAsync(int userId, int bookId)
+        {
+            return await _ratingRepository.GetUserRatingAsync(userId, bookId);
+        }
+
+        public async Task<double> GetAverageRatingAsync(int bookId)
+        {
+            return await _ratingRepository.GetAverageRatingAsync(bookId);
+        }
+
+        public async Task<Rating> AddOrUpdateRatingAsync(int userId, int bookId, int ratingValue, string? review = null)
+        {
+            var existingRating = await _ratingRepository.GetUserRatingAsync(userId, bookId);
+
+            if (existingRating != null)
+            {
+                // Update existing rating
+                existingRating.RatingValue = ratingValue;
+                existingRating.Review = review;
+                existingRating.UpdatedDate = DateTime.Now;
+                
+                await _ratingRepository.UpdateAsync(existingRating);
+                await _ratingRepository.SaveChangesAsync();
+                return existingRating;
+            }
+            else
+            {
+                // Create new rating
+                var newRating = new Rating
+                {
+                    UserId = userId,
+                    BookId = bookId,
+                    RatingValue = ratingValue,
+                    Review = review,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
+
+                await _ratingRepository.AddAsync(newRating);
+                await _ratingRepository.SaveChangesAsync();
+                return newRating;
+            }
+        }
+
+        public async Task<bool> DeleteRatingAsync(int userId, int bookId)
+        {
+            try
+            {
+                var rating = await _ratingRepository.GetUserRatingAsync(userId, bookId);
+                if (rating != null)
+                {
+                    await _ratingRepository.DeleteAsync(rating);
+                    await _ratingRepository.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

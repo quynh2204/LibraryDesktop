@@ -9,9 +9,7 @@ namespace LibraryDesktop.Data.Services
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hash);
-    }
-
-    public interface IBookService
+    }    public interface IBookService
     {
         Task<IEnumerable<Book>> GetBooksAsync();
         Task<IEnumerable<Book>> GetBooksByCategoryAsync(int categoryId);
@@ -19,7 +17,15 @@ namespace LibraryDesktop.Data.Services
         Task<Book?> GetBookDetailsAsync(int bookId);
         Task<string> GetChapterContentAsync(string githubUrl);
         Task IncrementViewCountAsync(int bookId);
-    }    public interface IPaymentService
+    }
+
+    public interface ICategoryService
+    {
+        Task<IEnumerable<Category>> GetCategoriesAsync();
+        Task<IEnumerable<Category>> GetActiveCategoriesAsync();
+        Task<Category?> GetCategoryByIdAsync(int categoryId);
+        Task<Category?> GetCategoryWithBooksAsync(int categoryId);
+    }public interface IPaymentService
     {
         Task<Payment> CreatePaymentAsync(int userId, int amount, string description = "");
         Task<string> GenerateQRCodeAsync(Payment payment);
@@ -50,6 +56,13 @@ namespace LibraryDesktop.Data.Services
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);
         Task<bool> IsFavoriteAsync(int userId, int bookId);
         Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(int userId);
+    }    public interface IRatingService
+    {
+        Task<IEnumerable<Rating>> GetBookRatingsAsync(int bookId);
+        Task<Rating?> GetUserRatingAsync(int userId, int bookId);
+        Task<double> GetAverageRatingAsync(int bookId);
+        Task<Rating> AddOrUpdateRatingAsync(int userId, int bookId, int ratingValue, string? review = null);
+        Task<bool> DeleteRatingAsync(int userId, int bookId);
     }
 
     public interface IGitHubContentService

@@ -129,13 +129,32 @@ namespace LibraryDesktop.View
                 try
                 {
                     _currentCoins = await _userService.GetUserCoinsAsync(_currentUser.UserId);
-                    // Update UI if needed
+                    
+                    // Update UI coins display on UI thread
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(new Action(() => UpdateCoinsUI()));
+                    }
+                    else
+                    {
+                        UpdateCoinsUI();
+                    }
+                    
+                    // Update window title
                     this.Text = $"Library Desktop - Welcome {_currentUser.Username}";
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error updating coins: {ex.Message}");
                 }
+            }
+        }
+
+        private void UpdateCoinsUI()
+        {
+            if (lblCoins != null)
+            {
+                lblCoins.Text = $"{_currentCoins} Coins";
             }
         }private void InitializeContentPanel()
         {
@@ -357,7 +376,7 @@ namespace LibraryDesktop.View
                 if (_currentUser != null && e.UserId == _currentUser.UserId)
                 {
                     Console.WriteLine($"💰 Payment completed for current user! Amount: {e.Amount}, Coins: {e.Amount / 1000}");
-                      // Cập nhật coins trên UI thread
+                      // Update coins display
                     if (this.InvokeRequired)
                     {
                         this.Invoke(new Action(async () => await UpdateCoinsDisplayAsync()));

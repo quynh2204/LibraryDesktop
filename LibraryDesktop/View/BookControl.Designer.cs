@@ -137,7 +137,7 @@ namespace LibraryDesktop.View
             lblPrice.Name = "lblPrice";
             lblPrice.Size = new Size(35, 19);
             lblPrice.TabIndex = 0;
-            lblPrice.Text = "$0.00";
+            lblPrice.Text = "0 Coins";
             // 
             // BookControl
             // 

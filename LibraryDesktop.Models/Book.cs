@@ -40,10 +40,10 @@ namespace LibraryDesktop.Models
         
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         
-        public int ViewCount { get; set; } = 0;
+        [Required]
+        public int ViewCount { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Price { get; set; } = 0;
+        public int Price { get; set; } = 0;
         
         // Navigation properties
         [ForeignKey(nameof(CategoryId))]

@@ -187,17 +187,21 @@ namespace LibraryDesktop.Data
                     
                 entity.HasIndex(e => e.PaymentToken).IsUnique();
             });
-        }        private void SeedData(ModelBuilder modelBuilder)
+        }        
+        private void SeedData(ModelBuilder modelBuilder)
         {
             var seedDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             
             // Seed Categories
             modelBuilder.Entity<Category>().HasData(
-                new Category { CategoryId = 1, CategoryName = "Fantasy", Description = "Fantasy stories and novels", CreatedDate = seedDate, IsActive = true },
-                new Category { CategoryId = 2, CategoryName = "Romance", Description = "Romance stories and novels", CreatedDate = seedDate, IsActive = true },
-                new Category { CategoryId = 3, CategoryName = "Sci-Fi", Description = "Science fiction stories", CreatedDate = seedDate, IsActive = true },
-                new Category { CategoryId = 4, CategoryName = "Mystery", Description = "Mystery and thriller stories", CreatedDate = seedDate, IsActive = true },
-                new Category { CategoryId = 5, CategoryName = "Adventure", Description = "Adventure stories", CreatedDate = seedDate, IsActive = true }
+                new Category { CategoryId = 1, CategoryName = "Giả Tưởng", Description = "Truyện và tiểu thuyết giả tưởng", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 2, CategoryName = "Văn học hiện đại", Description = "Truyện và tác phẩm văn học hiện đại", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 3, CategoryName = "Kinh tế", Description = "Sách và truyện về lĩnh vực kinh tế", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 4, CategoryName = "Trinh thám", Description = "Truyện và tiểu thuyết trinh thám", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 5, CategoryName = "Lịch sử", Description = "Sách và truyện về lịch sử", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 6, CategoryName = "Triết học", Description = "Tiểu thuyết và sách về triết học", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 7, CategoryName = "Kỹ năng sống", Description = "Sách về kỹ năng sống", CreatedDate = seedDate, IsActive = true },
+                new Category { CategoryId = 8, CategoryName = "Khoa học viễn tưởng", Description = "Truyện và tiểu thuyết khoa học viễn tưởng", CreatedDate = seedDate, IsActive = true }
             );            // Seed Demo User
             modelBuilder.Entity<User>().HasData(
                 new User 
@@ -220,24 +224,116 @@ namespace LibraryDesktop.Data
                 }
             );// Seed Books with Asset Images
             modelBuilder.Entity<Book>().HasData(
-                new Book { BookId = 1, Title = "The Enchanted Forest", Author = "Elena Moonstone", CategoryId = 1, Description = "A magical journey through an ancient forest filled with mystical creatures and forgotten secrets.", Price = 15.99m, CoverImageUrl = "Assets/0d080b47aaa3ab11160e60091f5ecbb7.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 2, Title = "Love in the City", Author = "Sarah Martinez", CategoryId = 2, Description = "A heartwarming romance set in the bustling streets of New York City.", Price = 12.99m, CoverImageUrl = "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 3, Title = "Quantum Horizons", Author = "Dr. Michael Chen", CategoryId = 3, Description = "An epic science fiction adventure exploring the boundaries of space and time.", Price = 18.99m, CoverImageUrl = "Assets/3398eb12b32fa930e105e701b708bc9a.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 4, Title = "The Shadow Detective", Author = "James Blackwood", CategoryId = 4, Description = "A gripping mystery thriller following Detective Morgan through the darkest corners of the city.", Price = 14.99m, CoverImageUrl = "Assets/5cb878e981ec841cf8963c2dbfc837c3.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 5, Title = "Mountain Quest", Author = "Adventure Kelly", CategoryId = 5, Description = "An thrilling adventure story of climbing the world's most dangerous peaks.", Price = 16.99m, CoverImageUrl = "Assets/65b07f0ccb5631d4025d509c0c14e62d.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 6, Title = "Dragon's Legacy", Author = "Aria Dragonheart", CategoryId = 1, Description = "The epic tale of the last dragon rider and their quest to save the realm.", Price = 19.99m, CoverImageUrl = "Assets/6a81c3d24a73711e02ba8593c067bccf.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 7, Title = "Starbound Lovers", Author = "Luna Starfield", CategoryId = 2, Description = "A cosmic romance spanning galaxies and defying the laws of physics.", Price = 13.99m, CoverImageUrl = "Assets/9a321b2c38deed11aa8fb0e879cc6610.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 8, Title = "Time Paradox", Author = "Prof. Alexandra Time", CategoryId = 3, Description = "A mind-bending sci-fi thriller about time travel and its consequences.", Price = 17.99m, CoverImageUrl = "Assets/c879fb508a3217ace62142bf6f7b72c1.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 9, Title = "The Lost Cipher", Author = "Rebecca Stone", CategoryId = 4, Description = "An ancient code holds the key to preventing a global catastrophe.", Price = 15.99m, CoverImageUrl = "Assets/e19d44be068aeef341ef687ce43ce5a3.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 10, Title = "Ocean Explorer", Author = "Captain Marina Blue", CategoryId = 5, Description = "Dive into the deepest mysteries of the ocean in this underwater adventure.", Price = 14.99m, CoverImageUrl = "Assets/e3c33ed5f3d5d99567ae20bd138aa913.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 11, Title = "The Wizard's Apprentice", Author = "Merlin Wiseheart", CategoryId = 1, Description = "A young apprentice discovers hidden powers and ancient magical secrets.", Price = 16.99m, CoverImageUrl = "Assets/f0e51f4a153d25e0438d429892ac8fa6.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 12, Title = "Midnight Romance", Author = "Scarlett Dreams", CategoryId = 2, Description = "A passionate love story that blooms under the moonlit sky.", Price = 11.99m, CoverImageUrl = "Assets/f4c232745d79b53ac510d102a347fb4b.jpg", Status = BookStatus.Published, CreatedDate = seedDate }
+                new Book { BookId = 1, Title = "Harry Potter và Hòn đá Phù thủy", Author="J.K. Rowling", CategoryId = 1, Description = "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.", ViewCount = 70, Price = 0, CoverImageUrl = "Assets/1.png", Status = BookStatus.Completed, CreatedDate = seedDate},
+                new Book { BookId = 2, Title = "Tôi thấy hoa vàng trên cỏ xanh", Author = "Nguyễn Nhật Ánh", CategoryId = 2, Description = "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.", ViewCount = 50, Price = 0, CoverImageUrl = "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg", Status = BookStatus.Completed, CreatedDate = seedDate },
+                new Book { BookId = 3, Title = "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes", Author = "Arthur Conan Doyle", CategoryId = 4, Description = "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.", ViewCount = 25, Price = 0, CoverImageUrl = "Assets/3398eb12b32fa930e105e701b708bc9a.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 4, Title = "Dạy con làm giàu", Author = "Robert Kiyosaki", CategoryId = 3, Description = "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.", ViewCount = 30, Price = 50, CoverImageUrl = "Assets/5cb878e981ec841cf8963c2dbfc837c3.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 5, Title = "Lịch sử Việt Nam: Đại Việt sử ký toàn thư", Author = "Ngô Sĩ Liên", CategoryId = 5, Description = "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.", ViewCount = 35, Price = 0, CoverImageUrl = "Assets/65b07f0ccb5631d4025d509c0c14e62d.jpg", Status = BookStatus.Completed, CreatedDate = seedDate },
+                new Book { BookId = 6, Title = "Nhà giả kim", Author = "Paulo Coelho", CategoryId = 6, Description = "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.", ViewCount = 40, Price = 50, CoverImageUrl = "Assets/6a81c3d24a73711e02ba8593c067bccf.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 7, Title = "Đắc nhân tâm", Author = "Dale Carnegie", CategoryId = 7, Description = "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.", ViewCount = 45, Price = 50, CoverImageUrl = "Assets/9a321b2c38deed11aa8fb0e879cc6610.jpg", Status = BookStatus.Published, CreatedDate = seedDate }
             );            // Seed Chapters for some books
             modelBuilder.Entity<Chapter>().HasData(
-                new Chapter { ChapterId = 1, BookId = 1, ChapterNumber = 1, ChapterTitle = "The Mysterious Path", GitHubContentUrl = "https://github.com/example/enchanted-forest/chapter1.md", PublishedDate = seedDate },
-                new Chapter { ChapterId = 2, BookId = 1, ChapterNumber = 2, ChapterTitle = "Meeting the Guardian", GitHubContentUrl = "https://github.com/example/enchanted-forest/chapter2.md", PublishedDate = seedDate },
-                new Chapter { ChapterId = 3, BookId = 2, ChapterNumber = 1, ChapterTitle = "First Encounter", GitHubContentUrl = "https://github.com/example/love-city/chapter1.md", PublishedDate = seedDate },
-                new Chapter { ChapterId = 4, BookId = 3, ChapterNumber = 1, ChapterTitle = "The Quantum Discovery", GitHubContentUrl = "https://github.com/example/quantum-horizons/chapter1.md", PublishedDate = seedDate }
+                new Chapter { ChapterId = 1, BookId = 1, ChapterNumber = 1, ChapterTitle = "Đứa bé vẫn sống", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 2, BookId = 1, ChapterNumber = 2, ChapterTitle = "Tấm kính biến mất", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 3, BookId = 1, ChapterNumber = 3, ChapterTitle = "Những lá thư không xuất xứ", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 4, BookId = 1, ChapterNumber = 4, ChapterTitle = "Người giữ khóa", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2004.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 5, BookId = 1, ChapterNumber = 5, ChapterTitle = "Hẻm Xéo", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2005.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 6, BookId = 2, ChapterNumber = 1, ChapterTitle = "Hoa tay", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/T%C3%B4i%20Th%E1%BA%A5y%20Hoa%20V%C3%A0ng%20Tr%C3%AAn%20C%E1%BB%8F%20Xanh/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 7, BookId = 2, ChapterNumber = 2, ChapterTitle = "Những ngón tay", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/T%C3%B4i%20Th%E1%BA%A5y%20Hoa%20V%C3%A0ng%20Tr%C3%AAn%20C%E1%BB%8F%20Xanh/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 8, BookId = 2, ChapterNumber = 3, ChapterTitle = "Chú Đàn", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/T%C3%B4i%20Th%E1%BA%A5y%20Hoa%20V%C3%A0ng%20Tr%C3%AAn%20C%E1%BB%8F%20Xanh/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 9, BookId = 2, ChapterNumber = 4, ChapterTitle = "Chuyện ma của chú Đàn", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/T%C3%B4i%20Th%E1%BA%A5y%20Hoa%20V%C3%A0ng%20Tr%C3%AAn%20C%E1%BB%8F%20Xanh/Ch%C6%B0%C6%A1ng%2004.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 10, BookId = 3, ChapterNumber = 1, ChapterTitle = "Dải băng lốm đốm", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Cu%E1%BB%99c%20Phi%C3%AAu%20L%C6%B0u%20C%E1%BB%A7a%20Sherlock%20Holmes/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 11, BookId = 3, ChapterNumber = 2, ChapterTitle = "Hội tóc hung", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Cu%E1%BB%99c%20Phi%C3%AAu%20L%C6%B0u%20C%E1%BB%A7a%20Sherlock%20Holmes/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 12, BookId = 3, ChapterNumber = 3, ChapterTitle = "Bí ẩn ở thung lũng", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Cu%E1%BB%99c%20Phi%C3%AAu%20L%C6%B0u%20C%E1%BB%A7a%20Sherlock%20Holmes/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 13, BookId = 3, ChapterNumber = 4, ChapterTitle = "Năm hột cam", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Cu%E1%BB%99c%20Phi%C3%AAu%20L%C6%B0u%20C%E1%BB%A7a%20Sherlock%20Holmes/Ch%C6%B0%C6%A1ng%2004.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 14, BookId = 3, ChapterNumber = 5, ChapterTitle = "Chiếc vương miện", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Cu%E1%BB%99c%20Phi%C3%AAu%20L%C6%B0u%20C%E1%BB%A7a%20Sherlock%20Holmes/Ch%C6%B0%C6%A1ng%2005.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 15, BookId = 4, ChapterNumber = 1, ChapterTitle = "Cha giàu, cha nghèo", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/D%E1%BA%A1y%20Con%20L%C3%A0m%20Gi%C3%A0u%20-%20T%E1%BA%ADp%201/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 16, BookId = 4, ChapterNumber = 2, ChapterTitle = "Người giàu không làm việc vì tiền", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/D%E1%BA%A1y%20Con%20L%C3%A0m%20Gi%C3%A0u%20-%20T%E1%BA%ADp%201/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 17, BookId = 4, ChapterNumber = 3, ChapterTitle = "Tại sao phải dạy con về tài chính?", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/D%E1%BA%A1y%20Con%20L%C3%A0m%20Gi%C3%A0u%20-%20T%E1%BA%ADp%201/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 18, BookId = 5, ChapterNumber = 1, ChapterTitle = "Đại Việt Sử Ký Ngoại Kỷ Toàn Thư: Quyển I", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/L%E1%BB%8Bch%20S%E1%BB%AD%20Vi%E1%BB%87t%20Nam%20-%20%C4%90%E1%BA%A1i%20Vi%E1%BB%87t%20S%E1%BB%AD%20K%C3%BD%20To%C3%A0n%20Th%C6%B0/Quy%E1%BB%83n%20I.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 19, BookId = 5, ChapterNumber = 2, ChapterTitle = "Đại Việt Sử Ký Ngoại Kỷ Toàn Thư: Quyển II", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/L%E1%BB%8Bch%20S%E1%BB%AD%20Vi%E1%BB%87t%20Nam%20-%20%C4%90%E1%BA%A1i%20Vi%E1%BB%87t%20S%E1%BB%AD%20K%C3%BD%20To%C3%A0n%20Th%C6%B0/Quy%E1%BB%83n%20II.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 20, BookId = 5, ChapterNumber = 3, ChapterTitle = "Đại Việt Sử Ký Ngoại Kỷ Toàn Thư: Quyển III", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/L%E1%BB%8Bch%20S%E1%BB%AD%20Vi%E1%BB%87t%20Nam%20-%20%C4%90%E1%BA%A1i%20Vi%E1%BB%87t%20S%E1%BB%AD%20K%C3%BD%20To%C3%A0n%20Th%C6%B0/Quy%E1%BB%83n%20III.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 21, BookId = 6, ChapterNumber = 1, ChapterTitle = "Chương 1", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Nh%C3%A0%20Gi%E1%BA%A3%20Kim/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 22, BookId = 6, ChapterNumber = 2, ChapterTitle = "Chương 2", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Nh%C3%A0%20Gi%E1%BA%A3%20Kim/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 23, BookId = 6, ChapterNumber = 3, ChapterTitle = "Chương 3", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Nh%C3%A0%20Gi%E1%BA%A3%20Kim/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 24, BookId = 6, ChapterNumber = 4, ChapterTitle = "Chương 4", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Nh%C3%A0%20Gi%E1%BA%A3%20Kim/Ch%C6%B0%C6%A1ng%2004.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 25, BookId = 7, ChapterNumber = 1, ChapterTitle = "Muốn lấy mật thì đừng phá tổ ong", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/%C4%90%E1%BA%AFc%20Nh%C3%A2n%20T%C3%A2m/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 26, BookId = 7, ChapterNumber = 2, ChapterTitle = "Bí mật lớn nhất trong phép ứng xử", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/%C4%90%E1%BA%AFc%20Nh%C3%A2n%20T%C3%A2m/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },
+                new Chapter { ChapterId = 27, BookId = 7, ChapterNumber = 3, ChapterTitle = "Ai làm được điều dưới đây", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/%C4%90%E1%BA%AFc%20Nh%C3%A2n%20T%C3%A2m/Ch%C6%B0%C6%A1ng%2003.txt", PublishedDate = seedDate },                new Chapter { ChapterId = 28, BookId = 7, ChapterNumber = 4, ChapterTitle = "Thành thật quan tâm đến người khác", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/%C4%90%E1%BA%AFc%20Nh%C3%A2n%20T%C3%A2m/Ch%C6%B0%C6%A1ng%2004.txt", PublishedDate = seedDate }
+            );
+
+            // Seed additional demo users for ratings
+            modelBuilder.Entity<User>().HasData(
+                new User 
+                { 
+                    UserId = 2, 
+                    Username = "alice", 
+                    Email = "alice@library.com", 
+                    PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", 
+                    RegistrationDate = seedDate.AddDays(-30),
+                    Coins = 150
+                },
+                new User 
+                { 
+                    UserId = 3, 
+                    Username = "bob", 
+                    Email = "bob@library.com", 
+                    PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", 
+                    RegistrationDate = seedDate.AddDays(-20),
+                    Coins = 80
+                },
+                new User 
+                { 
+                    UserId = 4, 
+                    Username = "carol", 
+                    Email = "carol@library.com", 
+                    PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", 
+                    RegistrationDate = seedDate.AddDays(-15),
+                    Coins = 200
+                },
+                new User 
+                { 
+                    UserId = 5, 
+                    Username = "david", 
+                    Email = "david@library.com", 
+                    PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", 
+                    RegistrationDate = seedDate.AddDays(-10),
+                    Coins = 120
+                }
+            );            // Seed sample ratings with comments
+            modelBuilder.Entity<Rating>().HasData(
+                // Harry Potter ratings
+                new Rating { RatingId = 1, UserId = 2, BookId = 1, RatingValue = 5, Review = "Cuốn sách tuyệt vời! Câu chuyện phù thủy rất hấp dẫn và đầy màu sắc. Tôi đã đọc nhiều lần và vẫn thích.", CreatedDate = seedDate.AddDays(-25), UpdatedDate = seedDate.AddDays(-25) },
+                new Rating { RatingId = 2, UserId = 3, BookId = 1, RatingValue = 4, Review = "Hay nhưng hơi dài dòng ở một số đoạn. Nhìn chung vẫn là một tác phẩm đáng đọc.", CreatedDate = seedDate.AddDays(-22), UpdatedDate = seedDate.AddDays(-22) },
+                new Rating { RatingId = 3, UserId = 4, BookId = 1, RatingValue = 5, Review = "Thế giới phép thuật được xây dựng rất chi tiết và logic. J.K. Rowling thực sự là một thiên tài!", CreatedDate = seedDate.AddDays(-18), UpdatedDate = seedDate.AddDays(-18) },
+                
+                // Tôi thấy hoa vàng trên cỏ xanh ratings
+                new Rating { RatingId = 4, UserId = 2, BookId = 2, RatingValue = 5, Review = "Nguyễn Nhật Ánh viết về tuổi thơ rất chân thực và cảm động. Đọc xong như quay về thời thơ ấu.", CreatedDate = seedDate.AddDays(-20), UpdatedDate = seedDate.AddDays(-20) },
+                new Rating { RatingId = 5, UserId = 5, BookId = 2, RatingValue = 4, Review = "Câu chuyện đẹp về tình anh em và làng quê Việt Nam. Có những đoạn khiến tôi rơi nước mắt.", CreatedDate = seedDate.AddDays(-16), UpdatedDate = seedDate.AddDays(-16) },
+                
+                // Sherlock Holmes ratings
+                new Rating { RatingId = 6, UserId = 3, BookId = 3, RatingValue = 5, Review = "Trinh thám kinh điển! Sherlock Holmes thông minh và các vụ án rất logic. Không thể bỏ xuống được.", CreatedDate = seedDate.AddDays(-19), UpdatedDate = seedDate.AddDays(-19) },
+                new Rating { RatingId = 7, UserId = 4, BookId = 3, RatingValue = 4, Review = "Phong cách viết của Conan Doyle rất hấp dẫn. Mỗi câu chuyện đều có twist bất ngờ.", CreatedDate = seedDate.AddDays(-14), UpdatedDate = seedDate.AddDays(-14) },
+                new Rating { RatingId = 8, UserId = 5, BookId = 3, RatingValue = 5, Review = "Đây là lý do tại sao Sherlock Holmes trở thành biểu tượng thám tử. Xuất sắc!", CreatedDate = seedDate.AddDays(-12), UpdatedDate = seedDate.AddDays(-12) },
+                
+                // Dạy con làm giàu ratings
+                new Rating { RatingId = 9, UserId = 2, BookId = 4, RatingValue = 5, Review = "Cuốn sách thay đổi tư duy của tôi về tiền bạc và đầu tư. Rất thực tế và dễ hiểu.", CreatedDate = seedDate.AddDays(-17), UpdatedDate = seedDate.AddDays(-17) },
+                new Rating { RatingId = 10, UserId = 3, BookId = 4, RatingValue = 3, Review = "Có nhiều ý hay nhưng một số quan điểm hơi Mỹ hóa. Cần điều chỉnh cho phù hợp Việt Nam.", CreatedDate = seedDate.AddDays(-13), UpdatedDate = seedDate.AddDays(-13) },
+                new Rating { RatingId = 11, UserId = 5, BookId = 4, RatingValue = 4, Review = "Bài học về tài chính cá nhân rất bổ ích. Đáng đọc cho mọi lứa tuổi.", CreatedDate = seedDate.AddDays(-10), UpdatedDate = seedDate.AddDays(-10) },
+                
+                // Lịch sử Việt Nam ratings
+                new Rating { RatingId = 12, UserId = 4, BookId = 5, RatingValue = 4, Review = "Tài liệu lịch sử quý giá, giúp hiểu rõ hơn về nguồn gốc dân tộc. Hơi khó đọc với người hiện đại.", CreatedDate = seedDate.AddDays(-11), UpdatedDate = seedDate.AddDays(-11) },
+                new Rating { RatingId = 13, UserId = 5, BookId = 5, RatingValue = 5, Review = "Đại Việt sử ký là kho tàng văn hóa dân tộc. Mọi người Việt Nam nên đọc ít nhất một lần.", CreatedDate = seedDate.AddDays(-8), UpdatedDate = seedDate.AddDays(-8) },
+                
+                // Nhà giả kim ratings  
+                new Rating { RatingId = 14, UserId = 2, BookId = 6, RatingValue = 5, Review = "Triết lý sâu sắc về cuộc sống và ước mơ. Paulo Coelho viết rất hay và ý nghĩa.", CreatedDate = seedDate.AddDays(-15), UpdatedDate = seedDate.AddDays(-15) },
+                new Rating { RatingId = 15, UserId = 3, BookId = 6, RatingValue = 4, Review = "Câu chuyện đơn giản nhưng chứa đựng nhiều bài học nhân sinh. Đáng suy ngẫm.", CreatedDate = seedDate.AddDays(-9), UpdatedDate = seedDate.AddDays(-9) },
+                new Rating { RatingId = 16, UserId = 4, BookId = 6, RatingValue = 5, Review = "Cuốn sách này đã truyền cảm hứng cho tôi theo đuổi ước mơ của mình. Tuyệt vời!", CreatedDate = seedDate.AddDays(-7), UpdatedDate = seedDate.AddDays(-7) },
+                
+                // Đắc nhân tâm ratings
+                new Rating { RatingId = 17, UserId = 3, BookId = 7, RatingValue = 5, Review = "Kinh điển về kỹ năng giao tiếp! Các nguyên tắc vẫn áp dụng được sau gần 100 năm.", CreatedDate = seedDate.AddDays(-6), UpdatedDate = seedDate.AddDays(-6) },
+                new Rating { RatingId = 18, UserId = 4, BookId = 7, RatingValue = 4, Review = "Những bài học thực tế về cách ứng xử và làm việc với mọi người. Rất hữu ích.", CreatedDate = seedDate.AddDays(-5), UpdatedDate = seedDate.AddDays(-5) },
+                new Rating { RatingId = 19, UserId = 5, BookId = 7, RatingValue = 5, Review = "Dale Carnegie thực sự hiểu tâm lý con người. Mỗi chương đều có giá trị ứng dụng cao.", CreatedDate = seedDate.AddDays(-3), UpdatedDate = seedDate.AddDays(-3) }
             );
         }
     }

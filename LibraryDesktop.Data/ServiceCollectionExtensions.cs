@@ -45,6 +45,10 @@ namespace LibraryDesktop.Data
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGitHubContentService, GitHubContentService>();
 
+            services.AddScoped<IRatingService, RatingService>();
+
+            services.AddSingleton<IGitHubContentService, GitHubContentService>();
+
             return services;
         }        public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
         {

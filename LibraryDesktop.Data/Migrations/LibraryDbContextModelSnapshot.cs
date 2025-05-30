@@ -70,14 +70,14 @@ namespace LibraryDesktop.Data.Migrations
                             BookId = 1,
                             Author = "J.K. Rowling",
                             CategoryId = 1,
-                            CoverImageUrl = "",
+                            CoverImageUrl = "Assets/1.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.",
                             Price = 0,
                             Status = 2,
                             Title = "Harry Potter và Hòn đá Phù thủy",
                             TotalChapters = 0,
-                            ViewCount = 2000
+                            ViewCount = 70
                         },
                         new
                         {
@@ -91,7 +91,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 2,
                             Title = "Tôi thấy hoa vàng trên cỏ xanh",
                             TotalChapters = 0,
-                            ViewCount = 1000
+                            ViewCount = 50
                         },
                         new
                         {
@@ -105,7 +105,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 1,
                             Title = "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes",
                             TotalChapters = 0,
-                            ViewCount = 500
+                            ViewCount = 25
                         },
                         new
                         {
@@ -119,7 +119,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 1,
                             Title = "Dạy con làm giàu",
                             TotalChapters = 0,
-                            ViewCount = 600
+                            ViewCount = 30
                         },
                         new
                         {
@@ -133,7 +133,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 2,
                             Title = "Lịch sử Việt Nam: Đại Việt sử ký toàn thư",
                             TotalChapters = 0,
-                            ViewCount = 700
+                            ViewCount = 35
                         },
                         new
                         {
@@ -147,7 +147,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 1,
                             Title = "Nhà giả kim",
                             TotalChapters = 0,
-                            ViewCount = 800
+                            ViewCount = 40
                         },
                         new
                         {
@@ -161,7 +161,7 @@ namespace LibraryDesktop.Data.Migrations
                             Status = 1,
                             Title = "Đắc nhân tâm",
                             TotalChapters = 0,
-                            ViewCount = 900
+                            ViewCount = 45
                         });
                 });
 

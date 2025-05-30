@@ -361,6 +361,13 @@ namespace LibraryDesktop.View
         public User? CurrentUser => _currentUser;
         public int CurrentCoins => _currentCoins;//private void guna2GradientTileButton4_Click(object sender, EventArgs e)
 
+        public async Task RefreshMyBooksAsync()
+        {
+            if (currentUserControl is MyBooks myBooksControl)
+            {
+                await myBooksControl.RefreshFavoritesAsync();
+            }
+        }
 
         // 🔥 Event handler for payment completion
         private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
@@ -402,6 +409,7 @@ namespace LibraryDesktop.View
                 Console.WriteLine($"❌ Error handling payment completion: {ex.Message}");
             }
         }
+
     }    // Event args for book selection
     public class BookSelectedEventArgs : EventArgs
     {

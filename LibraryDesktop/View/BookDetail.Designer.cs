@@ -280,7 +280,7 @@
             txtDescription.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             txtDescription.Font = new Font("Segoe UI", 9F);
             txtDescription.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtDescription.Location = new Point(400, 20);
+            txtDescription.Location = new Point(409, 73);
             txtDescription.Margin = new Padding(3, 5, 3, 5);
             txtDescription.Multiline = true;
             txtDescription.Name = "txtDescription";
@@ -289,7 +289,7 @@
             txtDescription.ScrollBars = ScrollBars.Vertical;
             txtDescription.SelectedText = "";
             txtDescription.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            txtDescription.Size = new Size(954, 147);
+            txtDescription.Size = new Size(945, 94);
             txtDescription.TabIndex = 2;
             // 
             // lblAuthor
@@ -352,8 +352,7 @@
         private Guna.UI2.WinForms.Guna2Button btnReadStory;
         private Guna.UI2.WinForms.Guna2Button btnExit;
         private Guna.UI2.WinForms.Guna2Panel pnlContent;
-        private System.Windows.Forms.RichTextBox rtbContent;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblStatus;
+        private System.Windows.Forms.RichTextBox rtbContent;        private Guna.UI2.WinForms.Guna2HtmlLabel lblStatus;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTotalChapters;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblViewCount;
     }

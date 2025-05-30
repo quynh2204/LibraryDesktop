@@ -64,13 +64,15 @@
             guna2ControlBox1 = new Guna.UI2.WinForms.Guna2ControlBox();
             guna2ControlBox2 = new Guna.UI2.WinForms.Guna2ControlBox();
             guna2ControlBox3 = new Guna.UI2.WinForms.Guna2ControlBox();
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();            guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            lblCoins = new Label();
+            pictureBoxCoin = new PictureBox();
             home1 = new Home();
             dashboard1 = new Dashboard();
             guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             guna2CustomGradientPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCoin).BeginInit();
             SuspendLayout();
             // 
             // btnHome
@@ -98,6 +100,7 @@
             // guna2Panel1
             // 
             guna2Panel1.BackColor = Color.FromArgb(211, 195, 179);
+            guna2Panel1.Controls.Add(label1);
             guna2Panel1.Controls.Add(btnlogout);
             guna2Panel1.Controls.Add(btnDashboard);
             guna2Panel1.Controls.Add(pictureBox1);
@@ -285,12 +288,12 @@
             guna2ControlBox3.Name = "guna2ControlBox3";
             guna2ControlBox3.ShadowDecoration.CustomizableEdges = customizableEdges16;
             guna2ControlBox3.Size = new Size(41, 36);
-            guna2ControlBox3.TabIndex = 4;
-            // 
+            guna2ControlBox3.TabIndex = 4;            // 
             // guna2CustomGradientPanel1
             // 
             guna2CustomGradientPanel1.BackColor = Color.FromArgb(240, 237, 228);
-            guna2CustomGradientPanel1.Controls.Add(label1);
+            guna2CustomGradientPanel1.Controls.Add(lblCoins);
+            guna2CustomGradientPanel1.Controls.Add(pictureBoxCoin);
             guna2CustomGradientPanel1.CustomizableEdges = customizableEdges21;
             guna2CustomGradientPanel1.FillColor = Color.FromArgb(243, 236, 227);
             guna2CustomGradientPanel1.FillColor2 = Color.FromArgb(243, 236, 227);
@@ -301,6 +304,31 @@
             guna2CustomGradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges22;
             guna2CustomGradientPanel1.Size = new Size(1220, 102);
             guna2CustomGradientPanel1.TabIndex = 5;
+            // 
+            // lblCoins
+            // 
+            lblCoins.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblCoins.AutoSize = true;
+            lblCoins.BackColor = Color.Transparent;
+            lblCoins.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblCoins.ForeColor = Color.FromArgb(101, 85, 143);
+            lblCoins.Location = new Point(1080, 40);
+            lblCoins.Name = "lblCoins";
+            lblCoins.Size = new Size(80, 28);
+            lblCoins.TabIndex = 1;
+            lblCoins.Text = "0 Coins";
+            lblCoins.TextAlign = ContentAlignment.MiddleRight;            // 
+            // pictureBoxCoin
+            // 
+            pictureBoxCoin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            pictureBoxCoin.BackColor = Color.Transparent;
+            pictureBoxCoin.Image = Properties.Resources.icons8_coin_48;
+            pictureBoxCoin.Location = new Point(1040, 35);
+            pictureBoxCoin.Name = "pictureBoxCoin";
+            pictureBoxCoin.Size = new Size(35, 35);
+            pictureBoxCoin.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxCoin.TabIndex = 0;
+            pictureBoxCoin.TabStop = false;
             // 
             // home1
             // 
@@ -340,6 +368,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             guna2CustomGradientPanel1.ResumeLayout(false);
             guna2CustomGradientPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCoin).EndInit();
             ResumeLayout(false);
         }
 
@@ -359,6 +388,8 @@ private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Guna.UI2.WinForms.Guna2GradientTileButton btnDashboard;
         private Guna.UI2.WinForms.Guna2Button btnlogout;
         private Guna.UI2.WinForms.Guna2CustomGradientPanel guna2CustomGradientPanel1;        private Label label1;
+        private Label lblCoins;
+        private PictureBox pictureBoxCoin;
         private Home home1;
         private Dashboard dashboard1;
     }

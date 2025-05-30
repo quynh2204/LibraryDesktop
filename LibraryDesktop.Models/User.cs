@@ -20,7 +20,8 @@ namespace LibraryDesktop.Models
         [Required]
         [MaxLength(255)]
         public string PasswordHash { get; set; } = string.Empty;
-          [MaxLength(255)]
+        
+        [MaxLength(255)]
         public string? AvatarUrl { get; set; }
         
         public DateTime RegistrationDate { get; set; } = DateTime.Now;

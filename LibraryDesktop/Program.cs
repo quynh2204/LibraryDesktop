@@ -48,18 +48,27 @@ namespace LibraryDesktop
                 await InitializeDatabase(host.Services, dbPath);                // Start the application with LoginForm
                 using (var scope = host.Services.CreateScope())
                 {
-                    var loginForm = scope.ServiceProvider.GetRequiredService<LoginForm>();
-
-                    if (loginForm.ShowDialog() == DialogResult.OK && loginForm.AuthenticatedUser != null)
+                    DialogResult loginResult;
+                    do
                     {
-                        // User logged in successfully, show main form
-                        var mainForm = scope.ServiceProvider.GetRequiredService<Main>();
+                        var loginForm = scope.ServiceProvider.GetRequiredService<LoginForm>();
+                        loginResult = loginForm.ShowDialog();
 
-                        // Initialize main form with authenticated user
-                        await mainForm.InitializeWithUserAsync(loginForm.AuthenticatedUser);
+                        if (loginResult == DialogResult.OK && loginForm.AuthenticatedUser != null)
+                        {
+                            // User logged in successfully, show main form
+                            var mainForm = scope.ServiceProvider.GetRequiredService<Main>();
 
-                        Application.Run(mainForm);
-                    }
+                            // Initialize main form with authenticated user
+                            await mainForm.InitializeWithUserAsync(loginForm.AuthenticatedUser);
+
+                            Application.Run(mainForm);
+                            break; // Exit the loop and application
+                        }
+                        // If loginResult is Retry, continue the loop to show login form again
+                        // If loginResult is Cancel or anything else, exit the loop
+                    } while (loginResult == DialogResult.Retry);
+                    
                     // If login was cancelled or failed, application exits
                 }
             }

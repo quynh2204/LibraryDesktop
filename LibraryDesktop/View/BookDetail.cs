@@ -9,13 +9,13 @@ using LibraryDesktop.Models;
 using System.Diagnostics;
 
 namespace LibraryDesktop.View
-{
-    public partial class BookDetail : Form
+{    public partial class BookDetail : Form
     {
         private int _bookId;
         private readonly IBookService _bookService;
         private readonly IUserService _userService;
         private readonly IRatingService _ratingService;
+        private readonly IHistoryService _historyService;
         private Book? _currentBook;
         private List<Chapter> _chapters = new List<Chapter>();
         private User? _currentUser;
@@ -34,14 +34,13 @@ namespace LibraryDesktop.View
         private FlowLayoutPanel? flpComments;
         
         private int _selectedRating = 0;
-        private bool _hasExistingRating = false;
-
-        public BookDetail(IBookService bookService, IUserService userService, IRatingService ratingService)
+        private bool _hasExistingRating = false;        public BookDetail(IBookService bookService, IUserService userService, IRatingService ratingService, IHistoryService historyService)
         {
             InitializeComponent();
             _bookService = bookService;
             _userService = userService;
             _ratingService = ratingService;
+            _historyService = historyService;
         }
 
         // Method to set book ID and user after form creation
@@ -68,11 +67,21 @@ namespace LibraryDesktop.View
                 await LoadChaptersAsync();
                 await LoadRatingInfoAsync();
                 await LoadAverageRatingAsync(); // Load average rating
-                await LoadAllCommentsAsync(); // Load all comments                // Increment view count
+                await LoadAllCommentsAsync(); // Load all comments                // Increment view count and update display immediately
                 if (_currentBook != null)
                 {
                     await _bookService.IncrementViewCountAsync(_bookId);
-                    lblViewCount.Text = $"Lượt xem: {(_currentBook.ViewCount + 1):N0}";
+                    
+                    // Update the current book object and display with new count
+                    _currentBook.ViewCount++;
+                    lblViewCount.Text = $"Lượt xem: {_currentBook.ViewCount:N0}";
+                    
+                    System.Diagnostics.Debug.WriteLine($"📊 ViewCount incremented for BookId {_bookId}: {_currentBook.ViewCount}");
+                      // Track history - book view
+                    if (_currentUser != null)
+                    {
+                        await _historyService.AddHistoryAsync(_currentUser.UserId, _bookId, null, "View");
+                    }
                 }
 
                 // Ensure proper layout after all loading is complete
@@ -156,13 +165,20 @@ namespace LibraryDesktop.View
         {
             try
             {
-                cmbChapters.Items.Clear();
-
-                // Get chapters from the book that was loaded with details
+                cmbChapters.Items.Clear();                // Get chapters from the book that was loaded with details
                 if (_currentBook?.Chapters != null && _currentBook.Chapters.Any())
                 {
                     _chapters = _currentBook.Chapters.OrderBy(c => c.ChapterNumber).ToList();
                     Debug.WriteLine($"Found {_chapters.Count} chapters for book {_bookId}");
+
+                    // Update TotalChapters if it doesn't match actual chapter count
+                    if (_currentBook.TotalChapters != _chapters.Count)
+                    {
+                        _currentBook.TotalChapters = _chapters.Count;
+                        // Update the display to show the correct count
+                        lblTotalChapters.Text = $"Tổng số chương: {_currentBook.TotalChapters}";
+                        Debug.WriteLine($"Updated TotalChapters from {_currentBook.TotalChapters} to {_chapters.Count}");
+                    }
 
                     foreach (var chapter in _chapters)
                     {
@@ -641,15 +657,18 @@ namespace LibraryDesktop.View
                 Debug.WriteLine($"Downloading content from: {selectedChapter.GitHubContentUrl}");
 
                 // Use BookService to get chapter content
-                string content = await _bookService.GetChapterContentAsync(selectedChapter.GitHubContentUrl);
-
-                if (!string.IsNullOrEmpty(content) && !content.StartsWith("Error loading"))
+                string content = await _bookService.GetChapterContentAsync(selectedChapter.GitHubContentUrl);                if (!string.IsNullOrEmpty(content) && !content.StartsWith("Error loading"))
                 {
                     rtbContent.Text = content;
                     MessageBox.Show("Tải truyện thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     Debug.WriteLine($"Successfully loaded content, length: {content.Length} characters");
+                      // Track history - chapter read
+                    if (_currentUser != null && _currentBook != null)
+                    {
+                        await _historyService.AddHistoryAsync(_currentUser.UserId, _currentBook.BookId, selectedChapter.ChapterId, "Read");
+                    }
                 }
                 else
                 {
@@ -702,10 +721,9 @@ namespace LibraryDesktop.View
             // Optional: You can create a full-screen reading mode here
             MessageBox.Show("Đã chuyển sang chế độ đọc! Sử dụng thanh cuộn để điều hướng.",
                 "Chế độ đọc", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
+        }        private void btnExit_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 

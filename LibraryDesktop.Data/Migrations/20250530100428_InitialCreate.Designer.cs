@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryDesktop.Data.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250530012213_InitialCreate")]
+    [Migration("20250530100428_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -73,98 +73,98 @@ namespace LibraryDesktop.Data.Migrations
                             BookId = 1,
                             Author = "J.K. Rowling",
                             CategoryId = 1,
-                            CoverImageUrl = "",
+                            CoverImageUrl = "LibraryDesktop/Assets/1.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.",
                             Price = 0,
                             Status = 2,
                             Title = "Harry Potter và Hòn đá Phù thủy",
                             TotalChapters = 0,
-                            ViewCount = 2000
+                            ViewCount = 70
                         },
                         new
                         {
                             BookId = 2,
                             Author = "Nguyễn Nhật Ánh",
                             CategoryId = 2,
-                            CoverImageUrl = "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/2.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.",
                             Price = 0,
                             Status = 2,
                             Title = "Tôi thấy hoa vàng trên cỏ xanh",
                             TotalChapters = 0,
-                            ViewCount = 1000
+                            ViewCount = 50
                         },
                         new
                         {
                             BookId = 3,
                             Author = "Arthur Conan Doyle",
                             CategoryId = 4,
-                            CoverImageUrl = "Assets/3398eb12b32fa930e105e701b708bc9a.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/3.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.",
                             Price = 0,
                             Status = 1,
                             Title = "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes",
                             TotalChapters = 0,
-                            ViewCount = 500
+                            ViewCount = 25
                         },
                         new
                         {
                             BookId = 4,
                             Author = "Robert Kiyosaki",
                             CategoryId = 3,
-                            CoverImageUrl = "Assets/5cb878e981ec841cf8963c2dbfc837c3.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/4.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.",
                             Price = 50,
                             Status = 1,
                             Title = "Dạy con làm giàu",
                             TotalChapters = 0,
-                            ViewCount = 600
+                            ViewCount = 30
                         },
                         new
                         {
                             BookId = 5,
                             Author = "Ngô Sĩ Liên",
                             CategoryId = 5,
-                            CoverImageUrl = "Assets/65b07f0ccb5631d4025d509c0c14e62d.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/5.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.",
                             Price = 0,
                             Status = 2,
                             Title = "Lịch sử Việt Nam: Đại Việt sử ký toàn thư",
                             TotalChapters = 0,
-                            ViewCount = 700
+                            ViewCount = 35
                         },
                         new
                         {
                             BookId = 6,
                             Author = "Paulo Coelho",
                             CategoryId = 6,
-                            CoverImageUrl = "Assets/6a81c3d24a73711e02ba8593c067bccf.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/6.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.",
                             Price = 50,
                             Status = 1,
                             Title = "Nhà giả kim",
                             TotalChapters = 0,
-                            ViewCount = 800
+                            ViewCount = 40
                         },
                         new
                         {
                             BookId = 7,
                             Author = "Dale Carnegie",
                             CategoryId = 7,
-                            CoverImageUrl = "Assets/9a321b2c38deed11aa8fb0e879cc6610.jpg",
+                            CoverImageUrl = "LibraryDesktop/Assets/7.png",
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.",
                             Price = 50,
                             Status = 1,
                             Title = "Đắc nhân tâm",
                             TotalChapters = 0,
-                            ViewCount = 900
+                            ViewCount = 45
                         });
                 });
 
@@ -547,6 +547,40 @@ namespace LibraryDesktop.Data.Migrations
                             GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/%C4%90%E1%BA%AFc%20Nh%C3%A2n%20T%C3%A2m/Ch%C6%B0%C6%A1ng%2004.txt",
                             PublishedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
+                });
+
+            modelBuilder.Entity("LibraryDesktop.Models.History", b =>
+                {
+                    b.Property<int>("HistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccessType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AccessedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ChapterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("HistoryId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Histories", (string)null);
                 });
 
             modelBuilder.Entity("LibraryDesktop.Models.Payment", b =>
@@ -991,6 +1025,32 @@ namespace LibraryDesktop.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryDesktop.Models.History", b =>
+                {
+                    b.HasOne("LibraryDesktop.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryDesktop.Models.Chapter", "Chapter")
+                        .WithMany()
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("LibraryDesktop.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LibraryDesktop.Models.Payment", b =>

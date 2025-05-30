@@ -177,21 +177,13 @@ namespace LibraryDesktop.Data.Services
                     PaymentToken = token,
                     CreatedDate = DateTime.Now,
                     Description = string.IsNullOrEmpty(description) ? $"Account recharge (+{amount / 1000} coins)" : description
-                };// Save payment to database
+                };                // Save payment to database
                 await _paymentRepository.AddAsync(payment);
                 await _paymentRepository.SaveChangesAsync();
 
                 // Complete the payment (this will update user balance automatically)
+                // Note: CompletePaymentAsync will fire the PaymentCompleted event, so we don't fire it here
                 await _paymentRepository.CompletePaymentAsync(token);
-
-                // 🔥 FIRE EVENT: Announce payment completed
-                PaymentCompleted?.Invoke(this, new PaymentCompletedEventArgs
-                {
-                    UserId = userId,
-                    Amount = amount,
-                    PaymentToken = token,
-                    CompletedAt = DateTime.Now
-                });
 
                 Console.WriteLine($"💰 Payment created and completed! User {userId} received {amount / 1000} coins (Token: {token})");
 

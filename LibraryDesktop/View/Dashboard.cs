@@ -8,22 +8,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LibraryDesktop.Data.Interfaces;
+using LibraryDesktop.Data.Services;
+using LibraryDesktop.Models;
 
 namespace LibraryDesktop.View
-{
-    public partial class Dashboard : UserControl
+{    public partial class Dashboard : UserControl
     {
+        private readonly IBookService? _bookService;
+        private readonly IRatingService? _ratingService;
+        private readonly IHistoryService? _historyService;
+        private readonly ICategoryService? _categoryService;
+
+        // Parameterless constructor for designer compatibility
         public Dashboard()
         {
             InitializeComponent();
         }
 
-        private void Dashboard_Load(object sender, EventArgs e)
+        public Dashboard(IBookService bookService, IRatingService ratingService, 
+                        IHistoryService historyService, ICategoryService categoryService)
+        {
+            _bookService = bookService;
+            _ratingService = ratingService;
+            _historyService = historyService;
+            _categoryService = categoryService;
+            InitializeComponent();
+        }private async void Dashboard_Load(object sender, EventArgs e)
         {
             SetupDataGridColumns();
 
             cmbTimePeriod.SelectedIndex = 2; // Default: "7 ngày qua"
-            LoadInitialData();
+            await LoadInitialDataAsync();
         }
 
         #region Setup Methods
@@ -36,7 +52,7 @@ namespace LibraryDesktop.View
             dgvTopBooks.Columns.Add("Category", "Thể Loại");
             dgvTopBooks.Columns.Add("Author", "Tác Giả");
             dgvTopBooks.Columns.Add("Views", "Lượt Xem");
-            dgvTopBooks.Columns.Add("LastViewed", "Lần Cuối");
+            //dgvTopBooks.Columns.Add("LastViewed", "Lần Cuối");
 
             // Set column widths for Top Books
             dgvTopBooks.Columns["Rank"].Width = 50;
@@ -44,7 +60,7 @@ namespace LibraryDesktop.View
             dgvTopBooks.Columns["Category"].Width = 120;
             dgvTopBooks.Columns["Author"].Width = 120;
             dgvTopBooks.Columns["Views"].Width = 80;
-            dgvTopBooks.Columns["LastViewed"].Width = 110;
+            //dgvTopBooks.Columns["LastViewed"].Width = 110;
 
             // Setup Category Stats DataGrid columns
             dgvCategoryStats.Columns.Clear();
@@ -61,21 +77,18 @@ namespace LibraryDesktop.View
             dgvCategoryStats.Columns["TotalViews"].Width = 100;
             dgvCategoryStats.Columns["Percentage"].Width = 80;
             dgvCategoryStats.Columns["BookCount"].Width = 80;
-            dgvCategoryStats.Columns["AvgViews"].Width = 80;
-        }
-
-
+            dgvCategoryStats.Columns["AvgViews"].Width = 80;        }
         #endregion
 
         #region Event Handlers
-        private void CmbTimePeriod_SelectedIndexChanged(object sender, EventArgs e)
+        private async void CmbTimePeriod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadDashboardData();
+            await LoadDashboardDataAsync();
         }
 
-        private void BtnRefresh_Click(object sender, EventArgs e)
+        private async void BtnRefresh_Click(object sender, EventArgs e)
         {
-            LoadDashboardData();
+            await LoadDashboardDataAsync();
             MessageBox.Show("Dữ liệu đã được làm mới!", "Thông báo",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -93,15 +106,186 @@ namespace LibraryDesktop.View
         #endregion
 
         #region Data Loading
-        private void LoadInitialData()
+        private async Task LoadInitialDataAsync()
         {
-            LoadSampleData();
+            await LoadDashboardDataAsync();
+        }        private async Task LoadDashboardDataAsync()
+        {
+            try
+            {
+                // Check if services are available (not null)
+                if (_bookService == null || _ratingService == null || 
+                    _historyService == null || _categoryService == null)
+                {
+                    // Load sample data if services are not available
+                    LoadSampleData();
+                    return;
+                }
+                
+                // Load real data from database
+                await LoadTopBooksAsync();
+                await LoadCategoryStatsAsync();
+                UpdateTimeLabel();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu Dashboard: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Don't fallback to sample data if we have services - show the error instead
+                if (_bookService == null || _ratingService == null || 
+                    _historyService == null || _categoryService == null)
+                {
+                    LoadSampleData();
+                }
+            }
+        }        private async Task LoadTopBooksAsync()
+        {
+            dgvTopBooks.Rows.Clear();
+            
+            try
+            {
+                // Check if services are available
+                if (_bookService == null || _ratingService == null || _historyService == null)
+                {
+                    return;
+                }
+                
+                // Get all books with their categories (fresh data from database)
+                var books = await _bookService.GetBooksAsync();
+                var bookStats = new List<(Book book, int totalViews, DateTime lastViewed)>();
+                
+                foreach (var book in books)
+                {
+                    // Use ViewCount as the primary metric for ranking (real-time data)
+                    int totalViews = book.ViewCount;
+                    
+                    // Get latest view from history (defaulting to book creation date if no history)
+                    var bookHistory = await _historyService.GetBookHistoryAsync(book.BookId);
+                    var lastViewed = bookHistory.Any() ? 
+                        bookHistory.Max(h => h.AccessedDate) : 
+                        book.CreatedDate;
+                      bookStats.Add((book, totalViews, lastViewed));
+                    
+                    System.Diagnostics.Debug.WriteLine($"📊 Book '{book.Title}' has {totalViews} views");
+                }
+                
+                // Sort by view count and take top 10
+                var topBooks = bookStats
+                    .OrderByDescending(bs => bs.totalViews)
+                    .Take(10)
+                    .ToList();
+                  // Populate DataGrid
+                for (int i = 0; i < topBooks.Count; i++)
+                {
+                    var (book, views, lastViewed) = topBooks[i];
+                    var category = book.Category?.CategoryName ?? "N/A";
+                    
+                    dgvTopBooks.Rows.Add(
+                        (i + 1).ToString(),
+                        book.Title,
+                        category,
+                        book.Author,
+                        views.ToString("#,##0")
+                        //lastViewed.ToString("dd/MM/yyyy HH:mm")
+                    );
+                }
+                
+                // Update Top 1 Book panel
+                if (topBooks.Count > 0)
+                {
+                    var topBook = topBooks[0];
+                    lblValuebook.Text = $"{topBook.book.Title} ({topBook.totalViews:N0} views)";
+                }
+                else
+                {
+                    lblValuebook.Text = "No data available";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải top books: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }        private async Task LoadCategoryStatsAsync()
+        {
+            dgvCategoryStats.Rows.Clear();
+            
+            try
+            {
+                // Check if services are available
+                if (_bookService == null || _ratingService == null || _categoryService == null)
+                {
+                    return;
+                }
+                  // Get all categories and books (fresh data from database)
+                var categories = await _categoryService.GetCategoriesAsync();
+                var books = await _bookService.GetBooksAsync();
+                
+                var categoryStats = new List<(Category category, int totalViews, int bookCount, double avgViews)>();
+                
+                foreach (var category in categories)
+                {
+                    // Get books in this category
+                    var categoryBooks = books.Where(b => b.CategoryId == category.CategoryId).ToList();
+                    
+                    if (categoryBooks.Count == 0) continue;
+                    
+                    // Calculate total views for this category using ViewCount (real-time data)
+                    int totalViews = categoryBooks.Sum(book => book.ViewCount);
+                    
+                    double avgViews = categoryBooks.Count > 0 ? (double)totalViews / categoryBooks.Count : 0;
+                    
+                    categoryStats.Add((category, totalViews, categoryBooks.Count, avgViews));
+                    
+                    System.Diagnostics.Debug.WriteLine($"📊 Category '{category.CategoryName}' has {totalViews} total views across {categoryBooks.Count} books");
+                }
+                
+                // Calculate total views across all categories for percentage
+                var grandTotal = categoryStats.Sum(cs => cs.totalViews);
+                
+                // Sort by total views and take top 10
+                var topCategories = categoryStats
+                    .OrderByDescending(cs => cs.totalViews)
+                    .Take(10)
+                    .ToList();
+                  // Populate DataGrid
+                for (int i = 0; i < topCategories.Count; i++)
+                {
+                    var (category, totalViews, bookCount, avgViews) = topCategories[i];
+                    var percentage = grandTotal > 0 ? (double)totalViews / grandTotal * 100 : 0;
+                    
+                    dgvCategoryStats.Rows.Add(
+                        (i + 1).ToString(),
+                        category.CategoryName,
+                        totalViews.ToString("#,##0"),
+                        percentage.ToString("F1") + "%",
+                        bookCount.ToString(),
+                        avgViews.ToString("F1")
+                    );
+                }
+                
+                // Update Top 1 Category panel
+                if (topCategories.Count > 0)
+                {
+                    var topCategory = topCategories[0];
+                    var percentage = grandTotal > 0 ? (double)topCategory.totalViews / grandTotal * 100 : 0;
+                    lblValuecate.Text = $"{topCategory.category.CategoryName} ({percentage:F1}%)";
+                }
+                else
+                {
+                    lblValuecate.Text = "No data available";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải thống kê thể loại: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
-        private void LoadDashboardData()
+        private void UpdateTimeLabel()
         {
-            // TODO: Implement actual data loading from database
-            LoadSampleData();
+            lblCurrentTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
 
         private void LoadSampleData()
@@ -137,6 +321,26 @@ namespace LibraryDesktop.View
         private void chartsPanel_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Refresh dashboard data - can be called from Main form when real-time updates are needed
+        /// </summary>
+        public async Task RefreshDashboardAsync()
+        {
+            try
+            {
+                await LoadDashboardDataAsync();
+                
+                // Update time label
+                UpdateTimeLabel();
+                
+                System.Diagnostics.Debug.WriteLine("📊 Dashboard refreshed successfully with latest data");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error refreshing dashboard: {ex.Message}");
+            }
         }
     }
 }

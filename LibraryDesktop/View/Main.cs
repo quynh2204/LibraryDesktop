@@ -30,7 +30,8 @@ namespace LibraryDesktop.View
         private Panel? contentPanel;
         
         // Current active UserControl
-        private UserControl? currentUserControl;        public Main(IBookService bookService,
+        private UserControl? currentUserControl;        
+        public Main(IBookService bookService,
                    IAuthenticationService authenticationService,
                    IUserService userService,
                    IPaymentService paymentService,
@@ -55,12 +56,13 @@ namespace LibraryDesktop.View
                     _paymentService.PaymentCompleted -= OnPaymentCompleted;
                 }
                 catch { /* Ignore */ }
-            };
-
-            InitializeComponent();
+            };            InitializeComponent();
 
             // Initialize the main form properly
             InitializeMainForm();
+            
+            // Initialize Dashboard with required services
+            InitializeDashboard();
 
             // Setup Home control
             _homeControl = _serviceProvider.GetRequiredService<Home>();
@@ -90,16 +92,18 @@ namespace LibraryDesktop.View
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.WriteLine($"Error opening BookDetail: {ex}");
             }
-        }        public async Task InitializeWithUserAsync(User user)
+        }          public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
             await UpdateCoinsDisplayAsync();
-            
+            UpdateUsernameDisplay();
+            _homeControl.SetCurrentUserId(user.UserId);
             // Load Dashboard by default after login (as startup form)
             LoadDashboard();
-        }private void InitializeMainForm()
+        }
+        private void InitializeMainForm()
         {
-            // Start the payment web server in the background
+            // Start the payment web server  in the background
             _ = Task.Run(async () =>
             {
                 try
@@ -118,26 +122,54 @@ namespace LibraryDesktop.View
             // Initialize content panel
             InitializeContentPanel();
             // Wire up navigation button events
-            InitializeNavigationEvents();
-
-            // Don't show login form here - Program.cs already handles authentication
+            InitializeNavigationEvents();            // Don't show login form here - Program.cs already handles authentication
             // The user will be set via InitializeWithUserAsync after successful login
-        }        private async Task UpdateCoinsDisplayAsync()
+        }
+        
+        private void InitializeDashboard()
+        {
+            try
+            {
+                // Get the required services for Dashboard
+                var bookService = _serviceProvider.GetRequiredService<IBookService>();
+                var ratingService = _serviceProvider.GetRequiredService<IRatingService>();
+                var historyService = _serviceProvider.GetRequiredService<IHistoryService>();
+                var categoryService = _serviceProvider.GetRequiredService<ICategoryService>();
+                
+                // Create new Dashboard with proper services
+                dashboard1 = new Dashboard(bookService, ratingService, historyService, categoryService);
+                dashboard1.Dock = DockStyle.Fill;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing Dashboard: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+          private async Task UpdateCoinsDisplayAsync()
         {
             if (_currentUser != null)
             {
                 try
                 {
-                    _currentCoins = await _userService.GetUserCoinsAsync(_currentUser.UserId);
+                    var latestCoins = await _userService.GetUserCoinsAsync(_currentUser.UserId);
                     
-                    // Update UI coins display on UI thread
-                    if (this.InvokeRequired)
+                    // Only update if coins have changed to reduce unnecessary UI updates
+                    if (_currentCoins != latestCoins)
                     {
-                        this.Invoke(new Action(() => UpdateCoinsUI()));
-                    }
-                    else
-                    {
-                        UpdateCoinsUI();
+                        _currentCoins = latestCoins;
+                        
+                        // Update UI coins display on UI thread
+                        if (this.InvokeRequired)
+                        {
+                            this.Invoke(new Action(() => UpdateCoinsUI()));
+                        }
+                        else
+                        {
+                            UpdateCoinsUI();
+                        }
+                        
+                        System.Diagnostics.Debug.WriteLine($"💰 Coins updated for user {_currentUser.UserId}: {_currentCoins}");
                     }
                     
                     // Update window title
@@ -148,15 +180,31 @@ namespace LibraryDesktop.View
                     Debug.WriteLine($"Error updating coins: {ex.Message}");
                 }
             }
-        }
-
-        private void UpdateCoinsUI()
+        }private void UpdateCoinsUI()
         {
             if (lblCoins != null)
             {
                 lblCoins.Text = $"{_currentCoins} Coins";
             }
-        }private void InitializeContentPanel()
+        }
+
+        private void UpdateUsernameDisplay()
+        {
+            if (_currentUser != null && lblUsername != null)
+            {
+                // Update UI on UI thread
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => lblUsername.Text = _currentUser.Username));
+                }
+                else
+                {
+                    lblUsername.Text = _currentUser.Username;
+                }
+            }
+        }
+
+        private void InitializeContentPanel()
         {
             // Hide the designer controls - we'll use dynamic content loading
             if (home1 != null)
@@ -265,13 +313,15 @@ namespace LibraryDesktop.View
         {
             var myBooks = _serviceProvider.GetRequiredService<MyBooks>();
             LoadUserControl(myBooks);
-        }
-
-        private void LoadHistory()
+        }        private void LoadHistory()
         {
             var history = _serviceProvider.GetRequiredService<History>();
+            if (_currentUser != null)
+            {
+                history.SetCurrentUser(_currentUser);
+            }
             LoadUserControl(history);
-        }        private void LoadExchange()
+        }private void LoadExchange()
         {
             // Check if user is available
             if (_currentUser == null)
@@ -334,9 +384,7 @@ namespace LibraryDesktop.View
                 this.Hide();
                 Application.Restart();
             }
-        }
-
-        protected override async void OnFormClosing(FormClosingEventArgs e)
+        }        protected override async void OnFormClosing(FormClosingEventArgs e)
         {
             // Stop payment web server when form closes
             try
@@ -347,27 +395,17 @@ namespace LibraryDesktop.View
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error stopping payment web server: {ex.Message}");
-            }            base.OnFormClosing(e);
+            }
+            
+            base.OnFormClosing(e);
         }
 
         private void home1_Load(object sender, EventArgs e)
-        {
+        {        }
 
-        }        // Property to get current user for child forms
+        // Property to get current user for child forms
         public User? CurrentUser => _currentUser;
-        public int CurrentCoins => _currentCoins;//private void guna2GradientTileButton4_Click(object sender, EventArgs e)
-        //{
-        //    // Fine Ticket / Exchange functionality
-        //    ShowExchangeForm();
-        //}
-
-        //private void btn_vaid_Click(object sender, EventArgs e)
-        //{
-        //    // Account / Exchange functionality
-        //    ShowExchangeForm();
-        //}
-
-        // 🔥 Event handler for payment completion
+        public int CurrentCoins => _currentCoins;        // 🔥 Event handler for payment completion
         private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
         {
             try
@@ -376,28 +414,35 @@ namespace LibraryDesktop.View
                 if (_currentUser != null && e.UserId == _currentUser.UserId)
                 {
                     Console.WriteLine($"💰 Payment completed for current user! Amount: {e.Amount}, Coins: {e.Amount / 1000}");
-                      // Update coins display
+                    
+                    // 🔥 Force immediate UI updates on the UI thread
                     if (this.InvokeRequired)
                     {
-                        this.Invoke(new Action(async () => await UpdateCoinsDisplayAsync()));
-                    }
-                    else
-                    {
-                        await UpdateCoinsDisplayAsync();
-                    }
-                      // Hiển thị notification
-                    var coinsAdded = e.Amount / 1000;
-                    if (this.InvokeRequired)
-                    {
-                        this.Invoke(() => 
+                        this.Invoke(new Action(async () => 
                         {
-                            MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour coins have been updated!", 
+                            // Update coins display first
+                            await UpdateCoinsDisplayAsync();
+                            
+                            // Refresh Dashboard if it's currently active
+                            await RefreshCurrentViewIfDashboard();
+                            
+                            // Show success notification
+                            var coinsAdded = e.Amount / 1000;
+                            MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour balance and dashboard have been updated in real-time!", 
                                 "Payment Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        });
+                        }));
                     }
                     else
                     {
-                        MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour coins have been updated!", 
+                        // Update coins display
+                        await UpdateCoinsDisplayAsync();
+                        
+                        // Refresh Dashboard if it's currently active
+                        await RefreshCurrentViewIfDashboard();
+                        
+                        // Show success notification
+                        var coinsAdded = e.Amount / 1000;
+                        MessageBox.Show($"🎉 Payment Completed!\n\nAmount: {e.Amount:C}\nCoins Added: {coinsAdded}\n\nYour balance and dashboard have been updated in real-time!", 
                             "Payment Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -405,6 +450,41 @@ namespace LibraryDesktop.View
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error handling payment completion: {ex.Message}");
+                // Show error to user
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(() => 
+                    {
+                        MessageBox.Show($"Payment completed but there was an error updating the display: {ex.Message}", 
+                            "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    });
+                }
+                else
+                {
+                    MessageBox.Show($"Payment completed but there was an error updating the display: {ex.Message}", 
+                        "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }/// <summary>
+        /// Refresh Dashboard if it's currently the active view
+        /// </summary>
+        private async Task RefreshCurrentViewIfDashboard()
+        {
+            try
+            {
+                if (contentPanel?.Controls.Count > 0)
+                {
+                    var currentControl = contentPanel.Controls[0];
+                    if (currentControl is Dashboard dashboard)
+                    {
+                        await dashboard.RefreshDashboardAsync();
+                        Console.WriteLine("✅ Dashboard refreshed after payment completion");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error refreshing dashboard: {ex.Message}");
             }
         }
     }    // Event args for book selection

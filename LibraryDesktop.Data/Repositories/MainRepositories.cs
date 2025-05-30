@@ -119,9 +119,7 @@ namespace LibraryDesktop.Data.Repositories
                 .Include(b => b.Ratings)
                 .Include(b => b.Chapters.OrderBy(c => c.ChapterNumber))
                 .FirstOrDefaultAsync(b => b.BookId == bookId);
-        }
-
-        public async Task IncrementViewCountAsync(int bookId)
+        }        public async Task IncrementViewCountAsync(int bookId)
         {
             var book = await GetByIdAsync(bookId);
             if (book != null)
@@ -129,6 +127,9 @@ namespace LibraryDesktop.Data.Repositories
                 book.ViewCount++;
                 await UpdateAsync(book);
                 await SaveChangesAsync();
+                
+                // Log for debugging
+                System.Diagnostics.Debug.WriteLine($"📊 ViewCount updated for BookId {bookId}: {book.ViewCount}");
             }
         }
     }

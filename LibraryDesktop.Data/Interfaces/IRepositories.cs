@@ -61,4 +61,11 @@ namespace LibraryDesktop.Data.Interfaces
     {
         Task<UserSetting?> GetByUserIdAsync(int userId);
     }
+
+    public interface IHistoryRepository : IRepository<History>
+    {
+        Task<IEnumerable<History>> GetUserHistoryAsync(int userId);
+        Task<IEnumerable<History>> GetBookHistoryAsync(int bookId);
+        Task ClearUserHistoryAsync(int userId);
+    }
 }

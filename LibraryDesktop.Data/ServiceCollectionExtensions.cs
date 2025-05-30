@@ -26,9 +26,7 @@ namespace LibraryDesktop.Data
                              LogLevel.Warning,
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.LocalTime | 
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.SingleLine)
-                      .EnableSensitiveDataLogging()                      .EnableDetailedErrors());
-
-            // Add Repositories
+                      .EnableSensitiveDataLogging()                      .EnableDetailedErrors());            // Add Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
@@ -36,14 +34,15 @@ namespace LibraryDesktop.Data
             services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IUserSettingRepository, UserSettingRepository>();
-            services.AddScoped<IPaymentRepository, PaymentRepository>();            // Add Services
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IHistoryRepository, HistoryRepository>();// Add Services
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IGitHubContentService, GitHubContentService>();
+            services.AddScoped<IGitHubContentService, GitHubContentService>();            services.AddScoped<IHistoryService, HistoryService>();
 
             return services;
         }        public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)

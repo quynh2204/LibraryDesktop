@@ -171,6 +171,44 @@ namespace LibraryDesktop.Data.Services
         {
             return await _userFavoriteRepository.GetUserFavoritesAsync(userId);
         }
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            try
+            {
+                await _userRepository.UpdateAsync(user);
+                await _userRepository.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateAvatarUrlAsync(int userId, string avatarUrl)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user != null)
+                {
+                    user.AvatarUrl = avatarUrl;
+                    await _userRepository.UpdateAsync(user);
+                    await _userRepository.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _userRepository.GetByUsernameAsync(username);
+        }
     }
 
     public class RatingService : IRatingService

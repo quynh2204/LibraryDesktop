@@ -204,6 +204,41 @@ namespace LibraryDesktop.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Histories",
+                columns: table => new
+                {
+                    HistoryId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BookId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ChapterId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AccessedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    AccessType = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Histories", x => x.HistoryId);
+                    table.ForeignKey(
+                        name: "FK_Histories_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Histories_Chapters_ChapterId",
+                        column: x => x.ChapterId,
+                        principalTable: "Chapters",
+                        principalColumn: "ChapterId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Histories_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "CategoryId", "CategoryName", "CreatedDate", "Description", "IsActive" },
@@ -236,13 +271,13 @@ namespace LibraryDesktop.Data.Migrations
                 columns: new[] { "BookId", "Author", "CategoryId", "CoverImageUrl", "CreatedDate", "Description", "Price", "Status", "Title", "TotalChapters", "ViewCount" },
                 values: new object[,]
                 {
-                    { 1, "J.K. Rowling", 1, "", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.", 0, 2, "Harry Potter và Hòn đá Phù thủy", 0, 2000 },
-                    { 2, "Nguyễn Nhật Ánh", 2, "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.", 0, 2, "Tôi thấy hoa vàng trên cỏ xanh", 0, 1000 },
-                    { 3, "Arthur Conan Doyle", 4, "Assets/3398eb12b32fa930e105e701b708bc9a.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.", 0, 1, "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes", 0, 500 },
-                    { 4, "Robert Kiyosaki", 3, "Assets/5cb878e981ec841cf8963c2dbfc837c3.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.", 50, 1, "Dạy con làm giàu", 0, 600 },
-                    { 5, "Ngô Sĩ Liên", 5, "Assets/65b07f0ccb5631d4025d509c0c14e62d.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.", 0, 2, "Lịch sử Việt Nam: Đại Việt sử ký toàn thư", 0, 700 },
-                    { 6, "Paulo Coelho", 6, "Assets/6a81c3d24a73711e02ba8593c067bccf.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.", 50, 1, "Nhà giả kim", 0, 800 },
-                    { 7, "Dale Carnegie", 7, "Assets/9a321b2c38deed11aa8fb0e879cc6610.jpg", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.", 50, 1, "Đắc nhân tâm", 0, 900 }
+                    { 1, "J.K. Rowling", 1, "LibraryDesktop/Assets/1.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.", 0, 2, "Harry Potter và Hòn đá Phù thủy", 0, 70 },
+                    { 2, "Nguyễn Nhật Ánh", 2, "LibraryDesktop/Assets/2.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.", 0, 2, "Tôi thấy hoa vàng trên cỏ xanh", 0, 50 },
+                    { 3, "Arthur Conan Doyle", 4, "LibraryDesktop/Assets/3.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.", 0, 1, "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes", 0, 25 },
+                    { 4, "Robert Kiyosaki", 3, "LibraryDesktop/Assets/4.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.", 50, 1, "Dạy con làm giàu", 0, 30 },
+                    { 5, "Ngô Sĩ Liên", 5, "LibraryDesktop/Assets/5.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.", 0, 2, "Lịch sử Việt Nam: Đại Việt sử ký toàn thư", 0, 35 },
+                    { 6, "Paulo Coelho", 6, "LibraryDesktop/Assets/6.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.", 50, 1, "Nhà giả kim", 0, 40 },
+                    { 7, "Dale Carnegie", 7, "LibraryDesktop/Assets/7.png", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.", 50, 1, "Đắc nhân tâm", 0, 45 }
                 });
 
             migrationBuilder.InsertData(
@@ -329,6 +364,21 @@ namespace LibraryDesktop.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Histories_BookId",
+                table: "Histories",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Histories_ChapterId",
+                table: "Histories",
+                column: "ChapterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Histories_UserId",
+                table: "Histories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_PaymentToken",
                 table: "Payments",
                 column: "PaymentToken",
@@ -383,7 +433,7 @@ namespace LibraryDesktop.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Chapters");
+                name: "Histories");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -398,10 +448,13 @@ namespace LibraryDesktop.Data.Migrations
                 name: "UserSettings");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Chapters");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Categories");

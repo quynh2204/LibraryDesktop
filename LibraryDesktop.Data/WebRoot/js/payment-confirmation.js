@@ -173,8 +173,14 @@ class PaymentConfirmation {    constructor() {
                     this.closeWindow();
                 }, 3000);
                 
-                // Clear token to prevent navigation warning
+                // Clear token to prevent navigation warning and stop polling
                 this.paymentToken = null;
+                
+                // Clear any existing status polling to prevent duplicate messages
+                if (this.statusInterval) {
+                    clearInterval(this.statusInterval);
+                    this.statusInterval = null;
+                }
                 
             } else {
                 throw new Error(result.message || 'Payment failed');
@@ -239,14 +245,18 @@ class PaymentConfirmation {    constructor() {
                 const response = await fetch(apiUrl);
                 if (response.ok) {
                     const payment = await response.json();
-                    console.log(`Payment status check ${pollCount}/${maxPolls}: ${payment.status}`);
-                      if (payment.status === 'Completed') {
+                    console.log(`Payment status check ${pollCount}/${maxPolls}: ${payment.status}`);                      if (payment.status === 'Completed') {
                         clearInterval(this.statusInterval);
-                        // Calculate coins for success message
-                        const coins = Math.floor(this.paymentAmount / 1000);
-                        this.showSuccess(`Payment completed successfully! +${coins} coins added to your account`);
-                        this.paymentToken = null;
-                        setTimeout(() => this.closeWindow(), 2000);
+                        this.statusInterval = null;
+                        
+                        // Only show success message if we haven't already processed this payment
+                        if (this.paymentToken) {
+                            // Calculate coins for success message
+                            const coins = Math.floor(this.paymentAmount / 1000);
+                            this.showSuccess(`Payment completed successfully! +${coins} coins added to your account`);
+                            this.paymentToken = null;
+                            setTimeout(() => this.closeWindow(), 2000);
+                        }
                     }
                 } else {
                     console.log(`Payment status check failed: ${response.status}`);

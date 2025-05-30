@@ -9,7 +9,9 @@ namespace LibraryDesktop.Data.Services
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hash);
-    }    public interface IBookService
+    }    
+
+    public interface IBookService
     {
         Task<IEnumerable<Book>> GetBooksAsync();
         Task<IEnumerable<Book>> GetBooksByCategoryAsync(int categoryId);
@@ -45,7 +47,7 @@ namespace LibraryDesktop.Data.Services
         public int Amount { get; set; }
         public string PaymentToken { get; set; } = string.Empty;
         public DateTime CompletedAt { get; set; }
-    }    public interface IUserService
+    }      public interface IUserService
     {
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<User?> GetUserByIdAsync(int userId);
@@ -56,13 +58,23 @@ namespace LibraryDesktop.Data.Services
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);
         Task<bool> IsFavoriteAsync(int userId, int bookId);
         Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(int userId);
-    }    public interface IRatingService
+        Task<bool> UpdateUserAsync(User user);
+        Task<bool> UpdateAvatarUrlAsync(int userId, string avatarUrl);
+        Task<User?> GetUserByUsernameAsync(string username);
+    }public interface IRatingService
     {
         Task<IEnumerable<Rating>> GetBookRatingsAsync(int bookId);
         Task<Rating?> GetUserRatingAsync(int userId, int bookId);
         Task<double> GetAverageRatingAsync(int bookId);
         Task<Rating> AddOrUpdateRatingAsync(int userId, int bookId, int ratingValue, string? review = null);
         Task<bool> DeleteRatingAsync(int userId, int bookId);
+    }    public interface IHistoryService
+    {
+        Task<IEnumerable<History>> GetUserHistoryAsync(int userId);
+        Task<History> AddHistoryAsync(int userId, int bookId, int? chapterId = null, string accessType = "View");
+        Task<IEnumerable<History>> GetBookHistoryAsync(int bookId);
+        Task<bool> DeleteHistoryAsync(int historyId);
+        Task ClearUserHistoryAsync(int userId);
     }
 
     public interface IGitHubContentService

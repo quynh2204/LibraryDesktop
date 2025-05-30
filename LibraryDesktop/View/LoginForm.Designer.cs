@@ -213,7 +213,7 @@ namespace LibraryDesktop.View
             controlBoxClose.ShadowDecoration.BorderRadius = 20;
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges12;
             controlBoxClose.Size = new Size(43, 46);
-            controlBoxClose.TabIndex = 10;
+            controlBoxClose.TabIndex = 1;
             // 
             // LoginForm
             // 

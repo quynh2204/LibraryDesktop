@@ -11,9 +11,7 @@ namespace LibraryDesktop.Data
         
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {
-        }
-
-        // DbSets
+        }        // DbSets
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
@@ -21,7 +19,8 @@ namespace LibraryDesktop.Data
         public DbSet<UserFavorite> UserFavorites { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
-        public DbSet<Payment> Payments { get; set; }        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<History> Histories { get; set; }protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
@@ -38,9 +37,7 @@ namespace LibraryDesktop.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // Configure relationships and constraints
+            base.OnModelCreating(modelBuilder);            // Configure relationships and constraints
             ConfigureUserEntity(modelBuilder);
             ConfigureCategoryEntity(modelBuilder);
             ConfigureBookEntity(modelBuilder);
@@ -49,6 +46,7 @@ namespace LibraryDesktop.Data
             ConfigureRatingEntity(modelBuilder);
             ConfigureUserSettingEntity(modelBuilder);
             ConfigurePaymentEntity(modelBuilder);
+            ConfigureHistoryEntity(modelBuilder);
 
             // Seed initial data
             SeedData(modelBuilder);
@@ -186,6 +184,30 @@ namespace LibraryDesktop.Data
                     .OnDelete(DeleteBehavior.Cascade);
                     
                 entity.HasIndex(e => e.PaymentToken).IsUnique();
+            });        }
+
+        private void ConfigureHistoryEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<History>(entity =>
+            {
+                entity.ToTable("Histories");
+                entity.HasKey(e => e.HistoryId);
+                entity.Property(e => e.AccessType).IsRequired().HasMaxLength(50);
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(e => e.Book)
+                    .WithMany()
+                    .HasForeignKey(e => e.BookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(e => e.Chapter)
+                    .WithMany()
+                    .HasForeignKey(e => e.ChapterId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
         }        
         private void SeedData(ModelBuilder modelBuilder)
@@ -222,16 +244,16 @@ namespace LibraryDesktop.Data
                     ThemeMode = ThemeMode.Light,
                     FontSize = 12
                 }
-            );// Seed Books with Asset Images
+            );            // Seed Books with Asset Images
             modelBuilder.Entity<Book>().HasData(
-                new Book { BookId = 1, Title = "Harry Potter và Hòn đá Phù thủy", Author="J.K. Rowling", CategoryId = 1, Description = "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.", ViewCount = 70, Price = 0, CoverImageUrl = "Assets/1.png", Status = BookStatus.Completed, CreatedDate = seedDate},
-                new Book { BookId = 2, Title = "Tôi thấy hoa vàng trên cỏ xanh", Author = "Nguyễn Nhật Ánh", CategoryId = 2, Description = "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.", ViewCount = 50, Price = 0, CoverImageUrl = "Assets/2ef1ef06a27bf5cd68fea90a24cc96dd.jpg", Status = BookStatus.Completed, CreatedDate = seedDate },
-                new Book { BookId = 3, Title = "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes", Author = "Arthur Conan Doyle", CategoryId = 4, Description = "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.", ViewCount = 25, Price = 0, CoverImageUrl = "Assets/3398eb12b32fa930e105e701b708bc9a.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 4, Title = "Dạy con làm giàu", Author = "Robert Kiyosaki", CategoryId = 3, Description = "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.", ViewCount = 30, Price = 50, CoverImageUrl = "Assets/5cb878e981ec841cf8963c2dbfc837c3.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 5, Title = "Lịch sử Việt Nam: Đại Việt sử ký toàn thư", Author = "Ngô Sĩ Liên", CategoryId = 5, Description = "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.", ViewCount = 35, Price = 0, CoverImageUrl = "Assets/65b07f0ccb5631d4025d509c0c14e62d.jpg", Status = BookStatus.Completed, CreatedDate = seedDate },
-                new Book { BookId = 6, Title = "Nhà giả kim", Author = "Paulo Coelho", CategoryId = 6, Description = "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.", ViewCount = 40, Price = 50, CoverImageUrl = "Assets/6a81c3d24a73711e02ba8593c067bccf.jpg", Status = BookStatus.Published, CreatedDate = seedDate },
-                new Book { BookId = 7, Title = "Đắc nhân tâm", Author = "Dale Carnegie", CategoryId = 7, Description = "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.", ViewCount = 45, Price = 50, CoverImageUrl = "Assets/9a321b2c38deed11aa8fb0e879cc6610.jpg", Status = BookStatus.Published, CreatedDate = seedDate }
-            );            // Seed Chapters for some books
+                new Book { BookId = 1, Title = "Harry Potter và Hòn đá Phù thủy", Author="J.K. Rowling", CategoryId = 1, Description = "Câu chuyện về cậu bé phù thủy Harry Potter và cuộc phiêu lưu đầu tiên tại trường Hogwarts. Khám phá thế giới phép thuật đầy kỳ diệu và những người bạn đồng hành.", ViewCount = 70, Price = 0, CoverImageUrl = "LibraryDesktop/Assets/1.png", Status = BookStatus.Completed, CreatedDate = seedDate},
+                new Book { BookId = 2, Title = "Tôi thấy hoa vàng trên cỏ xanh", Author = "Nguyễn Nhật Ánh", CategoryId = 2, Description = "Tác phẩm kể về tuổi thơ của những đứa trẻ miền quê, với những kỷ niệm đẹp về tình anh em, tình làng nghĩa xóm và những bài học cuộc sống quý giá.", ViewCount = 50, Price = 0, CoverImageUrl = "LibraryDesktop/Assets/2.png", Status = BookStatus.Completed, CreatedDate = seedDate },
+                new Book { BookId = 3, Title = "Sherlock Holmes: Cuộc phiêu lưu của Sherlock Holmes", Author = "Arthur Conan Doyle", CategoryId = 4, Description = "Tuyển tập những vụ án kinh điển của thám tử vĩ đại Sherlock Holmes và người bạn đồng hành Watson. Những câu chuyện trinh thám hấp dẫn và đầy bí ẩn.", ViewCount = 25, Price = 0, CoverImageUrl = "LibraryDesktop/Assets/3.png", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 4, Title = "Dạy con làm giàu", Author = "Robert Kiyosaki", CategoryId = 3, Description = "Cuốn sách dạy về tư duy tài chính và cách quản lý tiền bạc hiệu quả. Những bài học quý giá về đầu tư và xây dựng tài sản.", ViewCount = 30, Price = 50, CoverImageUrl = "LibraryDesktop/Assets/4.png", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 5, Title = "Lịch sử Việt Nam: Đại Việt sử ký toàn thư", Author = "Ngô Sĩ Liên", CategoryId = 5, Description = "Tác phẩm sử học quan trọng ghi chép lịch sử Việt Nam từ thời cổ đại đến thế kỷ XV. Nguồn tài liệu quý giá về văn hóa và lịch sử dân tộc.", ViewCount = 35, Price = 0, CoverImageUrl = "LibraryDesktop/Assets/5.png", Status = BookStatus.Completed, CreatedDate = seedDate },
+                new Book { BookId = 6, Title = "Nhà giả kim", Author = "Paulo Coelho", CategoryId = 6, Description = "Câu chuyện về chàng chăn cừu Santiago và cuộc hành trình tìm kiếm kho báu. Một tác phẩm triết lý sâu sắc về ước mơ và ý nghĩa cuộc sống.", ViewCount = 40, Price = 50, CoverImageUrl = "LibraryDesktop/Assets/6.png", Status = BookStatus.Published, CreatedDate = seedDate },
+                new Book { BookId = 7, Title = "Đắc nhân tâm", Author = "Dale Carnegie", CategoryId = 7, Description = "Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử. Hướng dẫn cách xây dựng mối quan hệ tốt và thành công trong cuộc sống.", ViewCount = 45, Price = 50, CoverImageUrl = "LibraryDesktop/Assets/7.png", Status = BookStatus.Published, CreatedDate = seedDate }
+            );// Seed Chapters for some books
             modelBuilder.Entity<Chapter>().HasData(
                 new Chapter { ChapterId = 1, BookId = 1, ChapterNumber = 1, ChapterTitle = "Đứa bé vẫn sống", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2001.txt", PublishedDate = seedDate },
                 new Chapter { ChapterId = 2, BookId = 1, ChapterNumber = 2, ChapterTitle = "Tấm kính biến mất", GitHubContentUrl = "https://raw.githubusercontent.com/PeanLutHuynh/Project_Library-Books/master/Harry%20Potter%20V%C3%A0%20H%C3%B2n%20%C4%90%C3%A1%20Ph%C3%B9%20Th%E1%BB%A7y/Ch%C6%B0%C6%A1ng%2002.txt", PublishedDate = seedDate },

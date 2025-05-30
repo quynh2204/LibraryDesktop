@@ -127,14 +127,47 @@ namespace LibraryDesktop.Data.Repositories
 
             return ratings.Any() ? ratings.Average() : 0;
         }
-    }
-
-    public class UserSettingRepository : Repository<UserSetting>, IUserSettingRepository
+    }    public class UserSettingRepository : Repository<UserSetting>, IUserSettingRepository
     {
         public UserSettingRepository(LibraryDbContext context) : base(context) { }        public async Task<UserSetting?> GetByUserIdAsync(int userId)
         {
             return await _dbSet
                 .FirstOrDefaultAsync(us => us.UserId == userId);
+        }
+    }
+
+    public class HistoryRepository : Repository<History>, IHistoryRepository
+    {
+        public HistoryRepository(LibraryDbContext context) : base(context) { }
+
+        public async Task<IEnumerable<History>> GetUserHistoryAsync(int userId)
+        {
+            return await _dbSet
+                .Include(h => h.Book)
+                .ThenInclude(b => b.Category)
+                .Include(h => h.Chapter)
+                .Where(h => h.UserId == userId)
+                .OrderByDescending(h => h.AccessedDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<History>> GetBookHistoryAsync(int bookId)
+        {
+            return await _dbSet
+                .Include(h => h.User)
+                .Where(h => h.BookId == bookId)
+                .OrderByDescending(h => h.AccessedDate)
+                .ToListAsync();
+        }
+
+        public async Task ClearUserHistoryAsync(int userId)
+        {
+            var userHistories = await _dbSet
+                .Where(h => h.UserId == userId)
+                .ToListAsync();
+
+            _dbSet.RemoveRange(userHistories);
+            await SaveChangesAsync();
         }
     }
 }

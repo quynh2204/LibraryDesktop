@@ -13,16 +13,24 @@ using LibraryDesktop.Models;
 using System.Diagnostics;
 using LibraryDesktop.Data.Interfaces;
 
+
 namespace LibraryDesktop.View
 {    public partial class Home : UserControl
     {        public event EventHandler<BookSelectedEventArgs>? BookSelected;
 
-        private IEnumerable<Book> _allBooks = new List<Book>();
+        private readonly IUserService _userService;
+        private readonly IAuthenticationService _authService;
+        private int _currentUserId;        private IEnumerable<Book> _allBooks = new List<Book>();
         private IEnumerable<Category> _categories = new List<Category>();
-        private IServiceProvider? _serviceProvider;public Home()
+        private IServiceProvider? _serviceProvider;
+        private Guna.UI2.WinForms.Guna2ComboBox? _categoryFilterCombo;public Home()
         {
             InitializeComponent();
             CreateSearchAndFilterControls();
+            
+            // Handle resize events for responsive layout
+            this.Resize += Home_Resize;
+            flowLayoutPanel1.Resize += FlowLayoutPanel1_Resize;
         }        // Method to create search and filter controls
         private void CreateSearchAndFilterControls()
         {
@@ -31,11 +39,93 @@ namespace LibraryDesktop.View
             {
                 guna2TextBox1.PlaceholderText = "Search books by title or author...";
                 guna2TextBox1.KeyDown += SearchTextBox_KeyDown;
+                // Add real-time search on text change
+                guna2TextBox1.TextChanged += SearchTextBox_TextChanged;
             }
 
             if (guna2PictureBox1 != null)
             {
                 guna2PictureBox1.Click += SearchButton_Click;
+            }
+
+            // Create category filter combobox
+            CreateCategoryFilter();
+        }
+
+        private void CreateCategoryFilter()
+        {
+            if (guna2ShadowPanel1 != null)
+            {
+                _categoryFilterCombo = new Guna.UI2.WinForms.Guna2ComboBox
+                {
+                    Name = "categoryFilterCombo",
+                    Location = new Point(675, 23), // Between search box and search button
+                    Size = new Size(150, 44),
+                    BorderRadius = 15,
+                    Font = new Font("Segoe UI", 9F),
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+
+                // Add "All Categories" as default option
+                _categoryFilterCombo.Items.Add("All Categories");
+                _categoryFilterCombo.SelectedIndex = 0;
+                _categoryFilterCombo.SelectedIndexChanged += CategoryFilter_SelectedIndexChanged;
+
+                guna2ShadowPanel1.Controls.Add(_categoryFilterCombo);
+            }
+        }        private void CategoryFilter_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            // Trigger immediate search when category is changed
+            PerformSearch();
+        }
+        
+        // Real-time search on text change
+        private void SearchTextBox_TextChanged(object? sender, EventArgs e)
+        {
+            PerformSearch();
+        }private void PopulateCategoryFilter()
+        {
+            if (_categoryFilterCombo != null && _categories != null)
+            {
+                // Clear existing items except "All Categories"
+                _categoryFilterCombo.Items.Clear();
+                _categoryFilterCombo.Items.Add("All Categories");
+                  // Add all categories
+                foreach (var category in _categories.OrderBy(c => c.CategoryName))
+                {
+                    _categoryFilterCombo.Items.Add(category.CategoryName);
+                }
+                
+                _categoryFilterCombo.SelectedIndex = 0;
+            }
+        }
+
+        private void UpdateWelcomeMessage()
+        {
+            if (guna2HtmlLabel1 != null && _userService != null && _currentUserId > 0)
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        var user = await _userService.GetUserByIdAsync(_currentUserId);
+                        if (user != null)
+                        {
+                            if (this.InvokeRequired)
+                            {
+                                this.Invoke(() => guna2HtmlLabel1.Text = $"Hello {user.Username}");
+                            }
+                            else
+                            {
+                                guna2HtmlLabel1.Text = $"Hello {user.Username}";
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error updating welcome message: {ex.Message}");
+                    }
+                });
             }
         }
 
@@ -51,30 +141,52 @@ namespace LibraryDesktop.View
         private void SearchButton_Click(object? sender, EventArgs e)
         {
             PerformSearch();
-        }
-
-        private void PerformSearch()
+        }        private void PerformSearch()
         {
             if (guna2TextBox1 == null) return;
 
             string searchTerm = guna2TextBox1.Text.Trim();
-            
-            if (string.IsNullOrEmpty(searchTerm))
+            var filteredBooks = _allBooks.AsEnumerable();
+
+            // Apply text search filter
+            if (!string.IsNullOrEmpty(searchTerm) && searchTerm != "Search")
             {
-                // Show all books if search is empty
-                UpdateBookControls(_allBooks);
-            }
-            else
-            {
-                // Filter books by title or author
-                var filteredBooks = _allBooks.Where(book => 
+                filteredBooks = filteredBooks.Where(book => 
                     book.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     book.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                 );
-                
-                UpdateBookControls(filteredBooks);
+            }            // Apply category filter
+            if (_categoryFilterCombo != null && _categoryFilterCombo.SelectedIndex > 0)
+            {
+                string selectedCategory = _categoryFilterCombo.SelectedItem.ToString() ?? "";
+                var category = _categories.FirstOrDefault(c => c.CategoryName == selectedCategory);
+                if (category != null)
+                {
+                    filteredBooks = filteredBooks.Where(book => book.CategoryId == category.CategoryId);
+                }
             }
-        }        // Method to initialize with service provider and load books
+
+            UpdateBookControls(filteredBooks);
+            
+            if (account1 != null)
+            {
+                account1.Visible = false;
+            }
+        }
+
+        public Home(IUserService userService, IAuthenticationService authService) : this()
+        {
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        }
+
+        public void SetCurrentUserId(int userId)
+        {
+            _currentUserId = userId;
+        }
+
+
+        // Method to initialize with service provider and load books
         public async Task InitializeAsync(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -94,72 +206,161 @@ namespace LibraryDesktop.View
                 Debug.WriteLine("Loading books and categories from database...");
                 var books = await bookService.GetBooksAsync();
                 var categories = await categoryService.GetCategoriesAsync();
-                
-                _allBooks = books;
+                  _allBooks = books;
                 _categories = categories;
                 
-                Debug.WriteLine($"Found {books.Count()} books and {categories.Count()} categories");
-
-                // Ensure UI operations happen on UI thread
+                Debug.WriteLine($"Found {books.Count()} books and {categories.Count()} categories");                // Ensure UI operations happen on UI thread
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(() => UpdateBookControls(books));
+                    this.Invoke(() => 
+                    {
+                        PopulateCategoryFilter();
+                        UpdateWelcomeMessage();
+                        UpdateBookControls(books);
+                    });
                 }
                 else
                 {
+                    PopulateCategoryFilter();
+                    UpdateWelcomeMessage();
                     UpdateBookControls(books);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading books: {ex.Message}");
-                
+
                 // Show error on UI thread
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(() => 
+                    this.Invoke(() =>
                     {
-                        MessageBox.Show($"Error loading books: {ex.Message}", "Error", 
+                        MessageBox.Show($"Error loading books: {ex.Message}", "Error",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     });
                 }
                 else
                 {
-                    MessageBox.Show($"Error loading books: {ex.Message}", "Error", 
+                    MessageBox.Show($"Error loading books: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }        private void UpdateBookControls(IEnumerable<Book> books)
+        {
+            try
+            {
+                flowLayoutPanel1.SuspendLayout();
+                
+                // Clear existing controls
+                ClearBookControls();
+                
+                // Get books to display
+                var booksToShow = books.ToList();
+                
+                // Calculate optimal sizing for 5 books per row
+                ConfigureFlowLayoutForOptimalDisplay();
+                
+                // Create and add new book controls dynamically
+                int bookIndex = 0;
+                foreach (var book in booksToShow)
+                {
+                    var bookControl = CreateBookControl(book, bookIndex);
+                    flowLayoutPanel1.Controls.Add(bookControl);
+                    bookIndex++;
+                }
+
+                Debug.WriteLine($"✅ Created {bookIndex} dynamic book controls with optimal spacing (5 per row)");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ Error updating book controls: {ex.Message}");
+                MessageBox.Show($"Error displaying books: {ex.Message}", "Display Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            finally
+            {
+                flowLayoutPanel1.ResumeLayout(true);
+            }
         }
 
-        private void UpdateBookControls(IEnumerable<Book> books)
+        private void ClearBookControls()
         {
-            // Clear existing static book controls (keep the layout)
-            var staticControls = flowLayoutPanel1.Controls.OfType<BookControl>().ToList();
-            
-            // Update existing controls with real data or add new ones
-            int bookIndex = 0;
-            foreach (var book in books.Take(12)) // Limit to 12 books
+            // Dispose existing controls properly to prevent memory leaks
+            var existingControls = flowLayoutPanel1.Controls.OfType<BookControl>().ToList();
+            foreach (var control in existingControls)
             {
-                BookControl bookControl;
-                
-                if (bookIndex < staticControls.Count)
-                {
-                    // Use existing control
-                    bookControl = staticControls[bookIndex];
-                }
-                else
-                {
-                    // Create new control
-                    bookControl = new BookControl();
-                    flowLayoutPanel1.Controls.Add(bookControl);
-                }
-                  bookControl.SetBook(book);
-                bookControl.Tag = book; // Set tag to indicate this control has data
-                bookControl.BookClicked += (sender, clickedBook) => OnBookClicked(clickedBook.BookId);
-                bookIndex++;
+                control.BookClicked -= OnBookClickedHandler;
+                flowLayoutPanel1.Controls.Remove(control);
+                control.Dispose();
             }
+        }        private void ConfigureFlowLayoutForOptimalDisplay()
+        {
+            // Configure FlowLayoutPanel for 4 books per row with proper spacing
+            flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
+            flowLayoutPanel1.WrapContents = true;
+            flowLayoutPanel1.AutoScroll = true;
+            
+            // Reduced padding for tighter spacing
+            flowLayoutPanel1.Padding = new Padding(15, 15, 15, 15);
+            
+            // Calculate available width and book control size for 4 per row
+            int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
+            int booksPerRow = 4; // Changed to 4 for larger book controls
+            int spacing = 12; // Reduced spacing between book controls
+            int totalSpacing = spacing * (booksPerRow - 1);
+            int bookControlWidth = (availableWidth - totalSpacing + 100) / booksPerRow;
+            
+            // Ensure minimum width for readability and proper image display
+            if (bookControlWidth < 280)
+            {
+                bookControlWidth = 280;
+                booksPerRow = Math.Max(1, (availableWidth - totalSpacing) / bookControlWidth);
+            }
+            
+            Debug.WriteLine($"📐 Layout configured: {booksPerRow} books per row, {bookControlWidth}px width, {spacing}px spacing");
+            Debug.WriteLine($"📏 FlowLayoutPanel size: {flowLayoutPanel1.Width}x{flowLayoutPanel1.Height}, Padding: {flowLayoutPanel1.Padding}");
+        }private BookControl CreateBookControl(Book book, int index)
+        {
+            var bookControl = new BookControl(book)
+            {
+                Name = $"dynamicBook{index}",
+                Size = CalculateOptimalBookControlSize(),
+                Margin = new Padding(8, 5, 8, 5), // Reduced margins for tighter spacing
+                Tag = book,
+                BackColor = Color.Transparent
+            };
+            
+            // Subscribe to click event
+            bookControl.BookClicked += OnBookClickedHandler;
+            
+            Debug.WriteLine($"📚 Created BookControl {index}: Size={bookControl.Size}, Margin={bookControl.Margin}");
+            
+            return bookControl;
+        }        private Size CalculateOptimalBookControlSize()
+        {
+            // Calculate optimal size based on FlowLayoutPanel dimensions
+            int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
+            int booksPerRow = 4; // Reduced to 4 books per row for larger size
+            int horizontalSpacing = 16; // Total margin per control (8px each side)
+            int totalHorizontalSpacing = horizontalSpacing * booksPerRow;
+            
+            // Calculate width ensuring minimum and maximum constraints
+            int bookWidth = Math.Max(280, (availableWidth - totalHorizontalSpacing) / booksPerRow);
+            bookWidth = Math.Min(bookWidth, 350); // Increased maximum width for better book cover display
+              // Maintain aspect ratio for book controls (book-like proportions)
+            int bookHeight = (int)(bookWidth * 1.8); // Increased aspect ratio for better image visibility
+            bookHeight = Math.Max(bookHeight, 600); // Increased minimum height for better content visibility
+            bookHeight = Math.Min(bookHeight, 750); // Increased maximum height
+            
+            Debug.WriteLine($"📐 Calculated BookControl size: {bookWidth}x{bookHeight} (Available: {availableWidth}px)");
+            
+            return new Size(bookWidth, bookHeight);
+        }
 
-            Debug.WriteLine($"Loaded {bookIndex} books successfully to Home view");
+        // Event handler method to avoid lambda closure issues
+        private void OnBookClickedHandler(object? sender, Book clickedBook)
+        {
+            OnBookClicked(clickedBook.BookId);
         }
 
         // Method được gọi khi user click vào một book
@@ -179,6 +380,7 @@ namespace LibraryDesktop.View
         // Trong Home.cs (UserControl)
         public void ShowBookList()
         {
+
             if (flowLayoutPanel1 != null)
             {
                 flowLayoutPanel1.Visible = true;
@@ -188,6 +390,7 @@ namespace LibraryDesktop.View
 
         public void ShowHomeView()
         {
+
             // Hiển thị Home view
             if (flowLayoutPanel1 != null)
             {
@@ -224,5 +427,101 @@ namespace LibraryDesktop.View
             // Handle search functionality
             ShowHomeView();
         }
+
+        private async void btnAccount_Click(object sender, EventArgs e)
+        {
+            if (_userService == null || _authService == null)
+            {
+                MessageBox.Show("Services not initialized!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Sử dụng account control có sẵn từ designer (giả sử tên là account1)
+            if (account1.Visible)
+            {
+                // Ẩn account, hiện lại home content
+                account1.Visible = false;
+                flowLayoutPanel1.Visible = true;
+                flowLayoutPanel1.BringToFront();
+            }
+            else
+            {
+                // Hiện account, ẩn home content
+                try
+                {
+                    // Initialize services cho account control từ designer
+                    account1.Initialize(_userService, _authService);
+
+                    // Load user data
+                    await account1.LoadUserDataAsync(_currentUserId);
+
+                    // Toggle visibility
+                    flowLayoutPanel1.Visible = false;
+                    account1.Visible = true;
+                    account1.BringToFront();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading account: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void account1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Home_Resize(object sender, EventArgs e)
+        {
+            // Refresh layout when Home control is resized
+            RefreshBookControlsLayout();
+        }
+
+        private void FlowLayoutPanel1_Resize(object sender, EventArgs e)
+        {
+            // Refresh layout when FlowLayoutPanel is resized
+            RefreshBookControlsLayout();
+        }        private void RefreshBookControlsLayout()
+        {
+            if (flowLayoutPanel1.Controls.Count > 0)
+            {
+                try
+                {
+                    flowLayoutPanel1.SuspendLayout();
+                    
+                    // Reconfigure layout settings first
+                    ConfigureFlowLayoutForOptimalDisplay();
+                    
+                    // Recalculate optimal size for existing controls
+                    var optimalSize = CalculateOptimalBookControlSize();
+                    
+                    foreach (BookControl bookControl in flowLayoutPanel1.Controls.OfType<BookControl>())
+                    {
+                        var oldSize = bookControl.Size;
+                        bookControl.Size = optimalSize;
+                        bookControl.Margin = new Padding(10, 10, 10, 18);
+                        
+                        // Force BookControl to refresh its image sizing
+                        bookControl.Refresh();
+                        
+                        Debug.WriteLine($"🔄 Resized BookControl from {oldSize} to {optimalSize}");
+                    }
+                    
+                    Debug.WriteLine($"✅ Refreshed layout for {flowLayoutPanel1.Controls.Count} BookControls");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"❌ Error refreshing layout: {ex.Message}");
+                }
+                finally
+                {
+                    flowLayoutPanel1.ResumeLayout(true);
+                }
+            }
+        }
+
     }
+
 }

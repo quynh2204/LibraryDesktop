@@ -37,8 +37,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2DataGridView1 = new Guna.UI2.WinForms.Guna2DataGridView();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            read_btn = new Guna.UI2.WinForms.Guna2Button();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            read_btn = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).BeginInit();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
@@ -106,6 +106,16 @@
             guna2Panel1.Size = new Size(901, 629);
             guna2Panel1.TabIndex = 1;
             // 
+            // guna2HtmlLabel1
+            // 
+            guna2HtmlLabel1.BackColor = Color.Transparent;
+            guna2HtmlLabel1.Font = new Font(".VnCentury SchoolbookH", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            guna2HtmlLabel1.Location = new Point(54, 34);
+            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            guna2HtmlLabel1.Size = new Size(202, 30);
+            guna2HtmlLabel1.TabIndex = 1;
+            guna2HtmlLabel1.Text = "Reading History";
+            // 
             // read_btn
             // 
             read_btn.BorderRadius = 20;
@@ -123,16 +133,6 @@
             read_btn.Size = new Size(173, 63);
             read_btn.TabIndex = 2;
             read_btn.Text = "Read";
-            // 
-            // guna2HtmlLabel1
-            // 
-            guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Font = new Font(".VnCentury SchoolbookH", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            guna2HtmlLabel1.Location = new Point(54, 34);
-            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(183, 30);
-            guna2HtmlLabel1.TabIndex = 1;
-            guna2HtmlLabel1.Text = "History's Book";
             // 
             // History
             // 

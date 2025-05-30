@@ -49,7 +49,7 @@
             book12 = new BookControl();
             guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            btn_vaid = new Guna.UI2.WinForms.Guna2GradientButton();
+            btnAccount = new Guna.UI2.WinForms.Guna2GradientButton();
             guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -192,7 +192,7 @@
             // 
             guna2ShadowPanel1.BackColor = Color.Transparent;
             guna2ShadowPanel1.Controls.Add(guna2HtmlLabel2);
-            guna2ShadowPanel1.Controls.Add(btn_vaid);
+            guna2ShadowPanel1.Controls.Add(btnAccount);
             guna2ShadowPanel1.Controls.Add(guna2PictureBox1);
             guna2ShadowPanel1.Controls.Add(guna2TextBox1);
             guna2ShadowPanel1.Controls.Add(guna2HtmlLabel1);
@@ -214,29 +214,30 @@
             guna2HtmlLabel2.TabIndex = 9;
             guna2HtmlLabel2.Text = "Account";
             // 
-            // btn_vaid
+            // btnAccount
             // 
-            btn_vaid.BackColor = Color.Transparent;
-            btn_vaid.BorderRadius = 6;
-            btn_vaid.CustomizableEdges = customizableEdges1;
-            btn_vaid.DisabledState.BorderColor = Color.DarkGray;
-            btn_vaid.DisabledState.CustomBorderColor = Color.DarkGray;
-            btn_vaid.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            btn_vaid.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
-            btn_vaid.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btn_vaid.FillColor = Color.FromArgb(169, 155, 135);
-            btn_vaid.FillColor2 = Color.FromArgb(211, 195, 179);
-            btn_vaid.Font = new Font("Segoe UI", 9F);
-            btn_vaid.ForeColor = Color.White;
-            btn_vaid.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
-            btn_vaid.Image = Properties.Resources.icons8_book_1001;
-            btn_vaid.ImageAlign = HorizontalAlignment.Left;
-            btn_vaid.ImageSize = new Size(50, 50);
-            btn_vaid.Location = new Point(938, 12);
-            btn_vaid.Name = "btn_vaid";
-            btn_vaid.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btn_vaid.Size = new Size(68, 64);
-            btn_vaid.TabIndex = 3;
+            btnAccount.BackColor = Color.Transparent;
+            btnAccount.BorderRadius = 6;
+            btnAccount.CustomizableEdges = customizableEdges1;
+            btnAccount.DisabledState.BorderColor = Color.DarkGray;
+            btnAccount.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnAccount.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnAccount.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
+            btnAccount.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnAccount.FillColor = Color.FromArgb(169, 155, 135);
+            btnAccount.FillColor2 = Color.FromArgb(211, 195, 179);
+            btnAccount.Font = new Font("Segoe UI", 9F);
+            btnAccount.ForeColor = Color.White;
+            btnAccount.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            btnAccount.Image = Properties.Resources.icons8_book_1001;
+            btnAccount.ImageAlign = HorizontalAlignment.Left;
+            btnAccount.ImageSize = new Size(50, 50);
+            btnAccount.Location = new Point(938, 12);
+            btnAccount.Name = "btnAccount";
+            btnAccount.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnAccount.Size = new Size(68, 64);
+            btnAccount.TabIndex = 3;
+            btnAccount.Click += btnAccount_Click;
             // 
             // guna2PictureBox1
             // 
@@ -290,6 +291,7 @@
             account1.Name = "account1";
             account1.Size = new Size(1151, 604);
             account1.TabIndex = 10;
+            account1.Visible = false;
             account1.Load += account1_Load;
             // 
             // Home
@@ -325,7 +327,7 @@
         private BookControl book12;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
-        private Guna.UI2.WinForms.Guna2GradientButton btn_vaid;
+        private Guna.UI2.WinForms.Guna2GradientButton btnAccount;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;

@@ -22,17 +22,15 @@ namespace LibraryDesktop.View
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authService;
         private int _currentUserId;
-        private Panel mainContainer;
-        private Account _accountControl;
+
 
         public Home()
         {
             InitializeComponent();
-            mainContainer = new Panel
+            if (account1 != null)
             {
-                Dock = DockStyle.Fill
-            };
-            Controls.Add(mainContainer);
+                account1.Visible = false;
+            }
         }
 
         public Home(IUserService userService, IAuthenticationService authService) : this()
@@ -191,28 +189,43 @@ namespace LibraryDesktop.View
             ShowHomeView();
         }
 
-        private async void btn_vaid_Click(object sender, EventArgs e)
+        private async void btnAccount_Click(object sender, EventArgs e)
         {
-            // Toggle account control
-            if (_accountControl != null && mainContainer.Controls.Contains(_accountControl))
+            if (_userService == null || _authService == null)
             {
-                // Tắt account, hiện lại home
-                mainContainer.Controls.Clear();
+                MessageBox.Show("Services not initialized!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Sử dụng account control có sẵn từ designer (giả sử tên là account1)
+            if (account1.Visible)
+            {
+                // Ẩn account, hiện lại home content
+                account1.Visible = false;
                 flowLayoutPanel1.Visible = true;
+                flowLayoutPanel1.BringToFront();
             }
             else
             {
-                // Hiện account
-                if (_accountControl == null)
+                // Hiện account, ẩn home content
+                try
                 {
-                    _accountControl = new Account(_userService, _authService);
-                }
+                    // Initialize services cho account control từ designer
+                    account1.Initialize(_userService, _authService);
 
-                await _accountControl.LoadUserDataAsync(_currentUserId);
-                mainContainer.Controls.Clear();
-                mainContainer.Controls.Add(_accountControl);
-                _accountControl.Dock = DockStyle.Fill;
-                flowLayoutPanel1.Visible = false;
+                    // Load user data
+                    await account1.LoadUserDataAsync(_currentUserId);
+
+                    // Toggle visibility
+                    flowLayoutPanel1.Visible = false;
+                    account1.Visible = true;
+                    account1.BringToFront();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading account: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

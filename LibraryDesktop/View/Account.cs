@@ -83,24 +83,295 @@ namespace LibraryDesktop.View
             await LoadAvatar();
         }
 
+        private async void btnChangeAvatar_Click(object sender, EventArgs e)
+        {
+            if (_userService == null) return;
+
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+                openFileDialog.Title = "Select Avatar";
+                openFileDialog.Multiselect = false;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Disable button và hiển thị loading
+                    btnChangeAvatar.Enabled = false;
+                    btnChangeAvatar.Text = "Uploading...";
+
+                    try
+                    {
+                        // Lưu đường dẫn file
+                        string selectedFile = openFileDialog.FileName;
+
+                        // Chạy toàn bộ process trong background
+                        await Task.Run(async () =>
+                        {
+                            await ProcessAvatarChangeCompletelyAsync(selectedFile);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Show error trên UI thread
+                        if (this.IsHandleCreated && !this.IsDisposed)
+                        {
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                MessageBox.Show($"Error updating avatar: {ex.Message}", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }));
+                        }
+                    }
+                    finally
+                    {
+                        // Re-enable button trên UI thread
+                        if (this.IsHandleCreated && !this.IsDisposed)
+                        {
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                btnChangeAvatar.Enabled = true;
+                                btnChangeAvatar.Text = "Change Avatar";
+                            }));
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task ProcessAvatarChangeCompletelyAsync(string sourceFilePath)
+        {
+            string destinationPath = null;
+            string relativePath = null;
+
+            try
+            {
+                // 1. Prepare paths
+                string appPath = Application.StartupPath;
+                string avatarDir = Path.Combine(appPath, "Avatars");
+
+                if (!Directory.Exists(avatarDir))
+                {
+                    Directory.CreateDirectory(avatarDir);
+                }
+
+                // 2. Delete old avatar
+                if (!string.IsNullOrEmpty(_currentUser?.AvatarUrl))
+                {
+                    string oldAvatarPath = Path.Combine(appPath, _currentUser.AvatarUrl);
+                    if (File.Exists(oldAvatarPath))
+                    {
+                        try
+                        {
+                            File.Delete(oldAvatarPath);
+                        }
+                        catch
+                        {
+                            // Ignore deletion errors
+                        }
+                    }
+                }
+
+                // 3. Create new file path
+                string fileExtension = Path.GetExtension(sourceFilePath);
+                string fileName = $"avatar_{_currentUserId}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                destinationPath = Path.Combine(avatarDir, fileName);
+                relativePath = Path.Combine("Avatars", fileName).Replace("\\", "/");
+
+                // 4. Copy file
+                using (var source = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+                using (var destination = new FileStream(destinationPath, FileMode.Create, FileAccess.Write))
+                {
+                    await source.CopyToAsync(destination);
+                }
+
+                // 5. Process and resize image
+                byte[] processedImageData = await ProcessImageAsync(destinationPath);
+
+                // 6. Update database
+                bool dbSuccess = await _userService.UpdateAvatarUrlAsync(_currentUserId, relativePath);
+
+                if (!dbSuccess)
+                {
+                    // Rollback file if database update failed
+                    if (File.Exists(destinationPath))
+                    {
+                        File.Delete(destinationPath);
+                    }
+                    throw new Exception("Failed to update database");
+                }
+
+                // 7. Update UI on main thread
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        try
+                        {
+                            UpdateAvatarUI(processedImageData);
+
+                            // Update current user object
+                            if (_currentUser != null)
+                            {
+                                _currentUser.AvatarUrl = relativePath;
+                            }
+
+                            MessageBox.Show("Avatar updated successfully!", "Success",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error updating UI: {ex.Message}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }));
+                }
+            }
+            catch (Exception)
+            {
+                // Cleanup on error
+                if (!string.IsNullOrEmpty(destinationPath) && File.Exists(destinationPath))
+                {
+                    try
+                    {
+                        File.Delete(destinationPath);
+                    }
+                    catch { }
+                }
+                throw;
+            }
+        }
+
+        private async Task<byte[]> ProcessImageAsync(string imagePath)
+        {
+            return await Task.Run(() =>
+            {
+                // Đọc và process image hoàn toàn trong background
+                byte[] originalData = File.ReadAllBytes(imagePath);
+
+                using (var ms = new MemoryStream(originalData))
+                using (var originalImage = Image.FromStream(ms))
+                {
+                    // Resize image
+                    using (var resizedImage = ResizeImage(originalImage, 200, 200))
+                    {
+                        // Convert về byte array
+                        using (var outputMs = new MemoryStream())
+                        {
+                            resizedImage.Save(outputMs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            return outputMs.ToArray();
+                        }
+                    }
+                }
+            });
+        }
+
+        private void UpdateAvatarUI(byte[] imageData)
+        {
+            try
+            {
+                // Dispose old image
+                if (picAvatar.Image != null)
+                {
+                    var oldImage = picAvatar.Image;
+                    picAvatar.Image = null;
+                    oldImage.Dispose();
+                }
+
+                // Set new image
+                using (var ms = new MemoryStream(imageData))
+                {
+                    picAvatar.Image = new Bitmap(Image.FromStream(ms));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating avatar UI: {ex.Message}");
+                SetDefaultAvatar();
+            }
+        }
+
+        private Image ResizeImage(Image originalImage, int maxWidth, int maxHeight)
+        {
+            int newWidth = originalImage.Width;
+            int newHeight = originalImage.Height;
+
+            if (newWidth > maxWidth || newHeight > maxHeight)
+            {
+                double ratio = Math.Min((double)maxWidth / newWidth, (double)maxHeight / newHeight);
+                newWidth = (int)(newWidth * ratio);
+                newHeight = (int)(newHeight * ratio);
+            }
+
+            var resizedImage = new Bitmap(newWidth, newHeight);
+            using (var graphics = Graphics.FromImage(resizedImage))
+            {
+                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                graphics.DrawImage(originalImage, 0, 0, newWidth, newHeight);
+            }
+
+            return resizedImage;
+        }
+
+        // Cập nhật LoadAvatar method
         private async Task LoadAvatar()
         {
             if (_currentUser?.AvatarUrl != null && !string.IsNullOrEmpty(_currentUser.AvatarUrl))
             {
                 try
                 {
-                    using (var client = new System.Net.Http.HttpClient())
+                    if (_currentUser.AvatarUrl.StartsWith("http"))
                     {
-                        var imageBytes = await client.GetByteArrayAsync(_currentUser.AvatarUrl);
-                        using (var ms = new MemoryStream(imageBytes))
+                        // Load từ internet
+                        var imageData = await Task.Run(async () =>
                         {
-                            picAvatar.Image = Image.FromStream(ms);
+                            using (var client = new System.Net.Http.HttpClient())
+                            {
+                                client.Timeout = TimeSpan.FromSeconds(10);
+                                return await client.GetByteArrayAsync(_currentUser.AvatarUrl);
+                            }
+                        });
+
+                        // Process image trong background
+                        var processedData = await Task.Run(() =>
+                        {
+                            using (var ms = new MemoryStream(imageData))
+                            using (var originalImage = Image.FromStream(ms))
+                            using (var resizedImage = ResizeImage(originalImage, 200, 200))
+                            {
+                                using (var outputMs = new MemoryStream())
+                                {
+                                    resizedImage.Save(outputMs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                    return outputMs.ToArray();
+                                }
+                            }
+                        });
+
+                        // Update UI
+                        UpdateAvatarUI(processedData);
+                    }
+                    else
+                    {
+                        // Load local file
+                        string avatarPath = Path.IsPathRooted(_currentUser.AvatarUrl)
+                            ? _currentUser.AvatarUrl
+                            : Path.Combine(Application.StartupPath, _currentUser.AvatarUrl);
+
+                        if (File.Exists(avatarPath))
+                        {
+                            var processedData = await ProcessImageAsync(avatarPath);
+                            UpdateAvatarUI(processedData);
+                        }
+                        else
+                        {
+                            SetDefaultAvatar();
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Use default avatar if loading fails
+                    System.Diagnostics.Debug.WriteLine($"Error loading avatar: {ex.Message}");
                     SetDefaultAvatar();
                 }
             }
@@ -112,13 +383,19 @@ namespace LibraryDesktop.View
 
         private void SetDefaultAvatar()
         {
-            // Create a simple default avatar
+            if (picAvatar.Image != null)
+            {
+                var oldImage = picAvatar.Image;
+                picAvatar.Image = null;
+                oldImage.Dispose();
+            }
+
             var bitmap = new Bitmap(100, 100);
             using (var g = Graphics.FromImage(bitmap))
             {
                 g.FillEllipse(Brushes.LightGray, 0, 0, 100, 100);
-                g.DrawString(_currentUser?.Username?.Substring(0, 1).ToUpper() ?? "U",
-                    new Font("Segoe UI", 24, FontStyle.Bold), Brushes.White, 35, 30);
+                string initial = _currentUser?.Username?.Substring(0, 1).ToUpper() ?? "U";
+                g.DrawString(initial, new Font("Segoe UI", 24, FontStyle.Bold), Brushes.White, 35, 30);
             }
             picAvatar.Image = bitmap;
         }
@@ -157,47 +434,6 @@ namespace LibraryDesktop.View
             {
                 MessageBox.Show($"Error updating profile: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async void btnChangeAvatar_Click(object sender, EventArgs e)
-        {
-            if (_userService == null) return;
-
-            using (var openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
-                openFileDialog.Title = "Select Avatar";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        // Load and display the selected image
-                        var image = Image.FromFile(openFileDialog.FileName);
-                        picAvatar.Image = image;
-
-                        // In a real app, you would upload this to a server and get a URL
-                        // For now, we'll just save the local path
-                        var success = await _userService.UpdateAvatarUrlAsync(_currentUserId, openFileDialog.FileName);
-
-                        if (success)
-                        {
-                            MessageBox.Show("Avatar updated successfully!", "Success",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to update avatar!", "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error loading image: {ex.Message}", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
             }
         }
 

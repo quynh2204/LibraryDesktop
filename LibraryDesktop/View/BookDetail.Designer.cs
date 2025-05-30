@@ -1,4 +1,6 @@
-﻿namespace LibraryDesktop.View
+﻿using Guna.UI2.WinForms.Suite;
+
+namespace LibraryDesktop.View
 {
     partial class BookDetail
     {
@@ -17,30 +19,33 @@
 
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            CustomizableEdges customizableEdges19 = new CustomizableEdges();
+            CustomizableEdges customizableEdges20 = new CustomizableEdges();
+            CustomizableEdges customizableEdges1 = new CustomizableEdges();
+            CustomizableEdges customizableEdges2 = new CustomizableEdges();
+            CustomizableEdges customizableEdges13 = new CustomizableEdges();
+            CustomizableEdges customizableEdges14 = new CustomizableEdges();
+            CustomizableEdges customizableEdges3 = new CustomizableEdges();
+            CustomizableEdges customizableEdges4 = new CustomizableEdges();
+            CustomizableEdges customizableEdges5 = new CustomizableEdges();
+            CustomizableEdges customizableEdges6 = new CustomizableEdges();
+            CustomizableEdges customizableEdges7 = new CustomizableEdges();
+            CustomizableEdges customizableEdges8 = new CustomizableEdges();
+            CustomizableEdges customizableEdges9 = new CustomizableEdges();
+            CustomizableEdges customizableEdges10 = new CustomizableEdges();
+            CustomizableEdges customizableEdges11 = new CustomizableEdges();
+            CustomizableEdges customizableEdges12 = new CustomizableEdges();
+            CustomizableEdges customizableEdges17 = new CustomizableEdges();
+            CustomizableEdges customizableEdges18 = new CustomizableEdges();
+            CustomizableEdges customizableEdges15 = new CustomizableEdges();
+            CustomizableEdges customizableEdges16 = new CustomizableEdges();
             pnlMain = new Guna.UI2.WinForms.Guna2Panel();
             pnlContent = new Guna.UI2.WinForms.Guna2Panel();
             rtbContent = new RichTextBox();
             pnlRight = new Guna.UI2.WinForms.Guna2Panel();
             btnExit = new Guna.UI2.WinForms.Guna2Button();
-            btnReadStory = new Guna.UI2.WinForms.Guna2Button();
+            btnToggleTheme = new Guna.UI2.WinForms.Guna2Button();
+            btnFavorite = new Guna.UI2.WinForms.Guna2Button();
             btnDownloadStory = new Guna.UI2.WinForms.Guna2Button();
             lblChapters = new Guna.UI2.WinForms.Guna2HtmlLabel();
             cmbChapters = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -62,12 +67,12 @@
             pnlMain.Controls.Add(pnlContent);
             pnlMain.Controls.Add(pnlRight);
             pnlMain.Controls.Add(pnlTop);
-            pnlMain.CustomizableEdges = customizableEdges17;
+            pnlMain.CustomizableEdges = customizableEdges19;
             pnlMain.Dock = DockStyle.Fill;
             pnlMain.Location = new Point(0, 0);
             pnlMain.Margin = new Padding(3, 4, 3, 4);
             pnlMain.Name = "pnlMain";
-            pnlMain.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            pnlMain.ShadowDecoration.CustomizableEdges = customizableEdges20;
             pnlMain.Size = new Size(1371, 933);
             pnlMain.TabIndex = 0;
             // 
@@ -96,23 +101,25 @@
             rtbContent.ReadOnly = true;
             rtbContent.Size = new Size(994, 706);
             rtbContent.TabIndex = 0;
-            rtbContent.Text = "Chọn chương và nhấn 'Tải truyện' để đọc nội dung.";
+            rtbContent.Text = "Select a chapter and click 'Download Story' to read the content.";
+            rtbContent.DoubleClick += rtbContent_DoubleClick;
             // 
             // pnlRight
             // 
             pnlRight.Controls.Add(btnExit);
-            pnlRight.Controls.Add(btnReadStory);
+            pnlRight.Controls.Add(btnToggleTheme);
+            pnlRight.Controls.Add(btnFavorite);
             pnlRight.Controls.Add(btnDownloadStory);
             pnlRight.Controls.Add(lblChapters);
             pnlRight.Controls.Add(cmbChapters);
-            pnlRight.CustomizableEdges = customizableEdges11;
+            pnlRight.CustomizableEdges = customizableEdges13;
             pnlRight.Dock = DockStyle.Right;
             pnlRight.FillColor = Color.FromArgb(240, 240, 240);
             pnlRight.Location = new Point(1028, 187);
             pnlRight.Margin = new Padding(3, 4, 3, 4);
             pnlRight.Name = "pnlRight";
             pnlRight.Padding = new Padding(17, 20, 17, 20);
-            pnlRight.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            pnlRight.ShadowDecoration.CustomizableEdges = customizableEdges14;
             pnlRight.Size = new Size(343, 746);
             pnlRight.TabIndex = 1;
             // 
@@ -128,41 +135,62 @@
             btnExit.FillColor = Color.FromArgb(231, 76, 60);
             btnExit.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnExit.ForeColor = Color.White;
-            btnExit.Location = new Point(17, 293);
+            btnExit.Location = new Point(15, 360);
             btnExit.Margin = new Padding(3, 4, 3, 4);
             btnExit.Name = "btnExit";
             btnExit.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnExit.Size = new Size(309, 60);
             btnExit.TabIndex = 4;
-            btnExit.Text = "Thoát";
+            btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
-            // btnReadStory
+            // btnToggleTheme
             // 
-            btnReadStory.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            btnReadStory.BorderRadius = 8;
-            btnReadStory.CustomizableEdges = customizableEdges5;
-            btnReadStory.DisabledState.BorderColor = Color.DarkGray;
-            btnReadStory.DisabledState.CustomBorderColor = Color.DarkGray;
-            btnReadStory.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            btnReadStory.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btnReadStory.FillColor = Color.FromArgb(46, 204, 113);
-            btnReadStory.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnReadStory.ForeColor = Color.White;
-            btnReadStory.Location = new Point(17, 213);
-            btnReadStory.Margin = new Padding(3, 4, 3, 4);
-            btnReadStory.Name = "btnReadStory";
-            btnReadStory.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnReadStory.Size = new Size(309, 60);
-            btnReadStory.TabIndex = 3;
-            btnReadStory.Text = "Đọc truyện";
-            btnReadStory.Click += btnReadStory_Click;
+            btnToggleTheme.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnToggleTheme.BorderRadius = 8;
+            btnToggleTheme.CustomizableEdges = customizableEdges5;
+            btnToggleTheme.DisabledState.BorderColor = Color.DarkGray;
+            btnToggleTheme.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnToggleTheme.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnToggleTheme.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnToggleTheme.FillColor = Color.FromArgb(95, 39, 205);
+            btnToggleTheme.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnToggleTheme.ForeColor = Color.White;
+            btnToggleTheme.Location = new Point(15, 293);
+            btnToggleTheme.Margin = new Padding(3, 4, 3, 4);
+            btnToggleTheme.Name = "btnToggleTheme";
+            btnToggleTheme.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            btnToggleTheme.Size = new Size(309, 45);
+            btnToggleTheme.TabIndex = 5;
+            btnToggleTheme.Text = "🌙 Dark Mode";
+            btnToggleTheme.Click += btnToggleTheme_Click;
+            // 
+            // btnFavorite
+            // 
+            btnFavorite.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnFavorite.BorderRadius = 8;
+            btnFavorite.CustomizableEdges = customizableEdges7;
+            btnFavorite.DisabledState.BorderColor = Color.DarkGray;
+            btnFavorite.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnFavorite.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnFavorite.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnFavorite.FillColor = Color.FromArgb(220, 53, 69);
+            btnFavorite.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnFavorite.ForeColor = Color.White;
+            btnFavorite.Location = new Point(15, 126);
+            btnFavorite.Margin = new Padding(3, 4, 3, 4);
+            btnFavorite.Name = "btnFavorite";
+            btnFavorite.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            btnFavorite.Size = new Size(309, 60);
+            btnFavorite.TabIndex = 3;
+            btnFavorite.Text = "❤️ Add to Favorites";
+            btnFavorite.Click += btnFavorite_Click;
             // 
             // btnDownloadStory
             // 
             btnDownloadStory.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnDownloadStory.BorderRadius = 8;
-            btnDownloadStory.CustomizableEdges = customizableEdges7;
+            btnDownloadStory.CustomizableEdges = customizableEdges9;
             btnDownloadStory.DisabledState.BorderColor = Color.DarkGray;
             btnDownloadStory.DisabledState.CustomBorderColor = Color.DarkGray;
             btnDownloadStory.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -170,13 +198,13 @@
             btnDownloadStory.FillColor = Color.FromArgb(52, 152, 219);
             btnDownloadStory.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnDownloadStory.ForeColor = Color.White;
-            btnDownloadStory.Location = new Point(17, 132);
+            btnDownloadStory.Location = new Point(17, 211);
             btnDownloadStory.Margin = new Padding(3, 4, 3, 4);
             btnDownloadStory.Name = "btnDownloadStory";
-            btnDownloadStory.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnDownloadStory.Size = new Size(309, 60);
+            btnDownloadStory.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            btnDownloadStory.Size = new Size(305, 60);
             btnDownloadStory.TabIndex = 2;
-            btnDownloadStory.Text = "Tải truyện";
+            btnDownloadStory.Text = "Download Story";
             btnDownloadStory.Click += btnDownloadStory_Click;
             // 
             // lblChapters
@@ -188,14 +216,14 @@
             lblChapters.Name = "lblChapters";
             lblChapters.Size = new Size(166, 27);
             lblChapters.TabIndex = 1;
-            lblChapters.Text = "Danh sách chương:";
+            lblChapters.Text = "Chapter List:";
             // 
             // cmbChapters
             // 
             cmbChapters.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbChapters.BackColor = Color.Transparent;
             cmbChapters.BorderRadius = 8;
-            cmbChapters.CustomizableEdges = customizableEdges9;
+            cmbChapters.CustomizableEdges = customizableEdges11;
             cmbChapters.DrawMode = DrawMode.OwnerDrawFixed;
             cmbChapters.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbChapters.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -206,7 +234,7 @@
             cmbChapters.Location = new Point(17, 67);
             cmbChapters.Margin = new Padding(3, 4, 3, 4);
             cmbChapters.Name = "cmbChapters";
-            cmbChapters.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            cmbChapters.ShadowDecoration.CustomizableEdges = customizableEdges12;
             cmbChapters.Size = new Size(308, 36);
             cmbChapters.TabIndex = 0;
             cmbChapters.SelectedIndexChanged += cmbChapters_SelectedIndexChanged;
@@ -219,14 +247,14 @@
             pnlTop.Controls.Add(txtDescription);
             pnlTop.Controls.Add(lblAuthor);
             pnlTop.Controls.Add(lblBookTitle);
-            pnlTop.CustomizableEdges = customizableEdges15;
+            pnlTop.CustomizableEdges = customizableEdges17;
             pnlTop.Dock = DockStyle.Top;
             pnlTop.FillColor = Color.FromArgb(250, 250, 250);
             pnlTop.Location = new Point(0, 0);
             pnlTop.Margin = new Padding(3, 4, 3, 4);
             pnlTop.Name = "pnlTop";
             pnlTop.Padding = new Padding(17, 20, 17, 20);
-            pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            pnlTop.ShadowDecoration.CustomizableEdges = customizableEdges18;
             pnlTop.Size = new Size(1371, 187);
             pnlTop.TabIndex = 0;
             // 
@@ -240,7 +268,7 @@
             lblViewCount.Name = "lblViewCount";
             lblViewCount.Size = new Size(68, 22);
             lblViewCount.TabIndex = 5;
-            lblViewCount.Text = "Lượt xem:";
+            lblViewCount.Text = "View Count:";
             // 
             // lblTotalChapters
             // 
@@ -252,7 +280,7 @@
             lblTotalChapters.Name = "lblTotalChapters";
             lblTotalChapters.Size = new Size(113, 22);
             lblTotalChapters.TabIndex = 4;
-            lblTotalChapters.Text = "Tổng số chương:";
+            lblTotalChapters.Text = "Total Chapters:";
             // 
             // lblStatus
             // 
@@ -264,14 +292,14 @@
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(73, 22);
             lblStatus.TabIndex = 3;
-            lblStatus.Text = "Trạng thái:";
+            lblStatus.Text = "Status:";
             // 
             // txtDescription
             // 
             txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             txtDescription.BorderRadius = 8;
             txtDescription.Cursor = Cursors.IBeam;
-            txtDescription.CustomizableEdges = customizableEdges13;
+            txtDescription.CustomizableEdges = customizableEdges15;
             txtDescription.DefaultText = "";
             txtDescription.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             txtDescription.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -284,11 +312,11 @@
             txtDescription.Margin = new Padding(3, 5, 3, 5);
             txtDescription.Multiline = true;
             txtDescription.Name = "txtDescription";
-            txtDescription.PlaceholderText = "Mô tả truyện...";
+            txtDescription.PlaceholderText = "Story Description...";
             txtDescription.ReadOnly = true;
             txtDescription.ScrollBars = ScrollBars.Vertical;
             txtDescription.SelectedText = "";
-            txtDescription.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            txtDescription.ShadowDecoration.CustomizableEdges = customizableEdges16;
             txtDescription.Size = new Size(945, 94);
             txtDescription.TabIndex = 2;
             // 
@@ -302,7 +330,7 @@
             lblAuthor.Name = "lblAuthor";
             lblAuthor.Size = new Size(61, 25);
             lblAuthor.TabIndex = 1;
-            lblAuthor.Text = "Tác giả:";
+            lblAuthor.Text = "Author:";
             // 
             // lblBookTitle
             // 
@@ -314,7 +342,7 @@
             lblBookTitle.Name = "lblBookTitle";
             lblBookTitle.Size = new Size(141, 39);
             lblBookTitle.TabIndex = 0;
-            lblBookTitle.Text = "Tên truyện";
+            lblBookTitle.Text = "Book Title";
             // 
             // BookDetail
             // 
@@ -349,11 +377,28 @@
         private Guna.UI2.WinForms.Guna2ComboBox cmbChapters;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblChapters;
         private Guna.UI2.WinForms.Guna2Button btnDownloadStory;
-        private Guna.UI2.WinForms.Guna2Button btnReadStory;
+        private Guna.UI2.WinForms.Guna2Button btnFavorite;
+        private Guna.UI2.WinForms.Guna2Button btnToggleTheme;
         private Guna.UI2.WinForms.Guna2Button btnExit;
         private Guna.UI2.WinForms.Guna2Panel pnlContent;
-        private System.Windows.Forms.RichTextBox rtbContent;        private Guna.UI2.WinForms.Guna2HtmlLabel lblStatus;
+        private System.Windows.Forms.RichTextBox rtbContent;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lblStatus;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTotalChapters;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblViewCount;
+
+        // Rating UI Controls - ONLY DECLARED HERE
+        private Guna.UI2.WinForms.Guna2Panel? pnlRating;
+        private Guna.UI2.WinForms.Guna2HtmlLabel? lblRatingTitle;
+        private Guna.UI2.WinForms.Guna2HtmlLabel? lblCurrentRating;
+        private Guna.UI2.WinForms.Guna2HtmlLabel? lblAverageRating;
+        private Guna.UI2.WinForms.Guna2Button[]? starButtons;
+        private Guna.UI2.WinForms.Guna2TextBox? txtComment;
+        private Guna.UI2.WinForms.Guna2Button? btnSubmitRating;
+        private Guna.UI2.WinForms.Guna2Button? btnDeleteRating;
+
+        // Comments display UI Controls - ONLY DECLARED HERE
+        private Guna.UI2.WinForms.Guna2Panel? pnlAllComments;
+        private Guna.UI2.WinForms.Guna2HtmlLabel? lblCommentsTitle;
+        private FlowLayoutPanel? flpComments;
     }
 }

@@ -100,7 +100,8 @@ namespace LibraryDesktop.Data.Services
             _userRepository = userRepository;
             _userSettingRepository = userSettingRepository;
             _userFavoriteRepository = userFavoriteRepository;
-        }        public async Task<User?> GetUserWithSettingsAsync(int userId)
+        }        
+        public async Task<User?> GetUserWithSettingsAsync(int userId)
         {
             return await _userRepository.GetUserWithSettingsAsync(userId);
         }
@@ -114,9 +115,11 @@ namespace LibraryDesktop.Data.Services
         {
             var user = await _userRepository.GetByIdAsync(userId);
             return user?.Username;
-        }        public async Task<int> GetUserCoinsAsync(int userId)
+        }        
+        public async Task<int> GetUserCoinsAsync(int userId)
         {
             return await _userRepository.GetUserCoinsAsync(userId);
+
         }
 
         public async Task UpdateUserCoinsAsync(int userId, int coins)

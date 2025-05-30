@@ -1,6 +1,7 @@
 ﻿using LibraryDesktop.Data.Services;
 using LibraryDesktop.Models;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -496,6 +497,34 @@ namespace LibraryDesktop.View
             {
                 MessageBox.Show($"Error changing password: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Refresh the coins display in the Account control
+        /// </summary>
+        public async void RefreshCoinsDisplay()
+        {
+            try
+            {
+                if (_currentUser != null && _userService != null)
+                {
+                    var coins = await _userService.GetUserCoinsAsync(_currentUser.UserId);
+
+                    // Update UI on main thread
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(new Action(() => lblCoins.Text = $"{coins:N0} xu"));
+                    }
+                    else
+                    {
+                        lblCoins.Text = $"{coins:N0} xu";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error refreshing coins display: {ex.Message}");
             }
         }
     }

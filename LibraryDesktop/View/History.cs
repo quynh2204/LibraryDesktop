@@ -230,5 +230,38 @@ namespace LibraryDesktop.View
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private async void clear_btn_Click(object sender, EventArgs e)
+        {
+            if (_historyService == null || _currentUser == null)
+            {
+                MessageBox.Show("History service or user information is not available.", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                "Are you sure you want to clear all reading history? This action cannot be undone.",
+                "Clear History Confirmation",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    await _historyService.ClearUserHistoryAsync(_currentUser.UserId);
+                    await LoadHistoryDataAsync(); // Refresh the display
+                    MessageBox.Show("Reading history has been cleared successfully.", "History Cleared", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error clearing history: {ex.Message}");
+                    MessageBox.Show($"Error clearing history: {ex.Message}", "Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }

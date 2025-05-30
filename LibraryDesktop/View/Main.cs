@@ -92,7 +92,9 @@ namespace LibraryDesktop.View
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.WriteLine($"Error opening BookDetail: {ex}");
             }
-        }          public async Task InitializeWithUserAsync(User user)
+        }        
+        
+        public async Task InitializeWithUserAsync(User user)
         {
             _currentUser = user;
             await UpdateCoinsDisplayAsync();
@@ -307,13 +309,15 @@ namespace LibraryDesktop.View
             };
             booksControl.Controls.Add(label);
             LoadUserControl(booksControl);
-        }
-
-        private void LoadMyBooks()
+        }        private void LoadMyBooks()
         {
             var myBooks = _serviceProvider.GetRequiredService<MyBooks>();
+            if (_currentUser != null)
+            {
+                myBooks.SetCurrentUser(_currentUser);
+            }
             LoadUserControl(myBooks);
-        }        private void LoadHistory()
+        }private void LoadHistory()
         {
             var history = _serviceProvider.GetRequiredService<History>();
             if (_currentUser != null)
@@ -386,6 +390,18 @@ namespace LibraryDesktop.View
             }
         }        protected override async void OnFormClosing(FormClosingEventArgs e)
         {
+            // Stop and dispose coins update timer
+            try
+            {
+                _coinsUpdateTimer?.Stop();
+                _coinsUpdateTimer?.Dispose();
+                Debug.WriteLine("Coins update timer disposed");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error disposing coins update timer: {ex.Message}");
+            }
+            
             // Stop payment web server when form closes
             try
             {
@@ -405,23 +421,32 @@ namespace LibraryDesktop.View
 
         // Property to get current user for child forms
         public User? CurrentUser => _currentUser;
-        public int CurrentCoins => _currentCoins;        // 🔥 Event handler for payment completion
+        public int CurrentCoins => _currentCoins;//private void guna2GradientTileButton4_Click(object sender, EventArgs e)
+
+        public async Task RefreshMyBooksAsync()
+        {
+            if (currentUserControl is MyBooks myBooksControl)
+            {
+                await myBooksControl.RefreshFavoritesAsync();
+            }
+        }
+
+        // 🔥 Event handler for payment completion
         private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
         {
             try
             {
                 // Chỉ cập nhật nếu payment thuộc về current user
                 if (_currentUser != null && e.UserId == _currentUser.UserId)
-                {
-                    Console.WriteLine($"💰 Payment completed for current user! Amount: {e.Amount}, Coins: {e.Amount / 1000}");
+                {                    Console.WriteLine($"💰 Payment completed for current user! Amount: {e.Amount}, Coins: {e.Amount / 1000}");
                     
                     // 🔥 Force immediate UI updates on the UI thread
                     if (this.InvokeRequired)
                     {
                         this.Invoke(new Action(async () => 
                         {
-                            // Update coins display first
-                            await UpdateCoinsDisplayAsync();
+                            // Force immediate coins update
+                            await ForceCoinsUpdateAsync();
                             
                             // Refresh Dashboard if it's currently active
                             await RefreshCurrentViewIfDashboard();
@@ -434,8 +459,8 @@ namespace LibraryDesktop.View
                     }
                     else
                     {
-                        // Update coins display
-                        await UpdateCoinsDisplayAsync();
+                        // Force immediate coins update
+                        await ForceCoinsUpdateAsync();
                         
                         // Refresh Dashboard if it's currently active
                         await RefreshCurrentViewIfDashboard();
@@ -487,6 +512,68 @@ namespace LibraryDesktop.View
                 Console.WriteLine($"❌ Error refreshing dashboard: {ex.Message}");
             }
         }
+
+        private readonly System.Windows.Forms.Timer _coinsUpdateTimer;
+
+        public Main()
+        {
+            InitializeComponent();
+              // Initialize real-time coins update timer
+            _coinsUpdateTimer = new System.Windows.Forms.Timer();
+            _coinsUpdateTimer.Interval = 5000; // Update every 5 seconds
+            _coinsUpdateTimer.Tick += CoinsUpdateTimer_Tick;
+            _coinsUpdateTimer.Start();
+        }
+        
+        private async void CoinsUpdateTimer_Tick(object? sender, EventArgs e)
+        {
+            // Only update if user is logged in and form is visible
+            if (_currentUser != null && this.Visible && !this.IsDisposed)
+            {
+                try
+                {
+                    await UpdateCoinsDisplayAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Timer coin update error: {ex.Message}");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Force immediate real-time coin balance update
+        /// </summary>
+        public async Task ForceCoinsUpdateAsync()
+        {
+            await UpdateCoinsDisplayAsync();
+            
+            // Also refresh any open Account control if visible
+            await RefreshAccountControlIfVisible();
+        }
+        
+        /// <summary>
+        /// Refresh Account control if it's currently visible
+        /// </summary>
+        private async Task RefreshAccountControlIfVisible()
+        {
+            try
+            {
+                // Find Account control in the current form
+                var accountControl = this.Controls.OfType<Account>().FirstOrDefault(c => c.Visible);
+                if (accountControl != null)
+                {
+                    // Trigger account control to refresh its coin display
+                    accountControl.RefreshCoinsDisplay();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error refreshing account control: {ex.Message}");
+            }
+            await Task.CompletedTask;
+        }
+
     }    // Event args for book selection
     public class BookSelectedEventArgs : EventArgs
     {

@@ -164,12 +164,11 @@ namespace LibraryDesktop.Data.Services
                         : $"User {userId}";
                       var amount = paymentData.GetProperty("amount").GetInt32();
                     var coins = amount / 1000;
-                    
-                    var jsonResponse = JsonSerializer.Serialize(new
+                      var jsonResponse = JsonSerializer.Serialize(new
                     {
                         amount = amount.ToString(),
                         user = username,
-                        description = $"Account recharge (+{coins} coins)",
+                        description = "Account recharge",
                         status = "Pending",
                         created = DateTime.Now,
                         token = paymentData.GetProperty("token").GetString()

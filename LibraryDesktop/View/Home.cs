@@ -1,28 +1,29 @@
+using LibraryDesktop.Data.Interfaces;
+using LibraryDesktop.Data.Services;
+using LibraryDesktop.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LibraryDesktop.Data.Services;
-using LibraryDesktop.Models;
-using System.Diagnostics;
-using LibraryDesktop.Data.Interfaces;
 
 
 namespace LibraryDesktop.View
-{    public partial class Home : UserControl
-    {        public event EventHandler<BookSelectedEventArgs>? BookSelected;
+{
+    public partial class Home : UserControl
+    {
+        public event EventHandler<BookSelectedEventArgs>? BookSelected;
 
-        private readonly IUserService _userService;
-        private readonly IAuthenticationService _authService;
-        private int _currentUserId;        private IEnumerable<Book> _allBooks = new List<Book>();
-        private IEnumerable<Category> _categories = new List<Category>();
+        private readonly IUserService? _userService;
+        private readonly IAuthenticationService? _authService;
         private IServiceProvider? _serviceProvider;
+        private int _currentUserId;
+        private IEnumerable<Book> _allBooks = new List<Book>();
+        private IEnumerable<Category> _categories = new List<Category>();
+
+        
         private Guna.UI2.WinForms.Guna2ComboBox? _categoryFilterCombo;public Home()
         {
             InitializeComponent();
@@ -31,10 +32,25 @@ namespace LibraryDesktop.View
             // Handle resize events for responsive layout
             this.Resize += Home_Resize;
             flowLayoutPanel1.Resize += FlowLayoutPanel1_Resize;
-        }        // Method to create search and filter controls
+            if (account1 != null)
+            {
+                account1.Visible = false;
+            }
+        }
+
+        public Home(IUserService userService, IAuthenticationService authService) : this()
+        {
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        }
+
+        public void SetCurrentUserId(int userId)
+        {
+            _currentUserId = userId;
+        }
+
         private void CreateSearchAndFilterControls()
         {
-            // Wire up search functionality
             if (guna2TextBox1 != null)
             {
                 guna2TextBox1.PlaceholderText = "Search books by title or author...";
@@ -164,9 +180,7 @@ namespace LibraryDesktop.View
                 {
                     filteredBooks = filteredBooks.Where(book => book.CategoryId == category.CategoryId);
                 }
-            }
-
-            UpdateBookControls(filteredBooks);
+            }            UpdateBookControls(filteredBooks);
             
             if (account1 != null)
             {
@@ -174,24 +188,12 @@ namespace LibraryDesktop.View
             }
         }
 
-        public Home(IUserService userService, IAuthenticationService authService) : this()
-        {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-        }
-
-        public void SetCurrentUserId(int userId)
-        {
-            _currentUserId = userId;
-        }
-
-
         // Method to initialize with service provider and load books
         public async Task InitializeAsync(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            
-            // Check if already loaded (prevent reloading)
+
+            // Check if already loaded
             if (flowLayoutPanel1.Controls.OfType<BookControl>().Any(bc => bc.Tag != null))
             {
                 Debug.WriteLine("Home already loaded with books, skipping reload");
@@ -202,11 +204,12 @@ namespace LibraryDesktop.View
             {
                 var bookService = serviceProvider.GetRequiredService<IBookService>();
                 var categoryService = serviceProvider.GetRequiredService<ICategoryService>();
-                
+
                 Debug.WriteLine("Loading books and categories from database...");
                 var books = await bookService.GetBooksAsync();
                 var categories = await categoryService.GetCategoriesAsync();
-                  _allBooks = books;
+
+                _allBooks = books;
                 _categories = categories;
                 
                 Debug.WriteLine($"Found {books.Count()} books and {categories.Count()} categories");                // Ensure UI operations happen on UI thread
@@ -300,20 +303,20 @@ namespace LibraryDesktop.View
             flowLayoutPanel1.WrapContents = true;
             flowLayoutPanel1.AutoScroll = true;
             
-            // Reduced padding for tighter spacing
-            flowLayoutPanel1.Padding = new Padding(15, 15, 15, 15);
+            // Minimal padding for maximum space utilization
+            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
             
             // Calculate available width and book control size for 4 per row
             int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
-            int booksPerRow = 4; // Changed to 4 for larger book controls
-            int spacing = 12; // Reduced spacing between book controls
+            int booksPerRow = 4; // Exactly 4 for larger book controls
+            int spacing = 4; // Minimal spacing between book controls
             int totalSpacing = spacing * (booksPerRow - 1);
-            int bookControlWidth = (availableWidth - totalSpacing + 100) / booksPerRow;
+            int bookControlWidth = (availableWidth - totalSpacing + 80) / booksPerRow;
             
             // Ensure minimum width for readability and proper image display
-            if (bookControlWidth < 280)
+            if (bookControlWidth < 260)
             {
-                bookControlWidth = 280;
+                bookControlWidth = 260;
                 booksPerRow = Math.Max(1, (availableWidth - totalSpacing) / bookControlWidth);
             }
             
@@ -325,7 +328,7 @@ namespace LibraryDesktop.View
             {
                 Name = $"dynamicBook{index}",
                 Size = CalculateOptimalBookControlSize(),
-                Margin = new Padding(8, 5, 8, 5), // Reduced margins for tighter spacing
+                Margin = new Padding(2, 2, 2, 6), // Further reduced margins for tighter spacing
                 Tag = book,
                 BackColor = Color.Transparent
             };
@@ -336,21 +339,22 @@ namespace LibraryDesktop.View
             Debug.WriteLine($"📚 Created BookControl {index}: Size={bookControl.Size}, Margin={bookControl.Margin}");
             
             return bookControl;
-        }        private Size CalculateOptimalBookControlSize()
+        }private Size CalculateOptimalBookControlSize()
         {
             // Calculate optimal size based on FlowLayoutPanel dimensions
             int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
             int booksPerRow = 4; // Reduced to 4 books per row for larger size
-            int horizontalSpacing = 16; // Total margin per control (8px each side)
+            int horizontalSpacing = 8; // Total margin per control (4px each side)
             int totalHorizontalSpacing = horizontalSpacing * booksPerRow;
             
             // Calculate width ensuring minimum and maximum constraints
-            int bookWidth = Math.Max(280, (availableWidth - totalHorizontalSpacing) / booksPerRow);
-            bookWidth = Math.Min(bookWidth, 350); // Increased maximum width for better book cover display
-              // Maintain aspect ratio for book controls (book-like proportions)
-            int bookHeight = (int)(bookWidth * 1.8); // Increased aspect ratio for better image visibility
-            bookHeight = Math.Max(bookHeight, 600); // Increased minimum height for better content visibility
-            bookHeight = Math.Min(bookHeight, 750); // Increased maximum height
+            int bookWidth = Math.Max(260, (availableWidth - totalHorizontalSpacing) / booksPerRow);
+            bookWidth = Math.Min(bookWidth, 320); // Adjusted maximum width for 4 per row
+              
+            // Maintain aspect ratio for book controls (book-like proportions)
+            int bookHeight = (int)(bookWidth * 1.7); // Adjusted aspect ratio
+            bookHeight = Math.Max(bookHeight, 550); // Adjusted minimum height
+            bookHeight = Math.Min(bookHeight, 680); // Adjusted maximum height
             
             Debug.WriteLine($"📐 Calculated BookControl size: {bookWidth}x{bookHeight} (Available: {availableWidth}px)");
             
@@ -363,21 +367,17 @@ namespace LibraryDesktop.View
             OnBookClicked(clickedBook.BookId);
         }
 
-        // Method được gọi khi user click vào một book
         private void OnBookClicked(int bookId)
         {
             BookSelected?.Invoke(this, new BookSelectedEventArgs(bookId));
         }
 
-        // Hoặc nếu bạn muốn mở BookDetail trực tiếp từ Home
         private void OpenBookDetail(int bookId)
         {
-            // Tìm Main form parent
             var mainForm = this.FindForm() as Main;
             mainForm?.OpenBookDetail(bookId);
         }
 
-        // Trong Home.cs (UserControl)
         public void ShowBookList()
         {
 
@@ -390,8 +390,6 @@ namespace LibraryDesktop.View
 
         public void ShowHomeView()
         {
-
-            // Hiển thị Home view
             if (flowLayoutPanel1 != null)
             {
                 flowLayoutPanel1.Visible = true;
@@ -409,7 +407,6 @@ namespace LibraryDesktop.View
 
         public void ShowExchangeForm()
         {
-            // Hide current content in flowLayoutPanel1
             if (flowLayoutPanel1 != null)
             {
                 flowLayoutPanel1.Visible = false;
@@ -418,13 +415,11 @@ namespace LibraryDesktop.View
 
         private void guna2HtmlLabel2_Click(object sender, EventArgs e)
         {
-            // Show user account information or exchange
             ShowExchangeForm();
         }
 
         private void guna2PictureBox1_Click(object sender, EventArgs e)
         {
-            // Handle search functionality
             ShowHomeView();
         }
 
@@ -496,12 +491,11 @@ namespace LibraryDesktop.View
                     
                     // Recalculate optimal size for existing controls
                     var optimalSize = CalculateOptimalBookControlSize();
-                    
-                    foreach (BookControl bookControl in flowLayoutPanel1.Controls.OfType<BookControl>())
+                      foreach (BookControl bookControl in flowLayoutPanel1.Controls.OfType<BookControl>())
                     {
                         var oldSize = bookControl.Size;
                         bookControl.Size = optimalSize;
-                        bookControl.Margin = new Padding(10, 10, 10, 18);
+                        bookControl.Margin = new Padding(2, 2, 2, 6); // Consistent reduced margins
                         
                         // Force BookControl to refresh its image sizing
                         bookControl.Refresh();

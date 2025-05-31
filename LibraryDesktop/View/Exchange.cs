@@ -450,9 +450,7 @@ namespace LibraryDesktop.View
         internal DialogResult ShowDialog()
         {
             throw new NotImplementedException();
-        }
-
-        private void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
+        }        private async void OnPaymentCompleted(object? sender, PaymentCompletedEventArgs e)
         {
             // This method will be called when a payment is completed
             if (this.InvokeRequired)
@@ -467,8 +465,42 @@ namespace LibraryDesktop.View
                 int totalCoins = e.Amount / 1000;
                 string successMsg = $"Exchange successful!\n{totalCoins:N0} coins have been added to your account.\n\nTransaction completed: {e.Amount:N0} VND";
 
+                // Trigger real-time sync to Main form after successful recharge
+                await ForceMainFormCoinsUpdateAsync();
+
                 MessageBox.Show(successMsg, "Exchange Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);                // Reset form after successful exchange
                 ResetForm();
+            }
+        }
+
+        /// <summary>
+        /// Force immediate real-time coin balance update in Main form after recharge
+        /// </summary>
+        private async Task ForceMainFormCoinsUpdateAsync()
+        {
+            try
+            {
+                // Find the Main form (parent form)
+                Form? parentForm = this.ParentForm;
+                if (parentForm == null)
+                {
+                    // Try to find Main form in all open forms
+                    parentForm = Application.OpenForms.OfType<Main>().FirstOrDefault();
+                }
+                
+                if (parentForm is Main mainForm)
+                {
+                    await mainForm.ForceCoinsUpdateAsync();
+                    System.Diagnostics.Debug.WriteLine("✅ Successfully triggered real-time coins update in Main form from Exchange");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("⚠️ Could not find Main form to trigger coins update from Exchange");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error triggering real-time coins update from Exchange: {ex.Message}");
             }
         }
 

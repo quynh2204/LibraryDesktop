@@ -144,7 +144,7 @@ namespace LibraryDesktop.View
             BackColor = Color.Transparent;
             Controls.Add(guna2ShadowPanel1);
             Cursor = Cursors.Hand;
-            Margin = new Padding(10);
+            Margin = new Padding(8, 8, 8, 12);
             Name = "BookControl";
             Size = new Size(230, 406);
             guna2ShadowPanel1.ResumeLayout(false);

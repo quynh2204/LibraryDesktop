@@ -152,8 +152,7 @@ namespace LibraryDesktop.View
             btnToggleTheme.DisabledState.BorderColor = Color.DarkGray;
             btnToggleTheme.DisabledState.CustomBorderColor = Color.DarkGray;
             btnToggleTheme.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            btnToggleTheme.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btnToggleTheme.FillColor = Color.FromArgb(95, 39, 205);
+            btnToggleTheme.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);            btnToggleTheme.FillColor = Color.FromArgb(95, 39, 205);
             btnToggleTheme.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnToggleTheme.ForeColor = Color.White;
             btnToggleTheme.Location = new Point(15, 293);
@@ -162,7 +161,7 @@ namespace LibraryDesktop.View
             btnToggleTheme.ShadowDecoration.CustomizableEdges = customizableEdges6;
             btnToggleTheme.Size = new Size(309, 45);
             btnToggleTheme.TabIndex = 5;
-            btnToggleTheme.Text = "🌙 Dark Mode";
+            btnToggleTheme.Text = "◐ Toggle Theme";
             btnToggleTheme.Click += btnToggleTheme_Click;
             // 
             // btnFavorite

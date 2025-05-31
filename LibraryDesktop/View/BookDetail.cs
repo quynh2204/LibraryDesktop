@@ -169,9 +169,11 @@ namespace LibraryDesktop.View
                                 
                                 // Record the purchase in history
                                 await _historyService.AddHistoryAsync(_currentUser.UserId, _bookId, null, "Purchase");
-                                
-                                // Update current user object
+                                  // Update current user object
                                 _currentUser.Coins = newBalance;
+                                
+                                // Trigger real-time sync to update coins display in Main form
+                                await ForceMainFormCoinsUpdateAsync();
                                 
                                 MessageBox.Show($"Book purchased successfully! You now have {newBalance} coins remaining.", 
                                     "Purchase Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -684,29 +686,46 @@ namespace LibraryDesktop.View
             // Ensure parent container can accommodate the comments panel
             pnlContent.AutoScroll = true;
         }
-        
-        private Panel CreateCommentPanel(Rating rating)
+          private Panel CreateCommentPanel(Rating rating)
         {
             var panel = new Panel();
             panel.Size = new Size(950, 80);
             panel.BorderStyle = BorderStyle.FixedSingle;
-            panel.BackColor = Color.FromArgb(248, 249, 250);
             panel.Margin = new Padding(0, 0, 0, 10);
+            
+            // Apply theme-appropriate colors to panel
+            if (_isDarkMode)
+            {
+                panel.BackColor = Color.FromArgb(70, 70, 73);
+            }
+            else
+            {
+                panel.BackColor = Color.FromArgb(248, 249, 250);
+            }
             
             // User name label
             var lblUser = new Label();
             lblUser.Text = $"User {rating.UserId}"; // You might want to load actual username
             lblUser.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblUser.ForeColor = Color.FromArgb(0, 120, 215);
             lblUser.Location = new Point(10, 5);
             lblUser.AutoSize = true;
+            
+            // Apply theme-appropriate colors to username
+            if (_isDarkMode)
+            {
+                lblUser.ForeColor = Color.FromArgb(100, 180, 255);
+            }
+            else
+            {
+                lblUser.ForeColor = Color.FromArgb(0, 120, 215);
+            }
             panel.Controls.Add(lblUser);
             
             // Rating stars
             var lblStars = new Label();
             lblStars.Text = new string('★', rating.RatingValue) + new string('☆', 5 - rating.RatingValue);
             lblStars.Font = new Font("Segoe UI", 10F);
-            lblStars.ForeColor = Color.Gold;
+            lblStars.ForeColor = Color.Gold; // Gold color works for both themes
             lblStars.Location = new Point(10, 25);
             lblStars.AutoSize = true;
             panel.Controls.Add(lblStars);
@@ -715,22 +734,40 @@ namespace LibraryDesktop.View
             var lblDate = new Label();
             lblDate.Text = rating.CreatedDate.ToString("MMM dd, yyyy");
             lblDate.Font = new Font("Segoe UI", 8F);
-            lblDate.ForeColor = Color.Gray;
             lblDate.Location = new Point(panel.Width - 100, 5);
             lblDate.AutoSize = true;
+            
+            // Apply theme-appropriate colors to date
+            if (_isDarkMode)
+            {
+                lblDate.ForeColor = Color.LightGray;
+            }
+            else
+            {
+                lblDate.ForeColor = Color.Gray;
+            }
             panel.Controls.Add(lblDate);
             
             // Review text
             var lblReview = new Label();
             lblReview.Text = rating.Review ?? "";
             lblReview.Font = new Font("Segoe UI", 9F);
-            lblReview.ForeColor = Color.FromArgb(50, 50, 50);
             lblReview.Location = new Point(10, 45);
             lblReview.Size = new Size(930, 30);
             lblReview.AutoEllipsis = true;
+            
+            // Apply theme-appropriate colors to review text
+            if (_isDarkMode)
+            {
+                lblReview.ForeColor = Color.White;
+            }
+            else
+            {
+                lblReview.ForeColor = Color.FromArgb(50, 50, 50);
+            }
             panel.Controls.Add(lblReview);
             
-            return panel;        }
+            return panel;}
         
         #endregion
 
@@ -777,21 +814,181 @@ namespace LibraryDesktop.View
                     lblCommentsTitle.Text = "Error loading comments";
                 }
             }
-        }
-
-        private void ApplyTheme()
+        }        private void ApplyTheme()
         {
             // Apply theme based on _isDarkMode
             if (_isDarkMode)
             {
+                // Dark mode colors
                 this.BackColor = Color.FromArgb(45, 45, 48);
                 this.ForeColor = Color.White;
+                
+                // Apply dark theme to panels
+                pnlMain.FillColor = Color.FromArgb(45, 45, 48);
+                pnlTop.FillColor = Color.FromArgb(55, 55, 58);
+                pnlRight.FillColor = Color.FromArgb(55, 55, 58);
+                pnlContent.FillColor = Color.FromArgb(45, 45, 48);
+                
+                // Apply dark theme to text controls
+                rtbContent.BackColor = Color.FromArgb(60, 60, 63);
+                rtbContent.ForeColor = Color.White;
+                txtDescription.FillColor = Color.FromArgb(60, 60, 63);
+                txtDescription.ForeColor = Color.White;
+                
+                // Apply dark theme to labels
+                lblBookTitle.ForeColor = Color.White;
+                lblAuthor.ForeColor = Color.LightGray;
+                lblStatus.ForeColor = Color.LightGray;
+                lblTotalChapters.ForeColor = Color.LightGray;
+                lblViewCount.ForeColor = Color.LightGray;
+                lblChapters.ForeColor = Color.White;
+                
+                // Apply dark theme to combobox
+                cmbChapters.FillColor = Color.FromArgb(60, 60, 63);
+                cmbChapters.ForeColor = Color.White;
+                
+                // Apply dark theme to rating panel and comments
+                if (pnlRating != null)
+                {
+                    pnlRating.FillColor = Color.FromArgb(60, 60, 63);
+                    pnlRating.BorderColor = Color.FromArgb(80, 80, 83);
+                    
+                    if (lblRatingTitle != null) lblRatingTitle.ForeColor = Color.White;
+                    if (lblCurrentRating != null) lblCurrentRating.ForeColor = Color.LightGray;
+                    if (lblAverageRating != null) lblAverageRating.ForeColor = Color.FromArgb(255, 140, 0);
+                    if (txtComment != null)
+                    {
+                        txtComment.FillColor = Color.FromArgb(70, 70, 73);
+                        txtComment.ForeColor = Color.White;
+                        txtComment.BorderColor = Color.FromArgb(100, 100, 103);
+                    }
+                }
+                
+                // Apply dark theme to comments panel
+                if (pnlAllComments != null)
+                {
+                    pnlAllComments.FillColor = Color.FromArgb(60, 60, 63);
+                    pnlAllComments.BorderColor = Color.FromArgb(80, 80, 83);
+                    
+                    if (lblCommentsTitle != null) lblCommentsTitle.ForeColor = Color.White;
+                    
+                    // Update existing comment panels
+                    if (flpComments != null)
+                    {
+                        foreach (Control control in flpComments.Controls)
+                        {
+                            if (control is Panel commentPanel)
+                            {
+                                commentPanel.BackColor = Color.FromArgb(70, 70, 73);
+                                foreach (Control child in commentPanel.Controls)
+                                {
+                                    if (child is Label label)
+                                    {
+                                        if (label.Font.Bold) // Username
+                                            label.ForeColor = Color.FromArgb(100, 180, 255);
+                                        else if (label.ForeColor == Color.Gold) // Stars
+                                            label.ForeColor = Color.Gold;
+                                        else if (label.ForeColor == Color.Gray) // Date
+                                            label.ForeColor = Color.LightGray;
+                                        else // Review text
+                                            label.ForeColor = Color.White;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Update toggle button text
+                btnToggleTheme.Text = "☀️ Light Mode";
             }
             else
             {
+                // Light mode colors
                 this.BackColor = Color.White;
                 this.ForeColor = Color.Black;
+                
+                // Apply light theme to panels
+                pnlMain.FillColor = Color.White;
+                pnlTop.FillColor = Color.FromArgb(250, 250, 250);
+                pnlRight.FillColor = Color.FromArgb(240, 240, 240);
+                pnlContent.FillColor = Color.White;
+                
+                // Apply light theme to text controls
+                rtbContent.BackColor = Color.FromArgb(250, 250, 250);
+                rtbContent.ForeColor = Color.Black;
+                txtDescription.FillColor = Color.White;
+                txtDescription.ForeColor = Color.Black;
+                
+                // Apply light theme to labels
+                lblBookTitle.ForeColor = Color.FromArgb(44, 62, 80);
+                lblAuthor.ForeColor = Color.FromArgb(100, 100, 100);
+                lblStatus.ForeColor = Color.FromArgb(100, 100, 100);
+                lblTotalChapters.ForeColor = Color.FromArgb(100, 100, 100);
+                lblViewCount.ForeColor = Color.FromArgb(100, 100, 100);
+                lblChapters.ForeColor = Color.Black;
+                
+                // Apply light theme to combobox
+                cmbChapters.FillColor = Color.White;
+                cmbChapters.ForeColor = Color.FromArgb(68, 88, 112);
+                
+                // Apply light theme to rating panel and comments
+                if (pnlRating != null)
+                {
+                    pnlRating.FillColor = Color.White;
+                    pnlRating.BorderColor = Color.FromArgb(224, 224, 224);
+                    
+                    if (lblRatingTitle != null) lblRatingTitle.ForeColor = Color.FromArgb(0, 120, 215);
+                    if (lblCurrentRating != null) lblCurrentRating.ForeColor = Color.FromArgb(50, 50, 50);
+                    if (lblAverageRating != null) lblAverageRating.ForeColor = Color.FromArgb(255, 140, 0);
+                    if (txtComment != null)
+                    {
+                        txtComment.FillColor = Color.White;
+                        txtComment.ForeColor = Color.FromArgb(50, 50, 50);
+                        txtComment.BorderColor = Color.FromArgb(224, 224, 224);
+                    }
+                }
+                
+                // Apply light theme to comments panel
+                if (pnlAllComments != null)
+                {
+                    pnlAllComments.FillColor = Color.White;
+                    pnlAllComments.BorderColor = Color.FromArgb(224, 224, 224);
+                    
+                    if (lblCommentsTitle != null) lblCommentsTitle.ForeColor = Color.FromArgb(44, 62, 80);
+                    
+                    // Update existing comment panels
+                    if (flpComments != null)
+                    {
+                        foreach (Control control in flpComments.Controls)
+                        {
+                            if (control is Panel commentPanel)
+                            {
+                                commentPanel.BackColor = Color.FromArgb(248, 249, 250);
+                                foreach (Control child in commentPanel.Controls)
+                                {
+                                    if (child is Label label)
+                                    {
+                                        if (label.Font.Bold) // Username
+                                            label.ForeColor = Color.FromArgb(0, 120, 215);
+                                        else if (label.ForeColor == Color.Gold) // Stars
+                                            label.ForeColor = Color.Gold;
+                                        else if (label.ForeColor == Color.LightGray || label.ForeColor == Color.Gray) // Date
+                                            label.ForeColor = Color.Gray;
+                                        else // Review text
+                                            label.ForeColor = Color.FromArgb(50, 50, 50);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                      // Update toggle button text
+                btnToggleTheme.Text = "🌙 Dark Mode";
             }
+            
+            // Update favorite button UI to match theme
+            UpdateFavoriteButtonUI();
         }
 
         private void EnsureProperLayout()
@@ -883,9 +1080,7 @@ namespace LibraryDesktop.View
             {
                 starButtons[i].ForeColor = i < _selectedRating ? Color.Gold : Color.LightGray;
             }
-        }
-
-        private void StarButton_Click(object sender, EventArgs e)
+        }        private void StarButton_Click(object sender, EventArgs e)
         {
             if (starButtons == null) return;
 
@@ -893,7 +1088,15 @@ namespace LibraryDesktop.View
             {
                 if (starButtons[i] == sender)
                 {
-                    _selectedRating = i + 1;
+                    // Toggle functionality: if clicking the same star as current rating, remove the rating
+                    if (_selectedRating == i + 1)
+                    {
+                        _selectedRating = 0; // Remove rating
+                    }
+                    else
+                    {
+                        _selectedRating = i + 1; // Set new rating
+                    }
                     UpdateStarDisplay();
                     break;
                 }
@@ -986,11 +1189,40 @@ namespace LibraryDesktop.View
                     btnDeleteRating.Text = "Delete Rating";
                 }
             }
-        }
-
-        private void rtbContent_DoubleClick(object sender, EventArgs e)
+        }        private void rtbContent_DoubleClick(object sender, EventArgs e)
         {
             // Placeholder for double-click functionality
+        }
+        
+        /// <summary>
+        /// Force immediate real-time coin balance update in Main form
+        /// </summary>
+        private async Task ForceMainFormCoinsUpdateAsync()
+        {
+            try
+            {
+                // Find the Main form from this BookDetail form
+                Form? parentForm = this.Owner;
+                if (parentForm == null)
+                {
+                    // Try to find Main form in all open forms
+                    parentForm = Application.OpenForms.OfType<Main>().FirstOrDefault();
+                }
+                
+                if (parentForm is Main mainForm)
+                {
+                    await mainForm.ForceCoinsUpdateAsync();
+                    Debug.WriteLine("✅ Successfully triggered real-time coins update in Main form");
+                }
+                else
+                {
+                    Debug.WriteLine("⚠️ Could not find Main form to trigger coins update");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ Error triggering real-time coins update: {ex.Message}");
+            }
         }
         #endregion
     }

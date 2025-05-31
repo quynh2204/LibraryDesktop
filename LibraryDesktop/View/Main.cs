@@ -513,16 +513,17 @@ namespace LibraryDesktop.View
             }
         }
 
-        private readonly System.Windows.Forms.Timer _coinsUpdateTimer;
-
-        public Main()
+        private readonly System.Windows.Forms.Timer _coinsUpdateTimer;        public Main()
         {
             InitializeComponent();
-              // Initialize real-time coins update timer
+              
+            // Initialize enhanced real-time update timer for better synchronization
             _coinsUpdateTimer = new System.Windows.Forms.Timer();
-            _coinsUpdateTimer.Interval = 5000; // Update every 5 seconds
+            _coinsUpdateTimer.Interval = 3000; // Reduced to 3 seconds for more responsive updates
             _coinsUpdateTimer.Tick += CoinsUpdateTimer_Tick;
             _coinsUpdateTimer.Start();
+            
+            Debug.WriteLine("🔄 Enhanced real-time synchronization timer initialized (3s intervals)");
         }
         
         private async void CoinsUpdateTimer_Tick(object? sender, EventArgs e)

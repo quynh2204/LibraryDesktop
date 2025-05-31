@@ -260,7 +260,11 @@ namespace LibraryDesktop.View
                 // Get books to display
                 var booksToShow = books.ToList();
                 
-                // Calculate optimal sizing for 5 books per row
+                // Ensure proper layout is applied before calculations
+                this.PerformLayout();
+                flowLayoutPanel1.PerformLayout();
+                
+                // Calculate optimal sizing for 4 books per row
                 ConfigureFlowLayoutForOptimalDisplay();
                 
                 // Create and add new book controls dynamically
@@ -272,7 +276,7 @@ namespace LibraryDesktop.View
                     bookIndex++;
                 }
 
-                Debug.WriteLine($"✅ Created {bookIndex} dynamic book controls with optimal spacing (5 per row)");
+                Debug.WriteLine($"✅ Created {bookIndex} dynamic book controls with optimal spacing (4 per row)");
             }
             catch (Exception ex)
             {
@@ -283,6 +287,13 @@ namespace LibraryDesktop.View
             finally
             {
                 flowLayoutPanel1.ResumeLayout(true);
+                
+                // Force a final layout refresh to ensure proper display
+                this.Invoke(new Action(async () =>
+                {
+                    await Task.Delay(100); // Small delay to ensure layout completion
+                    RefreshBookControlsLayout();
+                }));
             }
         }
 
@@ -304,59 +315,74 @@ namespace LibraryDesktop.View
             flowLayoutPanel1.AutoScroll = true;
             
             // Minimal padding for maximum space utilization
-            flowLayoutPanel1.Padding = new Padding(5, 5, 5, 5);
-            
+            flowLayoutPanel1.Padding = new Padding(4, 4, 4, 4);
+              
             // Calculate available width and book control size for 4 per row
             int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
-            int booksPerRow = 4; // Exactly 4 for larger book controls
-            int spacing = 4; // Minimal spacing between book controls
+            
+            // Fallback width calculation if FlowLayoutPanel hasn't been sized yet
+            if (availableWidth <= 0)
+            {
+                availableWidth = this.Width - 120; // Account for Home control margins
+                Debug.WriteLine($"⚠️ FlowLayoutPanel width not yet set, using fallback: {availableWidth}px");
+            }
+            
+            int booksPerRow = 4; // Updated to 4 for improved layout and better visual organization
+            int spacing = 5; // Increased spacing between book controls for better visual separation
             int totalSpacing = spacing * (booksPerRow - 1);
-            int bookControlWidth = (availableWidth - totalSpacing + 80) / booksPerRow;
+            int bookControlWidth = (availableWidth - totalSpacing + 50) / booksPerRow;
             
             // Ensure minimum width for readability and proper image display
-            if (bookControlWidth < 260)
+            if (bookControlWidth < 200)
             {
-                bookControlWidth = 260;
+                bookControlWidth = 200;
                 booksPerRow = Math.Max(1, (availableWidth - totalSpacing) / bookControlWidth);
             }
             
             Debug.WriteLine($"📐 Layout configured: {booksPerRow} books per row, {bookControlWidth}px width, {spacing}px spacing");
-            Debug.WriteLine($"📏 FlowLayoutPanel size: {flowLayoutPanel1.Width}x{flowLayoutPanel1.Height}, Padding: {flowLayoutPanel1.Padding}");
+            Debug.WriteLine($"📏 FlowLayoutPanel size: {flowLayoutPanel1.Width}x{flowLayoutPanel1.Height}, Available: {availableWidth}px");
         }private BookControl CreateBookControl(Book book, int index)
         {
             var bookControl = new BookControl(book)
             {
                 Name = $"dynamicBook{index}",
-                Size = CalculateOptimalBookControlSize(),
-                Margin = new Padding(2, 2, 2, 6), // Further reduced margins for tighter spacing
+                Size = CalculateOptimalBookControlSize(),                
+                Margin = new Padding(4, 4, 4, 9), // Increased margins for better visual separation
                 Tag = book,
                 BackColor = Color.Transparent
             };
             
             // Subscribe to click event
             bookControl.BookClicked += OnBookClickedHandler;
-            
-            Debug.WriteLine($"📚 Created BookControl {index}: Size={bookControl.Size}, Margin={bookControl.Margin}");
+              Debug.WriteLine($"📚 Created BookControl {index}: Size={bookControl.Size}, Margin={bookControl.Margin} (4 per row layout)");
             
             return bookControl;
-        }private Size CalculateOptimalBookControlSize()
+        }        private Size CalculateOptimalBookControlSize()
         {
             // Calculate optimal size based on FlowLayoutPanel dimensions
             int availableWidth = flowLayoutPanel1.Width - flowLayoutPanel1.Padding.Horizontal;
-            int booksPerRow = 4; // Reduced to 4 books per row for larger size
-            int horizontalSpacing = 8; // Total margin per control (4px each side)
+            
+            // Fallback width calculation if FlowLayoutPanel hasn't been sized yet
+            if (availableWidth <= 0)
+            {
+                availableWidth = this.Width - 120; // Account for Home control margins
+                Debug.WriteLine($"⚠️ FlowLayoutPanel width not yet set, using fallback: {availableWidth}px");
+            }
+            
+            int booksPerRow = 4; // Updated to 4 books per row for improved layout and better visual organization
+            int horizontalSpacing = 10; // Total margin per control (5px each side)
             int totalHorizontalSpacing = horizontalSpacing * booksPerRow;
             
             // Calculate width ensuring minimum and maximum constraints
-            int bookWidth = Math.Max(260, (availableWidth - totalHorizontalSpacing) / booksPerRow);
-            bookWidth = Math.Min(bookWidth, 320); // Adjusted maximum width for 4 per row
+            int bookWidth = Math.Max(200, (availableWidth - totalHorizontalSpacing) / booksPerRow);
+            bookWidth = Math.Min(bookWidth, 300); // Adjusted maximum width for 4 per row (larger than before)
               
             // Maintain aspect ratio for book controls (book-like proportions)
-            int bookHeight = (int)(bookWidth * 1.7); // Adjusted aspect ratio
-            bookHeight = Math.Max(bookHeight, 550); // Adjusted minimum height
-            bookHeight = Math.Min(bookHeight, 680); // Adjusted maximum height
+            int bookHeight = (int)(bookWidth * 1.6); // Optimized aspect ratio for 4 per row
+            bookHeight = Math.Max(bookHeight, 420); // Adjusted minimum height
+            bookHeight = Math.Min(bookHeight, 600); // Adjusted maximum height for better display
             
-            Debug.WriteLine($"📐 Calculated BookControl size: {bookWidth}x{bookHeight} (Available: {availableWidth}px)");
+            Debug.WriteLine($"📐 Calculated BookControl size: {bookWidth}x{bookHeight} (Available: {availableWidth}px, 4 per row)");
             
             return new Size(bookWidth, bookHeight);
         }
@@ -495,7 +521,7 @@ namespace LibraryDesktop.View
                     {
                         var oldSize = bookControl.Size;
                         bookControl.Size = optimalSize;
-                        bookControl.Margin = new Padding(2, 2, 2, 6); // Consistent reduced margins
+                        bookControl.Margin = new Padding(1, 2, 2, 6); // Consistent reduced margins
                         
                         // Force BookControl to refresh its image sizing
                         bookControl.Refresh();

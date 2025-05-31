@@ -50,23 +50,38 @@ namespace LibraryDesktop.View
 
         private void SetupDataGridView()
         {
+            // Cấu hình cơ bản
             guna2DataGridView1.AutoGenerateColumns = false;
             guna2DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             guna2DataGridView1.MultiSelect = false;
             guna2DataGridView1.ReadOnly = true;
             guna2DataGridView1.AllowUserToAddRows = false;
+            guna2DataGridView1.AllowUserToDeleteRows = false;
+
+            // Ngăn user kéo thả và tối ưu hiển thị
+            guna2DataGridView1.AllowUserToResizeColumns = false;
+            guna2DataGridView1.AllowUserToResizeRows = false;
+            guna2DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            guna2DataGridView1.RowHeadersVisible = false;
+            guna2DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             // Clear existing columns
             guna2DataGridView1.Columns.Clear();
 
-            // Add columns
+            // Add columns với cấu hình tối ưu
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "BookTitle",
                 HeaderText = "Book Title",
                 DataPropertyName = "BookTitle",
-                Width = 200,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                FillWeight = 35, // 35% width
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    WrapMode = DataGridViewTriState.True,
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    Padding = new Padding(5, 2, 5, 2)
+                }
             });
 
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
@@ -74,7 +89,13 @@ namespace LibraryDesktop.View
                 Name = "Category",
                 HeaderText = "Category",
                 DataPropertyName = "Category",
-                Width = 120
+                FillWeight = 15, // 15% width
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Padding = new Padding(2, 2, 2, 2)
+                }
             });
 
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
@@ -82,7 +103,14 @@ namespace LibraryDesktop.View
                 Name = "ChapterTitle",
                 HeaderText = "Chapter",
                 DataPropertyName = "ChapterTitle",
-                Width = 150
+                FillWeight = 25, // 25% width
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    WrapMode = DataGridViewTriState.True,
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    Padding = new Padding(5, 2, 5, 2)
+                }
             });
 
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
@@ -90,49 +118,106 @@ namespace LibraryDesktop.View
                 Name = "AccessType",
                 HeaderText = "Access Type",
                 DataPropertyName = "AccessType",
-                Width = 100
-            });            guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+                FillWeight = 12, // 12% width
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Padding = new Padding(2, 2, 2, 2)
+                }
+            });
+
+            guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "AccessedDate",
                 HeaderText = "Date Accessed",
                 DataPropertyName = "AccessedDate",
-                Width = 150,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "yyyy-MM-dd HH:mm" }
+                FillWeight = 13, // 13% width
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Format = "yyyy-MM-dd HH:mm",
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Padding = new Padding(2, 2, 2, 2)
+                }
             });
 
-            // Add hidden BookId column for reference
+            // Hidden columns cho reference
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "BookId",
                 HeaderText = "BookId",
                 DataPropertyName = "BookId",
-                Visible = false // Hide this column from user view
+                Visible = false
             });
 
-            // Add hidden HistoryId column for reference
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "HistoryId",
-                HeaderText = "HistoryId", 
+                HeaderText = "HistoryId",
                 DataPropertyName = "HistoryId",
-                Visible = false // Hide this column from user view
+                Visible = false
             });
 
-            // Add hidden ChapterId column for reference
             guna2DataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ChapterId",
                 HeaderText = "ChapterId",
-                DataPropertyName = "ChapterId", 
-                Visible = false // Hide this column from user view
+                DataPropertyName = "ChapterId",
+                Visible = false
             });
+
+            // Không cho phép sort
+            foreach (DataGridViewColumn column in guna2DataGridView1.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
+            // Thêm màu xen kẽ cho các hàng
+            guna2DataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 248, 248);
+            guna2DataGridView1.DefaultCellStyle.BackColor = Color.White;
+
+            // Cải thiện appearance
+            guna2DataGridView1.BorderStyle = BorderStyle.None;
+            guna2DataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            guna2DataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            guna2DataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
+        }
+
+        private void AdjustRowHeight()
+        {
+            // Tự động điều chỉnh chiều cao hàng cho text dài
+            foreach (DataGridViewRow row in guna2DataGridView1.Rows)
+            {
+                int maxHeight = 35; // Minimum height
+
+                // Kiểm tra BookTitle và ChapterTitle columns (có thể có text dài)
+                foreach (string columnName in new[] { "BookTitle", "ChapterTitle" })
+                {
+                    var cell = row.Cells[columnName];
+                    if (cell.Visible && cell.Value != null)
+                    {
+                        string text = cell.Value.ToString();
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            Size textSize = TextRenderer.MeasureText(text, guna2DataGridView1.Font,
+                                new Size(cell.OwningColumn.Width - 15, 0), TextFormatFlags.WordBreak);
+                            int cellHeight = textSize.Height + 15; // Add padding
+                            maxHeight = Math.Max(maxHeight, cellHeight);
+                        }
+                    }
+                }
+
+                // Set row height với giới hạn tối đa 80px
+                row.Height = Math.Min(maxHeight, 80);
+            }
         }
 
         private async void History_Load(object sender, EventArgs e)
         {
             if (_historyService == null)
             {
-                MessageBox.Show("History service is not available.", "Error", 
+                MessageBox.Show("History service is not available.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -148,7 +233,7 @@ namespace LibraryDesktop.View
             try
             {
                 Debug.WriteLine($"Loading history for user: {_currentUser.UserId}");
-                
+
                 var histories = await _historyService.GetUserHistoryAsync(_currentUser.UserId);
                 _historyData = histories;
 
@@ -165,16 +250,31 @@ namespace LibraryDesktop.View
                     HistoryId = h.HistoryId,
                     BookId = h.BookId,
                     ChapterId = h.ChapterId
-                });
+                }).OrderByDescending(x => x.AccessedDate).ToList(); // Sắp xếp theo ngày mới nhất
 
-                guna2DataGridView1.DataSource = displayData.ToList();
+                guna2DataGridView1.DataSource = displayData;
 
-                Debug.WriteLine($"Data bound to grid with {displayData.Count()} rows");
+                // Tự động điều chỉnh chiều cao hàng sau khi bind data
+                if (displayData.Any())
+                {
+                    guna2DataGridView1.Refresh();
+                    Application.DoEvents(); // Đảm bảo UI được update
+                    AdjustRowHeight();
+                }
+
+                Debug.WriteLine($"Data bound to grid with {displayData.Count} rows");
+
+                // Update UI status
+                if (!displayData.Any())
+                {
+                    // Có thể thêm message cho trường hợp không có history
+                    Debug.WriteLine("No history records found for user");
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading history: {ex.Message}");
-                MessageBox.Show($"Error loading history: {ex.Message}", "Error", 
+                MessageBox.Show($"Error loading history: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -183,7 +283,7 @@ namespace LibraryDesktop.View
         {
             if (guna2DataGridView1.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a history item to read.", "No Selection", 
+                MessageBox.Show("Please select a history item to read.", "No Selection",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -191,7 +291,16 @@ namespace LibraryDesktop.View
             try
             {
                 var selectedRow = guna2DataGridView1.SelectedRows[0];
-                var bookId = (int)selectedRow.Cells["BookId"].Value;
+                var bookIdCell = selectedRow.Cells["BookId"];
+
+                if (bookIdCell.Value == null)
+                {
+                    MessageBox.Show("Invalid book selection.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var bookId = Convert.ToInt32(bookIdCell.Value);
 
                 Debug.WriteLine($"Opening book with ID: {bookId}");
 
@@ -205,7 +314,8 @@ namespace LibraryDesktop.View
                         .GetValue(mainForm) as IServiceProvider;
 
                     if (serviceProvider != null)
-                    {                        var bookService = serviceProvider.GetRequiredService<IBookService>();
+                    {
+                        var bookService = serviceProvider.GetRequiredService<IBookService>();
                         var userService = serviceProvider.GetRequiredService<IUserService>();
                         var ratingService = serviceProvider.GetRequiredService<IRatingService>();
                         var historyService = serviceProvider.GetRequiredService<IHistoryService>();
@@ -221,12 +331,22 @@ namespace LibraryDesktop.View
                             await LoadHistoryDataAsync(); // Refresh the history
                         }
                     }
+                    else
+                    {
+                        MessageBox.Show("Unable to access required services.", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Unable to access parent form.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error opening book: {ex.Message}");
-                MessageBox.Show($"Error opening book: {ex.Message}", "Error", 
+                MessageBox.Show($"Error opening book: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -235,8 +355,16 @@ namespace LibraryDesktop.View
         {
             if (_historyService == null || _currentUser == null)
             {
-                MessageBox.Show("History service or user information is not available.", "Error", 
+                MessageBox.Show("History service or user information is not available.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Kiểm tra xem có history để clear không
+            if (_historyData == null || !_historyData.Any())
+            {
+                MessageBox.Show("No reading history to clear.", "Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -244,24 +372,48 @@ namespace LibraryDesktop.View
                 "Are you sure you want to clear all reading history? This action cannot be undone.",
                 "Clear History Confirmation",
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2); // Default to No
 
             if (result == DialogResult.Yes)
             {
                 try
                 {
+                    // Disable buttons during operation
+                    clear_btn.Enabled = false;
+                    read_btn.Enabled = false;
+
                     await _historyService.ClearUserHistoryAsync(_currentUser.UserId);
                     await LoadHistoryDataAsync(); // Refresh the display
-                    MessageBox.Show("Reading history has been cleared successfully.", "History Cleared", 
+
+                    MessageBox.Show("Reading history has been cleared successfully.", "History Cleared",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error clearing history: {ex.Message}");
-                    MessageBox.Show($"Error clearing history: {ex.Message}", "Error", 
+                    MessageBox.Show($"Error clearing history: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                finally
+                {
+                    // Re-enable buttons
+                    clear_btn.Enabled = true;
+                    read_btn.Enabled = true;
+                }
             }
+        }
+
+        // Method để refresh data từ bên ngoài nếu cần
+        public async Task RefreshHistoryAsync()
+        {
+            await LoadHistoryDataAsync();
+        }
+
+        // Method để kiểm tra xem có history không
+        public bool HasHistory()
+        {
+            return _historyData != null && _historyData.Any();
         }
     }
 }

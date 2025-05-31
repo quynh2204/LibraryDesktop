@@ -66,8 +66,9 @@
             guna2ControlBox3 = new Guna.UI2.WinForms.Guna2ControlBox();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             guna2CustomGradientPanel1 = new Guna.UI2.WinForms.Guna2CustomGradientPanel();
+            lblCoins = new Label();
+            pictureBoxCoin = new PictureBox();
             lblUsername = new Label();
-            lblCoins = new Label();            pictureBoxCoin = new PictureBox();
             home1 = new Home();
             dashboard1 = new Dashboard();
             guna2Panel1.SuspendLayout();
@@ -114,17 +115,7 @@
             guna2Panel1.Name = "guna2Panel1";
             guna2Panel1.ShadowDecoration.CustomizableEdges = customizableEdges14;
             guna2Panel1.Size = new Size(148, 854);
-            guna2Panel1.TabIndex = 1;            //            // label1
-            // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Segoe UI", 28.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(127, 115, 103);
-            label1.Location = new Point(50, 30);
-            label1.Name = "label1";
-            label1.Size = new Size(280, 62);
-            label1.TabIndex = 6;
-            label1.Text = "Library Love";
+            guna2Panel1.TabIndex = 1;
             // 
             // btnlogout
             // 
@@ -241,15 +232,16 @@
             btnMyBooks.Size = new Size(104, 70);
             btnMyBooks.TabIndex = 1;
             btnMyBooks.Text = "My Books";
-            //            // label1
+            // 
+            // label1
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Segoe UI", 32F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Font = new Font(".VnArabiaH", 31.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(101, 85, 143);
-            label1.Location = new Point(480, 20);
+            label1.Location = new Point(391, 14);
             label1.Name = "label1";
-            label1.Size = new Size(293, 54);
+            label1.Size = new Size(439, 75);
             label1.TabIndex = 6;
             label1.Text = "Library Love";
             // 
@@ -300,7 +292,7 @@
             guna2ControlBox3.TabIndex = 4;
             // 
             // guna2CustomGradientPanel1
-            //            guna2CustomGradientPanel1.Controls.Add(lblUsername);
+            // 
             guna2CustomGradientPanel1.Controls.Add(label1);
             guna2CustomGradientPanel1.Controls.Add(lblCoins);
             guna2CustomGradientPanel1.Controls.Add(pictureBoxCoin);
@@ -314,27 +306,16 @@
             guna2CustomGradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges22;
             guna2CustomGradientPanel1.Size = new Size(1220, 102);
             guna2CustomGradientPanel1.TabIndex = 5;
-            //            // lblUsername
             // 
-            lblUsername.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblUsername.AutoSize = true;
-            lblUsername.BackColor = Color.Transparent;            lblUsername.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsername.ForeColor = Color.FromArgb(101, 85, 143);
-            lblUsername.Location = new Point(950, 40);
-            lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(101, 25);
-            lblUsername.TabIndex = 2;
-            lblUsername.Text = "Username";
-            lblUsername.TextAlign = ContentAlignment.MiddleRight;
-            //            // lblCoins
+            // lblCoins
             // 
-            lblCoins.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             lblCoins.AutoSize = true;
-            lblCoins.BackColor = Color.Transparent;            lblCoins.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblCoins.BackColor = Color.Transparent;
+            lblCoins.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblCoins.ForeColor = Color.FromArgb(101, 85, 143);
             lblCoins.Location = new Point(60, 35);
             lblCoins.Name = "lblCoins";
-            lblCoins.Size = new Size(81, 28);
+            lblCoins.Size = new Size(98, 32);
             lblCoins.TabIndex = 1;
             lblCoins.Text = "0 Coins";
             lblCoins.TextAlign = ContentAlignment.MiddleLeft;
@@ -351,6 +332,20 @@
             pictureBoxCoin.TabIndex = 0;
             pictureBoxCoin.TabStop = false;
             // 
+            // lblUsername
+            // 
+            lblUsername.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblUsername.AutoSize = true;
+            lblUsername.BackColor = Color.Transparent;
+            lblUsername.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblUsername.ForeColor = Color.FromArgb(101, 85, 143);
+            lblUsername.Location = new Point(950, 40);
+            lblUsername.Name = "lblUsername";
+            lblUsername.Size = new Size(101, 25);
+            lblUsername.TabIndex = 2;
+            lblUsername.Text = "Username";
+            lblUsername.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // home1
             // 
             home1.Location = new Point(148, 108);
@@ -363,7 +358,8 @@
             // 
             dashboard1.ImeMode = ImeMode.NoControl;
             dashboard1.Location = new Point(148, 99);
-            dashboard1.Margin = new Padding(4, 5, 4, 5);            dashboard1.Name = "dashboard1";
+            dashboard1.Margin = new Padding(4, 5, 4, 5);
+            dashboard1.Name = "dashboard1";
             dashboard1.Size = new Size(1220, 755);
             dashboard1.TabIndex = 0;
             // 
@@ -385,7 +381,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Main";
             guna2Panel1.ResumeLayout(false);
-            guna2Panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             guna2CustomGradientPanel1.ResumeLayout(false);
             guna2CustomGradientPanel1.PerformLayout();

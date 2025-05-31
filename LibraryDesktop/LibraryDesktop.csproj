@@ -15,6 +15,40 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\1.png" />
+    <None Remove="Assets\2.png" />
+    <None Remove="Assets\3.png" />
+    <None Remove="Assets\4.png" />
+    <None Remove="Assets\5.png" />
+    <None Remove="Assets\6.png" />
+    <None Remove="Assets\7.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">

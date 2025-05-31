@@ -52,14 +52,14 @@
             guna2DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = Color.White;
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             guna2DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            guna2DataGridView1.ColumnHeadersHeight = 4;
-            guna2DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            guna2DataGridView1.ColumnHeadersHeight = 35; // Tăng height để hiển thị header
+            guna2DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing; // Không cho phép resize header
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.White;
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
@@ -73,8 +73,22 @@
             guna2DataGridView1.Name = "guna2DataGridView1";
             guna2DataGridView1.RowHeadersVisible = false;
             guna2DataGridView1.RowHeadersWidth = 51;
+            guna2DataGridView1.RowTemplate.Height = 35; // Tăng chiều cao row
             guna2DataGridView1.Size = new Size(792, 487);
             guna2DataGridView1.TabIndex = 0;
+
+            // Cấu hình để không cho phép user resize columns
+            guna2DataGridView1.AllowUserToResizeColumns = false;
+            guna2DataGridView1.AllowUserToResizeRows = false;
+            guna2DataGridView1.AllowUserToAddRows = false;
+            guna2DataGridView1.AllowUserToDeleteRows = false;
+            guna2DataGridView1.ReadOnly = true; // Chỉ đọc
+            guna2DataGridView1.MultiSelect = false; // Chỉ chọn một dòng
+            guna2DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Chọn cả dòng
+
+            // Cấu hình auto size columns
+            guna2DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             guna2DataGridView1.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             guna2DataGridView1.ThemeStyle.AlternatingRowsStyle.Font = null;
             guna2DataGridView1.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.Empty;
@@ -84,16 +98,16 @@
             guna2DataGridView1.ThemeStyle.GridColor = Color.FromArgb(231, 229, 255);
             guna2DataGridView1.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
             guna2DataGridView1.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
-            guna2DataGridView1.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F);
+            guna2DataGridView1.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             guna2DataGridView1.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            guna2DataGridView1.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            guna2DataGridView1.ThemeStyle.HeaderStyle.Height = 4;
-            guna2DataGridView1.ThemeStyle.ReadOnly = false;
+            guna2DataGridView1.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            guna2DataGridView1.ThemeStyle.HeaderStyle.Height = 35;
+            guna2DataGridView1.ThemeStyle.ReadOnly = true;
             guna2DataGridView1.ThemeStyle.RowsStyle.BackColor = Color.White;
             guna2DataGridView1.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             guna2DataGridView1.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
             guna2DataGridView1.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
-            guna2DataGridView1.ThemeStyle.RowsStyle.Height = 29;
+            guna2DataGridView1.ThemeStyle.RowsStyle.Height = 35;
             guna2DataGridView1.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
             guna2DataGridView1.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
             // 
@@ -166,14 +180,15 @@
             Controls.Add(read_btn);
             Controls.Add(guna2Panel1);
             Name = "History";
-            Size = new Size(1247, 730);            ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).EndInit();
+            Size = new Size(1247, 730);
+            ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).EndInit();
             guna2Panel1.ResumeLayout(false);
             guna2Panel1.PerformLayout();
             ResumeLayout(false);
         }
 
-        #endregion        
-        
+        #endregion
+
         private Guna.UI2.WinForms.Guna2DataGridView guna2DataGridView1;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;

@@ -3,10 +3,14 @@ using LibraryDesktop.Data.Interfaces;
 using LibraryDesktop.Models;
 
 namespace LibraryDesktop.Data.Repositories
-{
-    public class PaymentRepository : Repository<Payment>, IPaymentRepository
+{    public class PaymentRepository : Repository<Payment>, IPaymentRepository
     {
-        public PaymentRepository(LibraryDbContext context) : base(context) { }
+        private readonly IUserRepository _userRepository;
+
+        public PaymentRepository(LibraryDbContext context, IUserRepository userRepository) : base(context) 
+        { 
+            _userRepository = userRepository;
+        }
 
         public async Task<IEnumerable<Payment>> GetUserPaymentsAsync(int userId)
         {
@@ -38,13 +42,9 @@ namespace LibraryDesktop.Data.Repositories
                 payment.PaymentStatus = PaymentStatus.Completed;
                 payment.CompletedDate = DateTime.Now;
                 
-                // Update user coins directly
-                var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.UserId == payment.UserId);
-                  if (user != null)
-                {
-                    user.Coins += (int)(payment.Amount / 1000); // Convert VND to coins (1000 VND = 1 coin)
-                }
+                // Use proper coin addition method instead of direct database manipulation
+                int coinsToAdd = (int)(payment.Amount / 1000); // Convert VND to coins (1000 VND = 1 coin)
+                await _userRepository.AddUserCoinsAsync(payment.UserId, coinsToAdd);
 
                 await SaveChangesAsync();
             }

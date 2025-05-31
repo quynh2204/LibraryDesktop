@@ -229,7 +229,7 @@ namespace LibraryDesktop.Data
                 new User 
                 { 
                     UserId = 1, 
-                    Username = "demo", 
+                    Username = "demo",
                     Email = "demo@library.com", 
                     PasswordHash = "Z4m0WAouR0CZpMn4ZqNX0nnr8+bfEkfV7J0Ps7umRjE=", // SHA256 hash of "demo" + salt
                     RegistrationDate = seedDate,

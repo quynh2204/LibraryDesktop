@@ -1,15 +1,15 @@
 using LibraryDesktop.Models;
 
 namespace LibraryDesktop.Data.Services
-{
-    public interface IAuthenticationService
+{    public interface IAuthenticationService
     {
         Task<User?> LoginAsync(string username, string password);
         Task<User?> RegisterAsync(string username, string email, string password);
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
+        Task<bool> ResetPasswordAsync(string username, string email, string newPassword);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hash);
-    }    
+    }
 
     public interface IBookService
     {
@@ -49,14 +49,14 @@ namespace LibraryDesktop.Data.Services
         public int Amount { get; set; }
         public string PaymentToken { get; set; } = string.Empty;
         public DateTime CompletedAt { get; set; }
-    }    
-      public interface IUserService
+    }      public interface IUserService
     {
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<User?> GetUserByIdAsync(int userId);
         Task<string?> GetUsernameByIdAsync(int userId);        
         Task<int> GetUserCoinsAsync(int userId);
         Task UpdateUserCoinsAsync(int userId, int coins);
+        Task AddUserCoinsAsync(int userId, int coinsToAdd);
         Task UpdateUserSettingsAsync(int userId, ThemeMode theme, int fontSize);
         Task<bool> AddToFavoritesAsync(int userId, int bookId);
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);

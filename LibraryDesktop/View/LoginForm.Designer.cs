@@ -8,13 +8,13 @@ namespace LibraryDesktop.View
         private Guna2TextBox txtUsername;
         private Guna2TextBox txtPassword;
         private Guna2Button btnLogin;
-        private Guna2Button btnRegister;
-        private Guna2HtmlLabel lblUsername;
+        private Guna2Button btnRegister;        private Guna2HtmlLabel lblUsername;
         private Guna2HtmlLabel lblPassword;
         private Guna2HtmlLabel lblTitle;
         private Guna2Panel mainPanel;
         private Guna2ShadowForm shadowForm;
         private Guna2ControlBox controlBoxClose;
+        private Guna2HtmlLabel lblForgotPassword;
 
         protected override void Dispose(bool disposing)
         {
@@ -44,10 +44,10 @@ namespace LibraryDesktop.View
             btnRegister = new Guna2Button();
             btnLogin = new Guna2Button();
             txtPassword = new Guna2TextBox();
-            lblPassword = new Guna2HtmlLabel();
-            txtUsername = new Guna2TextBox();
+            lblPassword = new Guna2HtmlLabel();            txtUsername = new Guna2TextBox();
             lblUsername = new Guna2HtmlLabel();
             lblTitle = new Guna2HtmlLabel();
+            lblForgotPassword = new Guna2HtmlLabel();
             shadowForm = new Guna2ShadowForm(components);
             controlBoxClose = new Guna2ControlBox();
             mainPanel.SuspendLayout();
@@ -57,24 +57,23 @@ namespace LibraryDesktop.View
             // 
             mainPanel.BackColor = Color.Transparent;
             mainPanel.BorderRadius = 40;
-            mainPanel.BorderStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
-            mainPanel.Controls.Add(btnRegister);
+            mainPanel.BorderStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;            mainPanel.Controls.Add(btnRegister);
             mainPanel.Controls.Add(btnLogin);
+            mainPanel.Controls.Add(lblForgotPassword);
             mainPanel.Controls.Add(txtPassword);
             mainPanel.Controls.Add(lblPassword);
             mainPanel.Controls.Add(txtUsername);
             mainPanel.Controls.Add(lblUsername);
             mainPanel.Controls.Add(lblTitle);
             mainPanel.CustomizableEdges = customizableEdges9;
-            mainPanel.FillColor = Color.FromArgb(100, 255, 255, 255);
-            mainPanel.Location = new Point(49, 51);
+            mainPanel.FillColor = Color.FromArgb(100, 255, 255, 255);            mainPanel.Location = new Point(49, 51);
             mainPanel.Name = "mainPanel";
             mainPanel.ShadowDecoration.BorderRadius = 40;
             mainPanel.ShadowDecoration.Color = Color.Transparent;
             mainPanel.ShadowDecoration.CustomizableEdges = customizableEdges10;
             mainPanel.ShadowDecoration.Depth = 15;
             mainPanel.ShadowDecoration.Enabled = true;
-            mainPanel.Size = new Size(340, 428);
+            mainPanel.Size = new Size(340, 460);
             mainPanel.TabIndex = 0;
             // 
             // btnRegister
@@ -88,15 +87,26 @@ namespace LibraryDesktop.View
             btnRegister.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnRegister.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnRegister.FillColor = Color.White;
-            btnRegister.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnRegister.ForeColor = Color.FromArgb(169, 155, 135);
-            btnRegister.Location = new Point(180, 332);
+            btnRegister.Font = new Font("Segoe UI", 11F, FontStyle.Bold);            btnRegister.ForeColor = Color.FromArgb(169, 155, 135);
+            btnRegister.Location = new Point(180, 364);
             btnRegister.Name = "btnRegister";
             btnRegister.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnRegister.Size = new Size(110, 40);
-            btnRegister.TabIndex = 6;
+            btnRegister.Size = new Size(110, 40);            btnRegister.TabIndex = 6;
             btnRegister.Text = "Register";
             btnRegister.Click += btnRegister_Click;
+            // 
+            // lblForgotPassword
+            // 
+            lblForgotPassword.BackColor = Color.Transparent;
+            lblForgotPassword.Cursor = Cursors.Hand;
+            lblForgotPassword.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
+            lblForgotPassword.ForeColor = Color.FromArgb(169, 155, 135);
+            lblForgotPassword.Location = new Point(105, 295);
+            lblForgotPassword.Name = "lblForgotPassword";
+            lblForgotPassword.Size = new Size(130, 22);
+            lblForgotPassword.TabIndex = 7;
+            lblForgotPassword.Text = "Forgot Password?";
+            lblForgotPassword.Click += lblForgotPassword_Click;
             // 
             // btnLogin
             // 
@@ -107,9 +117,8 @@ namespace LibraryDesktop.View
             btnLogin.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnLogin.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnLogin.FillColor = Color.FromArgb(169, 155, 135);
-            btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(50, 332);
+            btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(50, 364);
             btnLogin.Name = "btnLogin";
             btnLogin.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnLogin.Size = new Size(110, 40);
@@ -216,11 +225,10 @@ namespace LibraryDesktop.View
             controlBoxClose.TabIndex = 1;
             // 
             // LoginForm
-            // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            //            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(211, 195, 179);
-            ClientSize = new Size(439, 530);
+            ClientSize = new Size(439, 562);
             Controls.Add(controlBoxClose);
             Controls.Add(mainPanel);
             FormBorderStyle = FormBorderStyle.None;

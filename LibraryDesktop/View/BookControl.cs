@@ -29,20 +29,30 @@ namespace LibraryDesktop.View
             _book = book;
             PopulateData();
         }
-        
-        /// <summary>
+          /// <summary>
         /// Refresh the chapter count display - useful when TotalChapters has been updated
         /// </summary>
         public void RefreshChapterCount()
         {
             if (_book != null)
             {
-                int chapterCount = _book.TotalChapters > 0 ? _book.TotalChapters : (_book.Chapters?.Count ?? 0);
-                lblChapterCount.Text = $"{chapterCount} Chapters";
+                // Improved chapter count calculation with better fallback logic
+                int chapterCount = 0;
+                if (_book.TotalChapters > 0)
+                {
+                    chapterCount = _book.TotalChapters;
+                }
+                else if (_book.Chapters != null && _book.Chapters.Count > 0)
+                {
+                    chapterCount = _book.Chapters.Count;
+                }
+                
+                lblChapterCount.Text = chapterCount > 0 ? $"{chapterCount} Chapters" : "No chapters";
+                
+                System.Diagnostics.Debug.WriteLine($"📖 Refreshed chapter count for BookId {_book.BookId}: {chapterCount}");
             }
         }
-        
-        private void PopulateData()
+          private void PopulateData()
         {
             if (_book != null)
             {
@@ -52,12 +62,22 @@ namespace LibraryDesktop.View
                 {
                     displayTitle = displayTitle.Substring(0, 22) + "...";
                 }
-                lblBookTitle.Text = displayTitle;                lblAuthor.Text = $"{_book.Author}";
+                lblBookTitle.Text = displayTitle;
+
+                lblAuthor.Text = $"{_book.Author}";
                 
-                // Use TotalChapters property for consistency with BookDetail
-                // Fall back to actual Chapters count if TotalChapters is 0
-                int chapterCount = _book.TotalChapters > 0 ? _book.TotalChapters : (_book.Chapters?.Count ?? 0);
-                lblChapterCount.Text = $"{chapterCount} Chapters";
+                // Improved chapter count calculation with better fallback logic
+                int chapterCount = 0;
+                if (_book.TotalChapters > 0)
+                {
+                    chapterCount = _book.TotalChapters;
+                }
+                else if (_book.Chapters != null && _book.Chapters.Count > 0)
+                {
+                    chapterCount = _book.Chapters.Count;
+                }
+                
+                lblChapterCount.Text = chapterCount > 0 ? $"{chapterCount} Chapters" : "No chapters";
 
                 // Show price panel if book has a price
                 if (_book.Price > 0)
@@ -85,29 +105,14 @@ namespace LibraryDesktop.View
                         var oldImage = picBookCover.Image;
                         picBookCover.Image = null;
                         oldImage.Dispose();
-                    }                    // 🔧 Ensure PictureBox has proper size before loading image
-                    if (picBookCover.Width <= 0 || picBookCover.Height <= 0)
-                    {
-                        // Force update layout and get parent size
-                        this.PerformLayout();
-                        
-                        // Calculate relative size based on parent BookControl size
-                        int parentWidth = this.Width > 0 ? this.Width : 220;
-                        int parentHeight = this.Height > 0 ? this.Height : 320;
-                          // Set PictureBox to 85% of parent width with better proportions
-                        int newWidth = (int)(parentWidth * 0.88);
-                        int newHeight = (int)(parentHeight * 0.68); // Increased height ratio for better image visibility
-                          // Ensure minimum dimensions for image clarity
-                        newWidth = Math.Max(newWidth, 150);
-                        newHeight = Math.Max(newHeight, 200); // Increased minimum height for better visibility
-                        
-                        picBookCover.Size = new Size(newWidth, newHeight);
-                        picBookCover.Location = new Point((parentWidth - newWidth) / 2, 12);
-                        
-                        System.Diagnostics.Debug.WriteLine($"🖼️ Resized PictureBox: {newWidth}x{newHeight} for BookControl: {parentWidth}x{parentHeight}");
                     }
 
-                    string imagePath = null;
+                    // Don't resize the PictureBox - keep the designer dimensions
+                    // This prevents layout issues with the title and other elements
+                    int width = picBookCover.Width;
+                    int height = picBookCover.Height;
+
+                    string? imagePath = null;
                     bool imageFound = false;
 
                     // Debug: Log current directory and BookId
@@ -202,21 +207,21 @@ namespace LibraryDesktop.View
                     }                    // Load the image if found
                     if (imageFound && !string.IsNullOrEmpty(imagePath))
                     {
-                        // 🔧 Improved image loading with proper scaling
+                        // Load image with fixed PictureBox dimensions to prevent layout issues
                         using (var fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
                         {
                             var originalImage = Image.FromStream(fileStream);
                             
-                            // Create a properly scaled image that fits the PictureBox
-                            var scaledImage = new Bitmap(picBookCover.Width, picBookCover.Height);
+                            // Create a properly scaled image that fits the fixed PictureBox size
+                            var scaledImage = new Bitmap(width, height);
                             using (var graphics = Graphics.FromImage(scaledImage))
                             {
                                 graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                                 graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                                 graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                                 
-                                // Draw image with proper scaling to fill PictureBox
-                                graphics.DrawImage(originalImage, 0, 0, picBookCover.Width, picBookCover.Height);
+                                // Draw image with proper scaling to fill PictureBox without changing its size
+                                graphics.DrawImage(originalImage, 0, 0, width, height);
                             }
                             
                             picBookCover.Image = scaledImage;
@@ -229,7 +234,7 @@ namespace LibraryDesktop.View
                     }
                     else
                     {
-                        // Create a default image with text
+                        // Create a default image with fixed dimensions
                         CreateDefaultBookCover();
                         System.Diagnostics.Debug.WriteLine($"🎨 No image found for BookId {_book.BookId}, using default generated cover");
                     }
@@ -245,13 +250,13 @@ namespace LibraryDesktop.View
         {
             try
             {
-                // 🔧 Improved default book cover generation with dynamic sizing
-                int width = picBookCover.Width > 0 ? picBookCover.Width : 180;
-                int height = picBookCover.Height > 0 ? picBookCover.Height : 220;
+                // Use the fixed PictureBox dimensions from the designer
+                int width = picBookCover.Width;
+                int height = picBookCover.Height;
                 
-                // Ensure minimum size for visibility
-                width = Math.Max(width, 120);
-                height = Math.Max(height, 150);
+                // Ensure we have valid dimensions
+                if (width <= 0) width = 197; // Designer default
+                if (height <= 0) height = 236; // Designer default
                 
                 var bitmap = new Bitmap(width, height);
                 using (var graphics = Graphics.FromImage(bitmap))
@@ -275,8 +280,8 @@ namespace LibraryDesktop.View
                         graphics.DrawRectangle(borderPen, 2, 2, width - 5, height - 5);
                     }
 
-                    // Add book icon with appropriate font size based on control size
-                    int fontSize = Math.Max(16, width / 8); // Larger icon for better visibility
+                    // Add book icon with appropriate font size
+                    int fontSize = Math.Max(24, width / 8); // Consistent sizing based on width
                     using (var font = new Font("Segoe UI", fontSize, FontStyle.Bold))
                     using (var textBrush = new SolidBrush(Color.White))
                     {
@@ -303,7 +308,7 @@ namespace LibraryDesktop.View
                 picBookCover.SizeMode = PictureBoxSizeMode.StretchImage;
                 picBookCover.BackColor = Color.Transparent;
                 
-                System.Diagnostics.Debug.WriteLine($"🎨 Created default book cover with size: {width}x{height}");
+                System.Diagnostics.Debug.WriteLine($"🎨 Created default book cover with fixed size: {width}x{height}");
             }
             catch (Exception ex)
             {

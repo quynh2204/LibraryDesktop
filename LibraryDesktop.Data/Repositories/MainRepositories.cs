@@ -36,14 +36,22 @@ namespace LibraryDesktop.Data.Repositories
         {
             var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
             return user?.Coins ?? 0;
-        }
-
-        public async Task UpdateUserCoinsAsync(int userId, int coins)
+        }        public async Task UpdateUserCoinsAsync(int userId, int coins)
         {
             var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user != null)
             {
-                user.Coins += coins;
+                user.Coins = coins; // Set absolute value instead of adding
+                await SaveChangesAsync();
+            }
+        }
+
+        public async Task AddUserCoinsAsync(int userId, int coinsToAdd)
+        {
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user != null)
+            {
+                user.Coins += coinsToAdd; // Add to existing balance
                 await SaveChangesAsync();
             }
         }

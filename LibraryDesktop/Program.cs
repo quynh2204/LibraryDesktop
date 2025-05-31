@@ -82,6 +82,7 @@ namespace LibraryDesktop
                     services.AddTransient<Main>();
                     services.AddTransient<LoginForm>();
                     services.AddTransient<RegistrationForm>();
+                    services.AddTransient<ResetPasswordForm>();
                     services.AddTransient<Home>();
                     services.AddTransient<Exchange>();
                     services.AddTransient<Dashboard>();

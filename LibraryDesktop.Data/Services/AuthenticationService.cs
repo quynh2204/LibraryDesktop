@@ -55,12 +55,24 @@ namespace LibraryDesktop.Data.Services
             await _userSettingRepository.SaveChangesAsync();
 
             return user;
-        }
-
-        public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
+        }        public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user != null && VerifyPassword(currentPassword, user.PasswordHash))
+            {
+                user.PasswordHash = HashPassword(newPassword);
+                await _userRepository.UpdateAsync(user);
+                await _userRepository.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> ResetPasswordAsync(string username, string email, string newPassword)
+        {
+            // Verify user exists with matching username and email
+            var user = await _userRepository.GetByUsernameAsync(username);
+            if (user != null && user.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
             {
                 user.PasswordHash = HashPassword(newPassword);
                 await _userRepository.UpdateAsync(user);

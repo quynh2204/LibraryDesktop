@@ -120,11 +120,14 @@ namespace LibraryDesktop.Data.Services
         {
             return await _userRepository.GetUserCoinsAsync(userId);
 
-        }
-
-        public async Task UpdateUserCoinsAsync(int userId, int coins)
+        }        public async Task UpdateUserCoinsAsync(int userId, int coins)
         {
             await _userRepository.UpdateUserCoinsAsync(userId, coins);
+        }
+
+        public async Task AddUserCoinsAsync(int userId, int coinsToAdd)
+        {
+            await _userRepository.AddUserCoinsAsync(userId, coinsToAdd);
         }
 
         public async Task UpdateUserSettingsAsync(int userId, ThemeMode theme, int fontSize)

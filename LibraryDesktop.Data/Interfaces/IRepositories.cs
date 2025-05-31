@@ -10,6 +10,7 @@ namespace LibraryDesktop.Data.Interfaces
         Task<bool> EmailExistsAsync(string email);
         Task<int> GetUserCoinsAsync(int userId);
         Task UpdateUserCoinsAsync(int userId, int coins);
+        Task AddUserCoinsAsync(int userId, int coinsToAdd);
     }
 
     public interface ICategoryRepository : IRepository<Category>

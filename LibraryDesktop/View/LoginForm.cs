@@ -56,8 +56,7 @@ namespace LibraryDesktop.View
                 btnLogin.Enabled = true;
                 btnLogin.Text = "Login";
             }
-        }
-        private void btnRegister_Click(object sender, EventArgs e)
+        }        private void btnRegister_Click(object sender, EventArgs e)
         {
             using (var registrationForm = _serviceProvider.GetRequiredService<RegistrationForm>())
             {
@@ -72,6 +71,20 @@ namespace LibraryDesktop.View
                     this.Close();
                 }
   
+            }
+        }
+
+        private void lblForgotPassword_Click(object sender, EventArgs e)
+        {
+            using (var resetPasswordForm = _serviceProvider.GetRequiredService<ResetPasswordForm>())
+            {
+                var result = resetPasswordForm.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    MessageBox.Show("Password reset successful! You can now login with your new password.", "Success",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
     }

@@ -15,7 +15,6 @@ namespace LibraryDesktop.View
         private Guna2Panel mainPanel;
         private Guna2ShadowForm shadowForm;
         private Guna2ControlBox controlBoxClose;
-        private Guna2ControlBox controlBoxMinimize;
 
         protected override void Dispose(bool disposing)
         {
@@ -39,8 +38,6 @@ namespace LibraryDesktop.View
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             mainPanel = new Guna2Panel();
@@ -53,14 +50,14 @@ namespace LibraryDesktop.View
             lblTitle = new Guna2HtmlLabel();
             shadowForm = new Guna2ShadowForm(components);
             controlBoxClose = new Guna2ControlBox();
-            controlBoxMinimize = new Guna2ControlBox();
             mainPanel.SuspendLayout();
             SuspendLayout();
             // 
             // mainPanel
             // 
-            mainPanel.BackColor = Color.White;
-            mainPanel.BorderRadius = 20;
+            mainPanel.BackColor = Color.Transparent;
+            mainPanel.BorderRadius = 40;
+            mainPanel.BorderStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
             mainPanel.Controls.Add(btnRegister);
             mainPanel.Controls.Add(btnLogin);
             mainPanel.Controls.Add(txtPassword);
@@ -69,15 +66,20 @@ namespace LibraryDesktop.View
             mainPanel.Controls.Add(lblUsername);
             mainPanel.Controls.Add(lblTitle);
             mainPanel.CustomizableEdges = customizableEdges9;
-            mainPanel.Location = new Point(30, 40);
+            mainPanel.FillColor = Color.FromArgb(100, 255, 255, 255);
+            mainPanel.Location = new Point(49, 51);
             mainPanel.Name = "mainPanel";
+            mainPanel.ShadowDecoration.BorderRadius = 40;
+            mainPanel.ShadowDecoration.Color = Color.Transparent;
             mainPanel.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            mainPanel.ShadowDecoration.Depth = 15;
+            mainPanel.ShadowDecoration.Enabled = true;
             mainPanel.Size = new Size(340, 428);
             mainPanel.TabIndex = 0;
             // 
             // btnRegister
             // 
-            btnRegister.BorderColor = Color.FromArgb(94, 148, 255);
+            btnRegister.BorderColor = Color.FromArgb(169, 155, 135);
             btnRegister.BorderRadius = 10;
             btnRegister.BorderThickness = 2;
             btnRegister.CustomizableEdges = customizableEdges1;
@@ -87,7 +89,7 @@ namespace LibraryDesktop.View
             btnRegister.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnRegister.FillColor = Color.White;
             btnRegister.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnRegister.ForeColor = Color.FromArgb(94, 148, 255);
+            btnRegister.ForeColor = Color.FromArgb(169, 155, 135);
             btnRegister.Location = new Point(180, 332);
             btnRegister.Name = "btnRegister";
             btnRegister.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -104,6 +106,7 @@ namespace LibraryDesktop.View
             btnLogin.DisabledState.CustomBorderColor = Color.DarkGray;
             btnLogin.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnLogin.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnLogin.FillColor = Color.FromArgb(169, 155, 135);
             btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
             btnLogin.Location = new Point(50, 332);
@@ -185,7 +188,7 @@ namespace LibraryDesktop.View
             // 
             lblTitle.BackColor = Color.Transparent;
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.FromArgb(94, 148, 255);
+            lblTitle.ForeColor = Color.FromArgb(169, 155, 135);
             lblTitle.Location = new Point(71, 23);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(189, 43);
@@ -199,35 +202,25 @@ namespace LibraryDesktop.View
             // controlBoxClose
             // 
             controlBoxClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            controlBoxClose.CustomizableEdges = customizableEdges13;
-            controlBoxClose.FillColor = Color.FromArgb(139, 152, 166);
-            controlBoxClose.IconColor = Color.White;
-            controlBoxClose.Location = new Point(370, 0);
+            controlBoxClose.BackColor = Color.Transparent;
+            controlBoxClose.BorderColor = Color.Transparent;
+            controlBoxClose.BorderRadius = 50;
+            controlBoxClose.CustomizableEdges = customizableEdges11;
+            controlBoxClose.FillColor = Color.FromArgb(169, 155, 135);
+            controlBoxClose.IconColor = SystemColors.Window;
+            controlBoxClose.Location = new Point(395, 0);
             controlBoxClose.Name = "controlBoxClose";
-            controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            controlBoxClose.Size = new Size(30, 30);
-            controlBoxClose.TabIndex = 10;
-            // 
-            // controlBoxMinimize
-            // 
-            controlBoxMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            controlBoxMinimize.ControlBoxType = Guna.UI2.WinForms.Enums.ControlBoxType.MinimizeBox;
-            controlBoxMinimize.CustomizableEdges = customizableEdges11;
-            controlBoxMinimize.FillColor = Color.FromArgb(139, 152, 166);
-            controlBoxMinimize.IconColor = Color.White;
-            controlBoxMinimize.Location = new Point(340, 0);
-            controlBoxMinimize.Name = "controlBoxMinimize";
-            controlBoxMinimize.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            controlBoxMinimize.Size = new Size(30, 30);
-            controlBoxMinimize.TabIndex = 11;
+            controlBoxClose.ShadowDecoration.BorderRadius = 20;
+            controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            controlBoxClose.Size = new Size(43, 46);
+            controlBoxClose.TabIndex = 1;
             // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(240, 240, 240);
-            ClientSize = new Size(400, 500);
-            Controls.Add(controlBoxMinimize);
+            BackColor = Color.FromArgb(211, 195, 179);
+            ClientSize = new Size(439, 530);
             Controls.Add(controlBoxClose);
             Controls.Add(mainPanel);
             FormBorderStyle = FormBorderStyle.None;

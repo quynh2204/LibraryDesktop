@@ -9,7 +9,7 @@ namespace LibraryDesktop.Data.Services
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hash);
-    }
+    }    
 
     public interface IBookService
     {
@@ -19,7 +19,17 @@ namespace LibraryDesktop.Data.Services
         Task<Book?> GetBookDetailsAsync(int bookId);
         Task<string> GetChapterContentAsync(string githubUrl);
         Task IncrementViewCountAsync(int bookId);
-    }    public interface IPaymentService
+    }
+
+    public interface ICategoryService
+    {
+        Task<IEnumerable<Category>> GetCategoriesAsync();
+        Task<IEnumerable<Category>> GetActiveCategoriesAsync();
+        Task<Category?> GetCategoryByIdAsync(int categoryId);
+        Task<Category?> GetCategoryWithBooksAsync(int categoryId);
+    }
+
+    public interface IPaymentService
     {
         Task<Payment> CreatePaymentAsync(int userId, int amount, string description = "");
         Task<string> GenerateQRCodeAsync(Payment payment);
@@ -39,17 +49,40 @@ namespace LibraryDesktop.Data.Services
         public int Amount { get; set; }
         public string PaymentToken { get; set; } = string.Empty;
         public DateTime CompletedAt { get; set; }
-    }    public interface IUserService
+    }    
+      public interface IUserService
     {
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<User?> GetUserByIdAsync(int userId);
-        Task<string?> GetUsernameByIdAsync(int userId);
-        Task<decimal> GetUserBalanceAsync(int userId);
+        Task<string?> GetUsernameByIdAsync(int userId);        
+        Task<int> GetUserCoinsAsync(int userId);
+        Task UpdateUserCoinsAsync(int userId, int coins);
         Task UpdateUserSettingsAsync(int userId, ThemeMode theme, int fontSize);
         Task<bool> AddToFavoritesAsync(int userId, int bookId);
         Task<bool> RemoveFromFavoritesAsync(int userId, int bookId);
         Task<bool> IsFavoriteAsync(int userId, int bookId);
         Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(int userId);
+        Task<bool> UpdateUserAsync(User user);
+        Task<bool> UpdateAvatarUrlAsync(int userId, string avatarUrl);
+        Task<User?> GetUserByUsernameAsync(string username);
+    }
+    
+    public interface IRatingService
+    {
+        Task<IEnumerable<Rating>> GetBookRatingsAsync(int bookId);
+        Task<Rating?> GetUserRatingAsync(int userId, int bookId);
+        Task<double> GetAverageRatingAsync(int bookId);
+        Task<Rating> AddOrUpdateRatingAsync(int userId, int bookId, int ratingValue, string? review = null);
+        Task<bool> DeleteRatingAsync(int userId, int bookId);
+    }    
+    
+    public interface IHistoryService
+    {
+        Task<IEnumerable<History>> GetUserHistoryAsync(int userId);
+        Task<History> AddHistoryAsync(int userId, int bookId, int? chapterId = null, string accessType = "View");
+        Task<IEnumerable<History>> GetBookHistoryAsync(int bookId);
+        Task<bool> DeleteHistoryAsync(int historyId);
+        Task ClearUserHistoryAsync(int userId);
     }
 
     public interface IGitHubContentService

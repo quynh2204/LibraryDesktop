@@ -16,12 +16,9 @@ namespace LibraryDesktop.Data.Repositories
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<User?> GetUserWithSettingsAsync(int userId)
+        }        public async Task<User?> GetUserWithSettingsAsync(int userId)
         {
             return await _dbSet
-                .Include(u => u.UserSetting)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
@@ -33,6 +30,22 @@ namespace LibraryDesktop.Data.Repositories
         public async Task<bool> EmailExistsAsync(string email)
         {
             return await _dbSet.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<int> GetUserCoinsAsync(int userId)
+        {
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+            return user?.Coins ?? 0;
+        }
+
+        public async Task UpdateUserCoinsAsync(int userId, int coins)
+        {
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user != null)
+            {
+                user.Coins += coins;
+                await SaveChangesAsync();
+            }
         }
     }
 
@@ -106,9 +119,7 @@ namespace LibraryDesktop.Data.Repositories
                 .Include(b => b.Ratings)
                 .Include(b => b.Chapters.OrderBy(c => c.ChapterNumber))
                 .FirstOrDefaultAsync(b => b.BookId == bookId);
-        }
-
-        public async Task IncrementViewCountAsync(int bookId)
+        }        public async Task IncrementViewCountAsync(int bookId)
         {
             var book = await GetByIdAsync(bookId);
             if (book != null)
@@ -116,6 +127,9 @@ namespace LibraryDesktop.Data.Repositories
                 book.ViewCount++;
                 await UpdateAsync(book);
                 await SaveChangesAsync();
+                
+                // Log for debugging
+                System.Diagnostics.Debug.WriteLine($"📊 ViewCount updated for BookId {bookId}: {book.ViewCount}");
             }
         }
     }

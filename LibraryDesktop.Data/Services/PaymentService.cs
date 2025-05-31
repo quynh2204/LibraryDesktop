@@ -162,12 +162,13 @@ namespace LibraryDesktop.Data.Services
                 }
 
                 // Check if payment with this token already exists (prevent double processing)
-                var existingPayment = await _paymentRepository.GetPaymentByTokenAsync(token);
-                if (existingPayment != null)
+                var existingPayment = await _paymentRepository.GetPaymentByTokenAsync(token);                if (existingPayment != null)
                 {
                     Console.WriteLine($"❌ Payment with token {token} already exists");
                     return false;
-                }                // Create payment record
+                }
+                
+                // Create payment record
                 var payment = new Payment
                 {
                     UserId = userId,
@@ -176,22 +177,16 @@ namespace LibraryDesktop.Data.Services
                     PaymentStatus = PaymentStatus.Pending, // Start as pending, will be completed by CompletePaymentAsync
                     PaymentToken = token,
                     CreatedDate = DateTime.Now,
-                    Description = string.IsNullOrEmpty(description) ? $"Account recharge (+{amount / 1000} coins)" : description
-                };// Save payment to database
+                    Description = string.IsNullOrEmpty(description) ? "Account recharge" : description
+                };
+                
+                // Save payment to database
                 await _paymentRepository.AddAsync(payment);
                 await _paymentRepository.SaveChangesAsync();
 
                 // Complete the payment (this will update user balance automatically)
+                // Note: CompletePaymentAsync will fire the PaymentCompleted event, so we don't fire it here
                 await _paymentRepository.CompletePaymentAsync(token);
-
-                // 🔥 FIRE EVENT: Announce payment completed
-                PaymentCompleted?.Invoke(this, new PaymentCompletedEventArgs
-                {
-                    UserId = userId,
-                    Amount = amount,
-                    PaymentToken = token,
-                    CompletedAt = DateTime.Now
-                });
 
                 Console.WriteLine($"💰 Payment created and completed! User {userId} received {amount / 1000} coins (Token: {token})");
 

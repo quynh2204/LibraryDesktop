@@ -49,15 +49,15 @@
             book12 = new BookControl();
             guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            btn_vaid = new Guna.UI2.WinForms.Guna2GradientButton();
+            btnAccount = new Guna.UI2.WinForms.Guna2GradientButton();
             guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            account1 = new Account();
             flowLayoutPanel1.SuspendLayout();
             guna2ShadowPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)guna2PictureBox1).BeginInit();
-            SuspendLayout();
-            // 
+            SuspendLayout();            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.AutoScroll = true;
@@ -73,11 +73,15 @@
             flowLayoutPanel1.Controls.Add(book9);
             flowLayoutPanel1.Controls.Add(book10);
             flowLayoutPanel1.Controls.Add(book11);
-            flowLayoutPanel1.Controls.Add(book12);
+            flowLayoutPanel1.Controls.Add(book12);            flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
             flowLayoutPanel1.Location = new Point(44, 144);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Size = new Size(1151, 548);
             flowLayoutPanel1.TabIndex = 9;
+            flowLayoutPanel1.WrapContents = true;
+            flowLayoutPanel1.Padding = new Padding(15, 15, 15, 15);
+            flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flowLayoutPanel1.AutoScroll = true;
             // 
             // book3
             // 
@@ -191,7 +195,7 @@
             // 
             guna2ShadowPanel1.BackColor = Color.Transparent;
             guna2ShadowPanel1.Controls.Add(guna2HtmlLabel2);
-            guna2ShadowPanel1.Controls.Add(btn_vaid);
+            guna2ShadowPanel1.Controls.Add(btnAccount);
             guna2ShadowPanel1.Controls.Add(guna2PictureBox1);
             guna2ShadowPanel1.Controls.Add(guna2TextBox1);
             guna2ShadowPanel1.Controls.Add(guna2HtmlLabel1);
@@ -213,29 +217,30 @@
             guna2HtmlLabel2.TabIndex = 9;
             guna2HtmlLabel2.Text = "Account";
             // 
-            // btn_vaid
+            // btnAccount
             // 
-            btn_vaid.BackColor = Color.Transparent;
-            btn_vaid.BorderRadius = 6;
-            btn_vaid.CustomizableEdges = customizableEdges1;
-            btn_vaid.DisabledState.BorderColor = Color.DarkGray;
-            btn_vaid.DisabledState.CustomBorderColor = Color.DarkGray;
-            btn_vaid.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            btn_vaid.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
-            btn_vaid.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            btn_vaid.FillColor = Color.FromArgb(169, 155, 135);
-            btn_vaid.FillColor2 = Color.FromArgb(211, 195, 179);
-            btn_vaid.Font = new Font("Segoe UI", 9F);
-            btn_vaid.ForeColor = Color.White;
-            btn_vaid.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
-            btn_vaid.Image = Properties.Resources.icons8_book_1001;
-            btn_vaid.ImageAlign = HorizontalAlignment.Left;
-            btn_vaid.ImageSize = new Size(50, 50);
-            btn_vaid.Location = new Point(938, 12);
-            btn_vaid.Name = "btn_vaid";
-            btn_vaid.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btn_vaid.Size = new Size(68, 64);
-            btn_vaid.TabIndex = 3;
+            btnAccount.BackColor = Color.Transparent;
+            btnAccount.BorderRadius = 6;
+            btnAccount.CustomizableEdges = customizableEdges1;
+            btnAccount.DisabledState.BorderColor = Color.DarkGray;
+            btnAccount.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnAccount.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnAccount.DisabledState.FillColor2 = Color.FromArgb(169, 169, 169);
+            btnAccount.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnAccount.FillColor = Color.FromArgb(169, 155, 135);
+            btnAccount.FillColor2 = Color.FromArgb(211, 195, 179);
+            btnAccount.Font = new Font("Segoe UI", 9F);
+            btnAccount.ForeColor = Color.White;
+            btnAccount.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            btnAccount.Image = Properties.Resources.icons8_book_1001;
+            btnAccount.ImageAlign = HorizontalAlignment.Left;
+            btnAccount.ImageSize = new Size(50, 50);
+            btnAccount.Location = new Point(938, 12);
+            btnAccount.Name = "btnAccount";
+            btnAccount.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            btnAccount.Size = new Size(68, 64);
+            btnAccount.TabIndex = 3;
+            btnAccount.Click += btnAccount_Click;
             // 
             // guna2PictureBox1
             // 
@@ -244,7 +249,7 @@
             guna2PictureBox1.FillColor = Color.Transparent;
             guna2PictureBox1.Image = Properties.Resources.icons8_search_book_53;
             guna2PictureBox1.ImageRotate = 0F;
-            guna2PictureBox1.Location = new Point(241, 23);
+            guna2PictureBox1.Location = new Point(847, 23);
             guna2PictureBox1.Name = "guna2PictureBox1";
             guna2PictureBox1.ShadowDecoration.CustomizableEdges = customizableEdges4;
             guna2PictureBox1.Size = new Size(52, 44);
@@ -263,7 +268,7 @@
             guna2TextBox1.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             guna2TextBox1.Font = new Font("Segoe UI", 9F);
             guna2TextBox1.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            guna2TextBox1.Location = new Point(327, 23);
+            guna2TextBox1.Location = new Point(239, 23);
             guna2TextBox1.Margin = new Padding(3, 4, 3, 4);
             guna2TextBox1.Name = "guna2TextBox1";
             guna2TextBox1.PlaceholderText = "";
@@ -282,14 +287,25 @@
             guna2HtmlLabel1.TabIndex = 7;
             guna2HtmlLabel1.Text = "Account's name";
             // 
+            // account1
+            // 
+            account1.Location = new Point(44, 116);
+            account1.Margin = new Padding(4, 5, 4, 5);
+            account1.Name = "account1";
+            account1.Size = new Size(1151, 604);
+            account1.TabIndex = 10;
+            account1.Visible = false;
+            account1.Load += account1_Load;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(account1);
             Controls.Add(flowLayoutPanel1);
             Controls.Add(guna2ShadowPanel1);
             Name = "Home";
-            Size = new Size(1247, 730);
+            Size = new Size(1220, 720);
             flowLayoutPanel1.ResumeLayout(false);
             guna2ShadowPanel1.ResumeLayout(false);
             guna2ShadowPanel1.PerformLayout();
@@ -314,9 +330,10 @@
         private BookControl book12;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel2;
-        private Guna.UI2.WinForms.Guna2GradientButton btn_vaid;
+        private Guna.UI2.WinForms.Guna2GradientButton btnAccount;
         private Guna.UI2.WinForms.Guna2PictureBox guna2PictureBox1;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private Account account1;
     }
 }

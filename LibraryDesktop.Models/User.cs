@@ -26,10 +26,10 @@ namespace LibraryDesktop.Models
         
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
         
-        // Navigation properties
+        public int Coins { get; set; } = 0;
+          // Navigation properties
         public virtual ICollection<UserFavorite> Favorites { get; set; } = new List<UserFavorite>();
         public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
-        public virtual UserSetting? UserSetting { get; set; }
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

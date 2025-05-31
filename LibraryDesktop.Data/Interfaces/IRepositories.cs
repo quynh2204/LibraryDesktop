@@ -1,14 +1,15 @@
 using LibraryDesktop.Models;
 
 namespace LibraryDesktop.Data.Interfaces
-{
-    public interface IUserRepository : IRepository<User>
+{    public interface IUserRepository : IRepository<User>
     {
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetUserWithSettingsAsync(int userId);
         Task<bool> UsernameExistsAsync(string username);
         Task<bool> EmailExistsAsync(string email);
+        Task<int> GetUserCoinsAsync(int userId);
+        Task UpdateUserCoinsAsync(int userId, int coins);
     }
 
     public interface ICategoryRepository : IRepository<Category>
@@ -56,12 +57,15 @@ namespace LibraryDesktop.Data.Interfaces
         Task<IEnumerable<Rating>> GetBookRatingsAsync(int bookId);
         Task<Rating?> GetUserRatingAsync(int userId, int bookId);
         Task<double> GetAverageRatingAsync(int bookId);
-    }
-
-    public interface IUserSettingRepository : IRepository<UserSetting>
+    }    public interface IUserSettingRepository : IRepository<UserSetting>
     {
         Task<UserSetting?> GetByUserIdAsync(int userId);
-        Task UpdateBalanceAsync(int userId, decimal amount);
-        Task<decimal> GetUserBalanceAsync(int userId);
+    }
+
+    public interface IHistoryRepository : IRepository<History>
+    {
+        Task<IEnumerable<History>> GetUserHistoryAsync(int userId);
+        Task<IEnumerable<History>> GetBookHistoryAsync(int bookId);
+        Task ClearUserHistoryAsync(int userId);
     }
 }

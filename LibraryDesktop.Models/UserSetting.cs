@@ -20,13 +20,9 @@ namespace LibraryDesktop.Models
         
         [Required]
         public ThemeMode ThemeMode { get; set; } = ThemeMode.Light;
-        
-        [Required]
+          [Required]
         [Range(8, 72)]
         public int FontSize { get; set; } = 12;
-        
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Balance { get; set; } = 0;
         
         // Navigation properties
         [ForeignKey(nameof(UserId))]

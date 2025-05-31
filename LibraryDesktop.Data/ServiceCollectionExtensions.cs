@@ -12,6 +12,13 @@ namespace LibraryDesktop.Data
     {
         public static IServiceCollection AddLibraryDataServices(this IServiceCollection services, string connectionString)
         {
+            // Add Entity Framework
+            services.AddDbContext<LibraryDbContext>(options =>
+                options.UseSqlite(connectionString));
+
+            // Add HttpClient for GitHub content downloading
+            services.AddHttpClient<IGitHubContentService, GitHubContentService>();
+
             // Add DbContext
             services.AddDbContext<LibraryDbContext>(options =>
                 options.UseSqlite(connectionString)
@@ -19,9 +26,7 @@ namespace LibraryDesktop.Data
                              LogLevel.Warning,
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.LocalTime | 
                              Microsoft.EntityFrameworkCore.Diagnostics.DbContextLoggerOptions.SingleLine)
-                      .EnableSensitiveDataLogging()                      .EnableDetailedErrors());
-
-            // Add Repositories
+                      .EnableSensitiveDataLogging()                      .EnableDetailedErrors());            // Add Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
@@ -30,12 +35,17 @@ namespace LibraryDesktop.Data
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IUserSettingRepository, UserSettingRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
-
-            // Add Services
+            services.AddScoped<IHistoryRepository, HistoryRepository>();// Add Services
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBookService, BookService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGitHubContentService, GitHubContentService>();            services.AddScoped<IHistoryService, HistoryService>();
+
+            services.AddScoped<IRatingService, RatingService>();
+
             services.AddSingleton<IGitHubContentService, GitHubContentService>();
 
             return services;

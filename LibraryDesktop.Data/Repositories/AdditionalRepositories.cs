@@ -30,9 +30,7 @@ namespace LibraryDesktop.Data.Repositories
                 .Include(p => p.User)
                 .OrderBy(p => p.CreatedDate)
                 .ToListAsync();
-        }
-
-        public async Task CompletePaymentAsync(string token)
+        }        public async Task CompletePaymentAsync(string token)
         {
             var payment = await GetPaymentByTokenAsync(token);
             if (payment != null && payment.PaymentStatus == PaymentStatus.Pending)
@@ -40,12 +38,12 @@ namespace LibraryDesktop.Data.Repositories
                 payment.PaymentStatus = PaymentStatus.Completed;
                 payment.CompletedDate = DateTime.Now;
                 
-                // Update user balance
-                var userSetting = await _context.UserSettings
-                    .FirstOrDefaultAsync(us => us.UserId == payment.UserId);
-                  if (userSetting != null)
+                // Update user coins directly
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.UserId == payment.UserId);
+                  if (user != null)
                 {
-                    userSetting.Balance += (decimal)payment.Amount / 1000; // Convert VND to coins
+                    user.Coins += (int)(payment.Amount / 1000); // Convert VND to coins (1000 VND = 1 coin)
                 }
 
                 await SaveChangesAsync();
@@ -129,32 +127,47 @@ namespace LibraryDesktop.Data.Repositories
 
             return ratings.Any() ? ratings.Average() : 0;
         }
-    }
-
-    public class UserSettingRepository : Repository<UserSetting>, IUserSettingRepository
+    }    public class UserSettingRepository : Repository<UserSetting>, IUserSettingRepository
     {
-        public UserSettingRepository(LibraryDbContext context) : base(context) { }
-
-        public async Task<UserSetting?> GetByUserIdAsync(int userId)
+        public UserSettingRepository(LibraryDbContext context) : base(context) { }        public async Task<UserSetting?> GetByUserIdAsync(int userId)
         {
             return await _dbSet
                 .FirstOrDefaultAsync(us => us.UserId == userId);
         }
+    }
 
-        public async Task UpdateBalanceAsync(int userId, decimal amount)
+    public class HistoryRepository : Repository<History>, IHistoryRepository
+    {
+        public HistoryRepository(LibraryDbContext context) : base(context) { }
+
+        public async Task<IEnumerable<History>> GetUserHistoryAsync(int userId)
         {
-            var userSetting = await GetByUserIdAsync(userId);
-            if (userSetting != null)
-            {
-                userSetting.Balance += amount;
-                await SaveChangesAsync();
-            }
+            return await _dbSet
+                .Include(h => h.Book)
+                .ThenInclude(b => b.Category)
+                .Include(h => h.Chapter)
+                .Where(h => h.UserId == userId)
+                .OrderByDescending(h => h.AccessedDate)
+                .ToListAsync();
         }
 
-        public async Task<decimal> GetUserBalanceAsync(int userId)
+        public async Task<IEnumerable<History>> GetBookHistoryAsync(int bookId)
         {
-            var userSetting = await GetByUserIdAsync(userId);
-            return userSetting?.Balance ?? 0;
+            return await _dbSet
+                .Include(h => h.User)
+                .Where(h => h.BookId == bookId)
+                .OrderByDescending(h => h.AccessedDate)
+                .ToListAsync();
+        }
+
+        public async Task ClearUserHistoryAsync(int userId)
+        {
+            var userHistories = await _dbSet
+                .Where(h => h.UserId == userId)
+                .ToListAsync();
+
+            _dbSet.RemoveRange(userHistories);
+            await SaveChangesAsync();
         }
     }
 }

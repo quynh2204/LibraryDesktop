@@ -35,10 +35,13 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2DataGridView1 = new Guna.UI2.WinForms.Guna2DataGridView();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-            read_btn = new Guna.UI2.WinForms.Guna2Button();
             guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            read_btn = new Guna.UI2.WinForms.Guna2Button();
+            clear_btn = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).BeginInit();
             guna2Panel1.SuspendLayout();
             SuspendLayout();
@@ -106,6 +109,16 @@
             guna2Panel1.Size = new Size(901, 629);
             guna2Panel1.TabIndex = 1;
             // 
+            // guna2HtmlLabel1
+            // 
+            guna2HtmlLabel1.BackColor = Color.Transparent;
+            guna2HtmlLabel1.Font = new Font(".VnCentury SchoolbookH", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            guna2HtmlLabel1.Location = new Point(54, 34);
+            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            guna2HtmlLabel1.Size = new Size(202, 30);
+            guna2HtmlLabel1.TabIndex = 1;
+            guna2HtmlLabel1.Text = "Reading History";
+            // 
             // read_btn
             // 
             read_btn.BorderRadius = 20;
@@ -123,37 +136,48 @@
             read_btn.Size = new Size(173, 63);
             read_btn.TabIndex = 2;
             read_btn.Text = "Read";
+            read_btn.Click += read_btn_Click;
             // 
-            // guna2HtmlLabel1
+            // clear_btn
             // 
-            guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Font = new Font(".VnCentury SchoolbookH", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            guna2HtmlLabel1.Location = new Point(54, 34);
-            guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(183, 30);
-            guna2HtmlLabel1.TabIndex = 1;
-            guna2HtmlLabel1.Text = "History's Book";
+            clear_btn.BorderRadius = 20;
+            clear_btn.CustomizableEdges = customizableEdges5;
+            clear_btn.DisabledState.BorderColor = Color.DarkGray;
+            clear_btn.DisabledState.CustomBorderColor = Color.DarkGray;
+            clear_btn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            clear_btn.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            clear_btn.FillColor = Color.FromArgb(231, 76, 60);
+            clear_btn.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            clear_btn.ForeColor = Color.White;
+            clear_btn.Location = new Point(1017, 520);
+            clear_btn.Name = "clear_btn";
+            clear_btn.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            clear_btn.Size = new Size(173, 63);
+            clear_btn.TabIndex = 3;
+            clear_btn.Text = "Clear History";
+            clear_btn.Click += clear_btn_Click;
             // 
             // History
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(241, 235, 227);
+            Controls.Add(clear_btn);
             Controls.Add(read_btn);
             Controls.Add(guna2Panel1);
             Name = "History";
-            Size = new Size(1247, 730);
-            ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).EndInit();
+            Size = new Size(1247, 730);            ((System.ComponentModel.ISupportInitialize)guna2DataGridView1).EndInit();
             guna2Panel1.ResumeLayout(false);
             guna2Panel1.PerformLayout();
             ResumeLayout(false);
         }
 
-        #endregion
-
+        #endregion        
+        
         private Guna.UI2.WinForms.Guna2DataGridView guna2DataGridView1;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private Guna.UI2.WinForms.Guna2Button read_btn;
+        private Guna.UI2.WinForms.Guna2Button clear_btn;
     }
 }

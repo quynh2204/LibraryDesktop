@@ -164,12 +164,11 @@ namespace LibraryDesktop.Data.Services
                         : $"User {userId}";
                       var amount = paymentData.GetProperty("amount").GetInt32();
                     var coins = amount / 1000;
-                    
-                    var jsonResponse = JsonSerializer.Serialize(new
+                      var jsonResponse = JsonSerializer.Serialize(new
                     {
                         amount = amount.ToString(),
                         user = username,
-                        description = $"Account recharge (+{coins} coins)",
+                        description = "Account recharge",
                         status = "Pending",
                         created = DateTime.Now,
                         token = paymentData.GetProperty("token").GetString()
@@ -360,7 +359,19 @@ namespace LibraryDesktop.Data.Services
 
                 using var reader = new StreamReader(context.Request.InputStream);
                 var body = await reader.ReadToEndAsync();
-                var registrationData = JsonSerializer.Deserialize<RegistrationData>(body);
+
+                if (string.IsNullOrWhiteSpace(body))
+                {
+                    context.Response.StatusCode = 400;
+                    var errorBytes = Encoding.UTF8.GetBytes("{\"error\":\"Empty request body\"}");
+                    context.Response.ContentType = "application/json";
+                    await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
+                    return;
+                }
+
+                var registrationData = JsonSerializer.Deserialize<RegistrationData>(
+                    body,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (registrationData?.Username == null || registrationData.Email == null || registrationData.Password == null)
                 {
@@ -397,6 +408,7 @@ namespace LibraryDesktop.Data.Services
                 await context.Response.OutputStream.WriteAsync(errorBytes, 0, errorBytes.Length);
             }
         }
+
 
         public async Task StopAsync()
         {

@@ -58,7 +58,7 @@ namespace LibraryDesktop.View
             guna2ShadowPanel1.Radius = 8;
             guna2ShadowPanel1.ShadowColor = Color.Black;
             guna2ShadowPanel1.ShadowDepth = 50;
-            guna2ShadowPanel1.Size = new Size(180, 260);
+            guna2ShadowPanel1.Size = new Size(227, 400);
             guna2ShadowPanel1.TabIndex = 0;
             guna2ShadowPanel1.Click += BookControl_Click;
             // 
@@ -67,7 +67,7 @@ namespace LibraryDesktop.View
             lblChapterCount.BackColor = Color.Transparent;
             lblChapterCount.Font = new Font("Segoe UI", 8F);
             lblChapterCount.ForeColor = Color.FromArgb(169, 155, 135);
-            lblChapterCount.Location = new Point(15, 225);
+            lblChapterCount.Location = new Point(15, 366);
             lblChapterCount.Name = "lblChapterCount";
             lblChapterCount.Size = new Size(66, 19);
             lblChapterCount.TabIndex = 4;
@@ -78,8 +78,8 @@ namespace LibraryDesktop.View
             lblAuthor.BackColor = Color.Transparent;
             lblAuthor.Font = new Font("Segoe UI", 8F);
             lblAuthor.ForeColor = Color.FromArgb(128, 128, 128);
-            lblAuthor.Location = new Point(15, 200);
-            lblAuthor.MaximumSize = new Size(150, 20);
+            lblAuthor.Location = new Point(15, 341);
+            lblAuthor.MaximumSize = new Size(190, 20);
             lblAuthor.Name = "lblAuthor";
             lblAuthor.Size = new Size(42, 19);
             lblAuthor.TabIndex = 3;
@@ -90,13 +90,12 @@ namespace LibraryDesktop.View
             lblBookTitle.BackColor = Color.Transparent;
             lblBookTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblBookTitle.ForeColor = Color.FromArgb(64, 64, 64);
-            lblBookTitle.Location = new Point(15, 175);
-            lblBookTitle.MaximumSize = new Size(150, 40);
+            lblBookTitle.Location = new Point(15, 287);
+            lblBookTitle.MaximumSize = new Size(190, 40);
             lblBookTitle.Name = "lblBookTitle";
             lblBookTitle.Size = new Size(85, 25);
             lblBookTitle.TabIndex = 2;
             lblBookTitle.Text = "Book Title";
-            lblBookTitle.Click += lblBookTitle_Click;
             // 
             // picBookCover
             // 
@@ -108,11 +107,10 @@ namespace LibraryDesktop.View
             picBookCover.Location = new Point(15, 45);
             picBookCover.Name = "picBookCover";
             picBookCover.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            picBookCover.Size = new Size(150, 120);
+            picBookCover.Size = new Size(197, 236);
             picBookCover.SizeMode = PictureBoxSizeMode.StretchImage;
             picBookCover.TabIndex = 1;
             picBookCover.TabStop = false;
-            picBookCover.Click += picBookCover_Click;
             // 
             // panelPremium
             // 
@@ -135,9 +133,9 @@ namespace LibraryDesktop.View
             lblPrice.ForeColor = Color.White;
             lblPrice.Location = new Point(5, 3);
             lblPrice.Name = "lblPrice";
-            lblPrice.Size = new Size(35, 19);
+            lblPrice.Size = new Size(48, 19);
             lblPrice.TabIndex = 0;
-            lblPrice.Text = "$0.00";
+            lblPrice.Text = "0 Coins";
             // 
             // BookControl
             // 
@@ -146,8 +144,9 @@ namespace LibraryDesktop.View
             BackColor = Color.Transparent;
             Controls.Add(guna2ShadowPanel1);
             Cursor = Cursors.Hand;
+            Margin = new Padding(8, 8, 8, 12);
             Name = "BookControl";
-            Size = new Size(190, 270);
+            Size = new Size(230, 406);
             guna2ShadowPanel1.ResumeLayout(false);
             guna2ShadowPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picBookCover).EndInit();

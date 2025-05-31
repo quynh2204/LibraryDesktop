@@ -22,8 +22,11 @@ namespace LibraryDesktop.Models
         public string? Review { get; set; }
         
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+          public DateTime UpdatedDate { get; set; } = DateTime.Now;
         
-        public DateTime UpdatedDate { get; set; } = DateTime.Now;
+        // Computed property for interaction count (Reviews + Ratings)
+        [NotMapped]
+        public int Interaction => (string.IsNullOrEmpty(Review) ? 0 : 1) + 1; // 1 for rating + 1 if review exists
         
         // Navigation properties
         [ForeignKey(nameof(UserId))]

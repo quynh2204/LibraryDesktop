@@ -12,15 +12,9 @@ namespace LibraryDesktop
 {
     internal static class Program
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
         [STAThread]
         static async Task Main()
         {
-            // Allocate console for debugging output
-            AllocConsole();
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
